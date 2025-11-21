@@ -6,8 +6,8 @@ spring:
     name: BCFserver
   datasource:
     url: jdbc:postgresql://localhost:5432/bcfdb
-    username: bcf
-    password: bcf
+    username: admin@bcf
+    password: admin
   jpa:
     hibernate:
       ddl-auto: validate

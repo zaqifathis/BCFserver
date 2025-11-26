@@ -3,6 +3,7 @@ package de.openfabtwin.bcfserver.controllers;
 import de.openfabtwin.bcfserver.configs.BcfApiProperties;
 import de.openfabtwin.bcfserver.dto.ProjectGET;
 import de.openfabtwin.bcfserver.dto.ProjectPUT;
+import de.openfabtwin.bcfserver.dtos.ProjectPOST;
 import de.openfabtwin.bcfserver.mappers.ProjectMapper;
 import de.openfabtwin.bcfserver.services.ProjectService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,12 @@ public class ProjectController {
     @ModelAttribute("version")
     public String apiVersion() {
         return props.getVersion(); // "3.0"
+    }
+
+    @PostMapping
+    public ProjectGET createProject(@RequestBody ProjectPOST dto) {
+        var created = projectService.create(dto);
+        return projectMapper.toDto(created);
     }
 
     @GetMapping

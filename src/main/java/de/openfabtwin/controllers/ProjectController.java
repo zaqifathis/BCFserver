@@ -1,11 +1,11 @@
 package de.openfabtwin.controllers;
 
 import de.openfabtwin.api.ProjectApi;
-import de.openfabtwin.configs.BcfApiProperties;
+import de.openfabtwin.BcfApiProperties;
 import de.openfabtwin.dto.ExtensionsGET;
 import de.openfabtwin.dto.ProjectGET;
 import de.openfabtwin.dto.ProjectPUT;
-import de.openfabtwin.dto.ProjectPOST;
+import de.openfabtwin.ProjectPOST;
 import de.openfabtwin.mappers.ProjectMapper;
 import de.openfabtwin.services.ProjectService;
 import lombok.RequiredArgsConstructor;
@@ -57,8 +57,8 @@ public class ProjectController implements ProjectApi {
     @Override
     public ResponseEntity<ExtensionsGET> getProjectExtension(String version, String projectId) {
         validateVersion(version);
-        // Implementation for getting project extensions goes here
-        return ResponseEntity.ok(new ExtensionsGET());
+        var ext = projectService.getProjectExtension(projectId);
+        return ResponseEntity.ok(projectMapper.toExtensionDto(ext));
     }
 
     @Override

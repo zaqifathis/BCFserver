@@ -1,4 +1,4 @@
-package de.openfabtwin.dto;
+package de.openfabtwin;
 
 import lombok.Data;
 

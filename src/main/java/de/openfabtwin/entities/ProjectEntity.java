@@ -23,4 +23,7 @@ public class ProjectEntity {
 
     @Column(nullable = false)
     private String createdAt;
+
+    @OneToOne(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private ExtensionEntity extensions;
 }

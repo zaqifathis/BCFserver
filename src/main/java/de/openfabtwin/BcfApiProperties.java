@@ -1,4 +1,4 @@
-package de.openfabtwin.configs;
+package de.openfabtwin;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

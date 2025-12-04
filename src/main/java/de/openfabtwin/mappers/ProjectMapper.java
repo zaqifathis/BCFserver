@@ -1,10 +1,15 @@
 package de.openfabtwin.mappers;
 
+import de.openfabtwin.dto.ExtensionsGET;
 import de.openfabtwin.dto.ProjectGET;
 import de.openfabtwin.dto.ProjectGETAuthorization;
+import de.openfabtwin.entities.ExtensionEntity;
 import de.openfabtwin.entities.ProjectEntity;
-import de.openfabtwin.services.AuthorizationService;
+import de.openfabtwin.services.ProjectService;
+import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class ProjectMapper {
@@ -14,8 +19,23 @@ public class ProjectMapper {
         dto.setProjectId(entity.getGuid());
         dto.setName(entity.getName());
         ProjectGETAuthorization auth = new ProjectGETAuthorization();
-        auth.setProjectActions(AuthorizationService.getProjectActions());
+        auth.setProjectActions(ProjectService.getProjectActions());
         dto.setAuthorization(auth);
+        return dto;
+    }
+
+    public ExtensionsGET toExtensionDto(ExtensionEntity ext) {
+        var dto = new ExtensionsGET();
+        dto.setTopicType(JsonNullable.of(ext.getTopicType()));
+        dto.setTopicStatus(JsonNullable.of(ext.getTopicStatus()));
+        dto.setTopicLabel(JsonNullable.of(ext.getTopicLabel()));
+        dto.setSnippetType(JsonNullable.of(ext.getSnippetType()));
+        dto.setPriority(JsonNullable.of(ext.getPriority()));
+        dto.setUsers(JsonNullable.of(ext.getUsers()));
+        dto.setStage(JsonNullable.of(ext.getStage()));
+        dto.setProjectActions(List.of(ExtensionsGET.ProjectActionsEnum.UPDATE, ExtensionsGET.ProjectActionsEnum.CREATE_TOPIC, ExtensionsGET.ProjectActionsEnum.CREATE_DOCUMENT));
+        dto.setCommentActions(ProjectService.getCommentActions()); //TODO: project actions should include in extensions
+        dto.setTopicActions(ProjectService.getTopicActions());
         return dto;
     }
 }

@@ -1,15 +1,21 @@
 package de.openfabtwin.services;
 
+import de.openfabtwin.dto.ExtensionsGET.CommentActionsEnum;
+import de.openfabtwin.dto.ExtensionsGET.TopicActionsEnum;
+import de.openfabtwin.dto.ProjectGETAuthorization.ProjectActionsEnum;
 import de.openfabtwin.dto.ProjectPUT;
-import de.openfabtwin.dto.ProjectPOST;
+import de.openfabtwin.ProjectPOST;
+import de.openfabtwin.entities.ExtensionEntity;
 import de.openfabtwin.entities.ProjectEntity;
 import de.openfabtwin.ResourceNotFoundException;
+import de.openfabtwin.repositories.ExtensionRepository;
 import de.openfabtwin.repositories.ProjectRepository;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,6 +24,7 @@ import java.util.UUID;
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final ExtensionRepository extensionRepository;
 
     public List<ProjectEntity> getAllProjects() {
         return projectRepository.findAll();
@@ -37,11 +44,56 @@ public class ProjectService {
     }
 
     public ProjectEntity create(ProjectPOST dto) { //TODO: connection to user management
-        var entity = new ProjectEntity();
-        entity.setGuid(UUID.randomUUID().toString());
-        entity.setName(dto.getName());
-        entity.setAuthor("default@author");
-        entity.setCreatedAt(Instant.now().toString());
-        return projectRepository.save(entity);
+        var project = new ProjectEntity();
+        project.setGuid(UUID.randomUUID().toString());
+        project.setName(dto.getName());
+        project.setAuthor("default@author");
+        project.setCreatedAt(Instant.now().toString());
+
+        ExtensionEntity ext = createDefaultExtension(project);
+        project.setExtensions(ext);
+        return projectRepository.save(project);
+    }
+
+    public ExtensionEntity getProjectExtension(String guid) {
+        return extensionRepository.findByProject_Guid(guid)
+                .orElseThrow(() -> new ResourceNotFoundException("Extension not found"));
+    }
+
+    public static List<ProjectActionsEnum> getProjectActions() {
+        List<ProjectActionsEnum> actions = new ArrayList<>();
+        actions.add(ProjectActionsEnum.UPDATE);
+        actions.add(ProjectActionsEnum.CREATE_TOPIC);
+        actions.add(ProjectActionsEnum.CREATE_DOCUMENT);
+        return actions;
+    }
+
+    public static List<TopicActionsEnum> getTopicActions() {
+        List<TopicActionsEnum> actions = new ArrayList<>();
+        actions.add(TopicActionsEnum.CREATE_COMMENT);
+        actions.add(TopicActionsEnum.UPDATE);
+        actions.add(TopicActionsEnum.DELETE);
+        return actions;
+    }
+
+    public static List<CommentActionsEnum> getCommentActions(){
+        List<CommentActionsEnum> actions = new ArrayList<>();
+        actions.add(CommentActionsEnum.UPDATE);
+        actions.add(CommentActionsEnum.DELETE);
+        return actions;
+    }
+
+    public static ExtensionEntity createDefaultExtension(ProjectEntity project) {
+        ExtensionEntity ext = new ExtensionEntity();
+        ext.setProject(project);
+        ext.setTopicType(new ArrayList<>(List.of("Issue", "Info", "Request")));
+        ext.setTopicStatus(new ArrayList<>(List.of("Open", "In Progress", "Closed")));
+        ext.setTopicLabel(new ArrayList<>(List.of("Architecture", "Structure", "MEP")));
+        ext.setSnippetType(new ArrayList<>(List.of("Screenshot", "ModelCutout")));
+        ext.setPriority(new ArrayList<>(List.of("Low", "Medium", "High")));
+        ext.setUsers(new ArrayList<>(List.of("admin")));
+        ext.setStage(new ArrayList<>(List.of("Design", "Construction", "Review")));
+
+        return ext;
     }
 }

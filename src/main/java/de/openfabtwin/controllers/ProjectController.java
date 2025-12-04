@@ -4,11 +4,9 @@ import de.openfabtwin.api.ProjectApi;
 import de.openfabtwin.configs.BcfApiProperties;
 import de.openfabtwin.dto.ExtensionsGET;
 import de.openfabtwin.dto.ProjectGET;
-import de.openfabtwin.dto.ProjectGETAuthorization;
 import de.openfabtwin.dto.ProjectPUT;
 import de.openfabtwin.dto.ProjectPOST;
 import de.openfabtwin.mappers.ProjectMapper;
-import de.openfabtwin.services.AuthorizationService;
 import de.openfabtwin.services.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -36,9 +34,6 @@ public class ProjectController implements ProjectApi {
         validateVersion(version);
         var created = projectService.create(dto);
         var dtoOut  = projectMapper.toDto(created);
-        var auth = new ProjectGETAuthorization();
-        auth.setProjectActions(AuthorizationService.getProjectActions("admin", created)); //TODO: connection to user management
-        dtoOut.setAuthorization(auth);
         return ResponseEntity.status(201).body(dtoOut );
     }
 

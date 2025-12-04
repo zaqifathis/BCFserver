@@ -1,13 +1,21 @@
 package de.openfabtwin.mappers;
 
 import de.openfabtwin.dto.ProjectGET;
+import de.openfabtwin.dto.ProjectGETAuthorization;
 import de.openfabtwin.entities.ProjectEntity;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import de.openfabtwin.services.AuthorizationService;
+import org.springframework.stereotype.Component;
 
+@Component
+public class ProjectMapper {
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = org.mapstruct.ReportingPolicy.IGNORE)
-public interface ProjectMapper {
-    @Mapping(source = "guid", target = "projectId")
-    ProjectGET toDto(ProjectEntity entity);
+    public ProjectGET toDto(ProjectEntity entity) {
+        var dto = new ProjectGET();
+        dto.setProjectId(entity.getGuid());
+        dto.setName(entity.getName());
+        ProjectGETAuthorization auth = new ProjectGETAuthorization();
+        auth.setProjectActions(AuthorizationService.getProjectActions());
+        dto.setAuthorization(auth);
+        return dto;
+    }
 }

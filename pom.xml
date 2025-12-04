@@ -73,19 +73,6 @@
 			<version>1.18.42</version>
 		</dependency>
 
-		<!-- MapStruct for DTO mapping -->
-		<dependency>
-			<groupId>org.mapstruct</groupId>
-			<artifactId>mapstruct</artifactId>
-			<version>1.6.3</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mapstruct</groupId>
-			<artifactId>mapstruct-processor</artifactId>
-			<version>1.6.3</version>
-			<scope>provided</scope>
-		</dependency>
-
 		<!-- H2 in-memory DB for tests -->
 		<dependency>
 			<groupId>com.h2database</groupId>

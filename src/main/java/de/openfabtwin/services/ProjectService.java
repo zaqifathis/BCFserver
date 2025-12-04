@@ -40,7 +40,7 @@ public class ProjectService {
         var entity = new ProjectEntity();
         entity.setGuid(UUID.randomUUID().toString());
         entity.setName(dto.getName());
-        entity.setAuthor("admin");
+        entity.setAuthor("default@author");
         entity.setCreatedAt(Instant.now().toString());
         return projectRepository.save(entity);
     }

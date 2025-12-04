@@ -11,7 +11,7 @@ import java.util.List;
 @Service
 public class AuthorizationService {
 
-    public static List<ProjectGETAuthorization.ProjectActionsEnum> getProjectActions(String role, ProjectEntity project) {
+    public static List<ProjectGETAuthorization.ProjectActionsEnum> getProjectActions() {
         List<ProjectActionsEnum> actions = new ArrayList<>();
         actions.add(ProjectActionsEnum.UPDATE);
         actions.add(ProjectActionsEnum.CREATE_TOPIC);

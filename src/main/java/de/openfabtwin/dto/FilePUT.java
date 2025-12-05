@@ -3,8 +3,7 @@ package de.openfabtwin.dto;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import java.util.Arrays;
-import org.openapitools.jackson.nullable.JsonNullable;
+import org.springframework.lang.Nullable;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 
@@ -15,21 +14,21 @@ import jakarta.annotation.Generated;
  */
 
 @JsonTypeName("file_PUT")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-03T12:04:39.178099100+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-05T09:23:37.160769500+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
 public class FilePUT {
 
-  private JsonNullable<String> ifcProject = JsonNullable.<String>undefined();
+  private @Nullable String ifcProject = null;
 
-  private JsonNullable<String> ifcSpatialStructureElement = JsonNullable.<String>undefined();
+  private @Nullable String ifcSpatialStructureElement = null;
 
-  private JsonNullable<String> filename = JsonNullable.<String>undefined();
+  private @Nullable String filename = null;
 
-  private JsonNullable<String> date = JsonNullable.<String>undefined();
+  private @Nullable String date = null;
 
-  private JsonNullable<String> reference = JsonNullable.<String>undefined();
+  private @Nullable String reference = null;
 
-  public FilePUT ifcProject(String ifcProject) {
-    this.ifcProject = JsonNullable.of(ifcProject);
+  public FilePUT ifcProject(@Nullable String ifcProject) {
+    this.ifcProject = ifcProject;
     return this;
   }
 
@@ -40,16 +39,16 @@ public class FilePUT {
   
   @Schema(name = "ifc_project", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("ifc_project")
-  public JsonNullable<String> getIfcProject() {
+  public @Nullable String getIfcProject() {
     return ifcProject;
   }
 
-  public void setIfcProject(JsonNullable<String> ifcProject) {
+  public void setIfcProject(@Nullable String ifcProject) {
     this.ifcProject = ifcProject;
   }
 
-  public FilePUT ifcSpatialStructureElement(String ifcSpatialStructureElement) {
-    this.ifcSpatialStructureElement = JsonNullable.of(ifcSpatialStructureElement);
+  public FilePUT ifcSpatialStructureElement(@Nullable String ifcSpatialStructureElement) {
+    this.ifcSpatialStructureElement = ifcSpatialStructureElement;
     return this;
   }
 
@@ -60,16 +59,16 @@ public class FilePUT {
   
   @Schema(name = "ifc_spatial_structure_element", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("ifc_spatial_structure_element")
-  public JsonNullable<String> getIfcSpatialStructureElement() {
+  public @Nullable String getIfcSpatialStructureElement() {
     return ifcSpatialStructureElement;
   }
 
-  public void setIfcSpatialStructureElement(JsonNullable<String> ifcSpatialStructureElement) {
+  public void setIfcSpatialStructureElement(@Nullable String ifcSpatialStructureElement) {
     this.ifcSpatialStructureElement = ifcSpatialStructureElement;
   }
 
-  public FilePUT filename(String filename) {
-    this.filename = JsonNullable.of(filename);
+  public FilePUT filename(@Nullable String filename) {
+    this.filename = filename;
     return this;
   }
 
@@ -80,16 +79,16 @@ public class FilePUT {
   
   @Schema(name = "filename", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("filename")
-  public JsonNullable<String> getFilename() {
+  public @Nullable String getFilename() {
     return filename;
   }
 
-  public void setFilename(JsonNullable<String> filename) {
+  public void setFilename(@Nullable String filename) {
     this.filename = filename;
   }
 
-  public FilePUT date(String date) {
-    this.date = JsonNullable.of(date);
+  public FilePUT date(@Nullable String date) {
+    this.date = date;
     return this;
   }
 
@@ -100,16 +99,16 @@ public class FilePUT {
   
   @Schema(name = "date", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("date")
-  public JsonNullable<String> getDate() {
+  public @Nullable String getDate() {
     return date;
   }
 
-  public void setDate(JsonNullable<String> date) {
+  public void setDate(@Nullable String date) {
     this.date = date;
   }
 
-  public FilePUT reference(String reference) {
-    this.reference = JsonNullable.of(reference);
+  public FilePUT reference(@Nullable String reference) {
+    this.reference = reference;
     return this;
   }
 
@@ -120,11 +119,11 @@ public class FilePUT {
   
   @Schema(name = "reference", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("reference")
-  public JsonNullable<String> getReference() {
+  public @Nullable String getReference() {
     return reference;
   }
 
-  public void setReference(JsonNullable<String> reference) {
+  public void setReference(@Nullable String reference) {
     this.reference = reference;
   }
 
@@ -137,27 +136,16 @@ public class FilePUT {
       return false;
     }
     FilePUT filePUT = (FilePUT) o;
-    return equalsNullable(this.ifcProject, filePUT.ifcProject) &&
-        equalsNullable(this.ifcSpatialStructureElement, filePUT.ifcSpatialStructureElement) &&
-        equalsNullable(this.filename, filePUT.filename) &&
-        equalsNullable(this.date, filePUT.date) &&
-        equalsNullable(this.reference, filePUT.reference);
-  }
-
-  private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
-    return a == b || (a != null && b != null && a.isPresent() && b.isPresent() && Objects.deepEquals(a.get(), b.get()));
+    return Objects.equals(this.ifcProject, filePUT.ifcProject) &&
+        Objects.equals(this.ifcSpatialStructureElement, filePUT.ifcSpatialStructureElement) &&
+        Objects.equals(this.filename, filePUT.filename) &&
+        Objects.equals(this.date, filePUT.date) &&
+        Objects.equals(this.reference, filePUT.reference);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(hashCodeNullable(ifcProject), hashCodeNullable(ifcSpatialStructureElement), hashCodeNullable(filename), hashCodeNullable(date), hashCodeNullable(reference));
-  }
-
-  private static <T> int hashCodeNullable(JsonNullable<T> a) {
-    if (a == null) {
-      return 1;
-    }
-    return a.isPresent() ? Arrays.deepHashCode(new Object[]{a.get()}) : 31;
+    return Objects.hash(ifcProject, ifcSpatialStructureElement, filename, date, reference);
   }
 
   @Override
@@ -210,18 +198,8 @@ public class FilePUT {
       return this;
     }
     
-    public FilePUT.Builder ifcProject(JsonNullable<String> ifcProject) {
-      this.instance.ifcProject = ifcProject;
-      return this;
-    }
-    
     public FilePUT.Builder ifcSpatialStructureElement(String ifcSpatialStructureElement) {
       this.instance.ifcSpatialStructureElement(ifcSpatialStructureElement);
-      return this;
-    }
-    
-    public FilePUT.Builder ifcSpatialStructureElement(JsonNullable<String> ifcSpatialStructureElement) {
-      this.instance.ifcSpatialStructureElement = ifcSpatialStructureElement;
       return this;
     }
     
@@ -230,28 +208,13 @@ public class FilePUT {
       return this;
     }
     
-    public FilePUT.Builder filename(JsonNullable<String> filename) {
-      this.instance.filename = filename;
-      return this;
-    }
-    
     public FilePUT.Builder date(String date) {
       this.instance.date(date);
       return this;
     }
     
-    public FilePUT.Builder date(JsonNullable<String> date) {
-      this.instance.date = date;
-      return this;
-    }
-    
     public FilePUT.Builder reference(String reference) {
       this.instance.reference(reference);
-      return this;
-    }
-    
-    public FilePUT.Builder reference(JsonNullable<String> reference) {
-      this.instance.reference = reference;
       return this;
     }
     

@@ -3,9 +3,6 @@ package de.openfabtwin.dto;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-
-import java.util.Arrays;
-import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.lang.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -19,7 +16,7 @@ import jakarta.annotation.Generated;
  */
 
 @JsonTypeName("comment_GET")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-03T12:04:39.178099100+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-05T09:23:37.160769500+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
 public class CommentGET {
 
   private String guid;
@@ -32,13 +29,13 @@ public class CommentGET {
 
   private String topicGuid;
 
-  private JsonNullable<String> viewpointGuid = JsonNullable.<String>undefined();
+  private @Nullable String viewpointGuid = null;
 
-  private JsonNullable<String> replyToCommentGuid = JsonNullable.<String>undefined();
+  private @Nullable String replyToCommentGuid = null;
 
-  private JsonNullable<String> modifiedDate = JsonNullable.<String>undefined();
+  private @Nullable String modifiedDate = null;
 
-  private JsonNullable<String> modifiedAuthor = JsonNullable.<String>undefined();
+  private @Nullable String modifiedAuthor = null;
 
   private @Nullable CommentGETAuthorization authorization;
 
@@ -157,8 +154,8 @@ public class CommentGET {
     this.topicGuid = topicGuid;
   }
 
-  public CommentGET viewpointGuid(String viewpointGuid) {
-    this.viewpointGuid = JsonNullable.of(viewpointGuid);
+  public CommentGET viewpointGuid(@Nullable String viewpointGuid) {
+    this.viewpointGuid = viewpointGuid;
     return this;
   }
 
@@ -169,16 +166,16 @@ public class CommentGET {
   
   @Schema(name = "viewpoint_guid", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("viewpoint_guid")
-  public JsonNullable<String> getViewpointGuid() {
+  public @Nullable String getViewpointGuid() {
     return viewpointGuid;
   }
 
-  public void setViewpointGuid(JsonNullable<String> viewpointGuid) {
+  public void setViewpointGuid(@Nullable String viewpointGuid) {
     this.viewpointGuid = viewpointGuid;
   }
 
-  public CommentGET replyToCommentGuid(String replyToCommentGuid) {
-    this.replyToCommentGuid = JsonNullable.of(replyToCommentGuid);
+  public CommentGET replyToCommentGuid(@Nullable String replyToCommentGuid) {
+    this.replyToCommentGuid = replyToCommentGuid;
     return this;
   }
 
@@ -189,16 +186,16 @@ public class CommentGET {
   
   @Schema(name = "reply_to_comment_guid", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("reply_to_comment_guid")
-  public JsonNullable<String> getReplyToCommentGuid() {
+  public @Nullable String getReplyToCommentGuid() {
     return replyToCommentGuid;
   }
 
-  public void setReplyToCommentGuid(JsonNullable<String> replyToCommentGuid) {
+  public void setReplyToCommentGuid(@Nullable String replyToCommentGuid) {
     this.replyToCommentGuid = replyToCommentGuid;
   }
 
-  public CommentGET modifiedDate(String modifiedDate) {
-    this.modifiedDate = JsonNullable.of(modifiedDate);
+  public CommentGET modifiedDate(@Nullable String modifiedDate) {
+    this.modifiedDate = modifiedDate;
     return this;
   }
 
@@ -209,16 +206,16 @@ public class CommentGET {
   
   @Schema(name = "modified_date", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("modified_date")
-  public JsonNullable<String> getModifiedDate() {
+  public @Nullable String getModifiedDate() {
     return modifiedDate;
   }
 
-  public void setModifiedDate(JsonNullable<String> modifiedDate) {
+  public void setModifiedDate(@Nullable String modifiedDate) {
     this.modifiedDate = modifiedDate;
   }
 
-  public CommentGET modifiedAuthor(String modifiedAuthor) {
-    this.modifiedAuthor = JsonNullable.of(modifiedAuthor);
+  public CommentGET modifiedAuthor(@Nullable String modifiedAuthor) {
+    this.modifiedAuthor = modifiedAuthor;
     return this;
   }
 
@@ -229,11 +226,11 @@ public class CommentGET {
   
   @Schema(name = "modified_author", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("modified_author")
-  public JsonNullable<String> getModifiedAuthor() {
+  public @Nullable String getModifiedAuthor() {
     return modifiedAuthor;
   }
 
-  public void setModifiedAuthor(JsonNullable<String> modifiedAuthor) {
+  public void setModifiedAuthor(@Nullable String modifiedAuthor) {
     this.modifiedAuthor = modifiedAuthor;
   }
 
@@ -271,27 +268,16 @@ public class CommentGET {
         Objects.equals(this.author, commentGET.author) &&
         Objects.equals(this.comment, commentGET.comment) &&
         Objects.equals(this.topicGuid, commentGET.topicGuid) &&
-        equalsNullable(this.viewpointGuid, commentGET.viewpointGuid) &&
-        equalsNullable(this.replyToCommentGuid, commentGET.replyToCommentGuid) &&
-        equalsNullable(this.modifiedDate, commentGET.modifiedDate) &&
-        equalsNullable(this.modifiedAuthor, commentGET.modifiedAuthor) &&
+        Objects.equals(this.viewpointGuid, commentGET.viewpointGuid) &&
+        Objects.equals(this.replyToCommentGuid, commentGET.replyToCommentGuid) &&
+        Objects.equals(this.modifiedDate, commentGET.modifiedDate) &&
+        Objects.equals(this.modifiedAuthor, commentGET.modifiedAuthor) &&
         Objects.equals(this.authorization, commentGET.authorization);
-  }
-
-  private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
-    return a == b || (a != null && b != null && a.isPresent() && b.isPresent() && Objects.deepEquals(a.get(), b.get()));
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(guid, date, author, comment, topicGuid, hashCodeNullable(viewpointGuid), hashCodeNullable(replyToCommentGuid), hashCodeNullable(modifiedDate), hashCodeNullable(modifiedAuthor), authorization);
-  }
-
-  private static <T> int hashCodeNullable(JsonNullable<T> a) {
-    if (a == null) {
-      return 1;
-    }
-    return a.isPresent() ? Arrays.deepHashCode(new Object[]{a.get()}) : 31;
+    return Objects.hash(guid, date, author, comment, topicGuid, viewpointGuid, replyToCommentGuid, modifiedDate, modifiedAuthor, authorization);
   }
 
   @Override
@@ -379,18 +365,8 @@ public class CommentGET {
       return this;
     }
     
-    public CommentGET.Builder viewpointGuid(JsonNullable<String> viewpointGuid) {
-      this.instance.viewpointGuid = viewpointGuid;
-      return this;
-    }
-    
     public CommentGET.Builder replyToCommentGuid(String replyToCommentGuid) {
       this.instance.replyToCommentGuid(replyToCommentGuid);
-      return this;
-    }
-    
-    public CommentGET.Builder replyToCommentGuid(JsonNullable<String> replyToCommentGuid) {
-      this.instance.replyToCommentGuid = replyToCommentGuid;
       return this;
     }
     
@@ -399,18 +375,8 @@ public class CommentGET {
       return this;
     }
     
-    public CommentGET.Builder modifiedDate(JsonNullable<String> modifiedDate) {
-      this.instance.modifiedDate = modifiedDate;
-      return this;
-    }
-    
     public CommentGET.Builder modifiedAuthor(String modifiedAuthor) {
       this.instance.modifiedAuthor(modifiedAuthor);
-      return this;
-    }
-    
-    public CommentGET.Builder modifiedAuthor(JsonNullable<String> modifiedAuthor) {
-      this.instance.modifiedAuthor = modifiedAuthor;
       return this;
     }
     

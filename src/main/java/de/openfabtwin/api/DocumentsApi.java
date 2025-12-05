@@ -14,27 +14,20 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.NativeWebRequest;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import java.util.List;
-import java.util.Optional;
+
 import jakarta.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-03T12:04:39.178099100+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-05T09:23:37.160769500+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
 @Validated
 @Tag(name = "Documents", description = "the Documents API")
 public interface DocumentsApi {
-
-    default Optional<NativeWebRequest> getRequest() {
-        return Optional.empty();
-    }
 
     String PATH_CREATE_DOCUMENT = "/bcf/{version}/projects/{project_id}/topics/{topic_id}/documents";
     /**
@@ -64,24 +57,12 @@ public interface DocumentsApi {
         produces = { "application/json" },
         consumes = { "application/octet-stream" }
     )
-    default ResponseEntity<DocumentGET> createDocument(
+    ResponseEntity<DocumentGET> createDocument(
         @NotNull @Parameter(name = "version", description = "", required = true, in = ParameterIn.PATH) @PathVariable("version") String version,
         @NotNull @Parameter(name = "project_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("project_id") String projectId,
         @NotNull @Parameter(name = "topic_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("topic_id") String topicId,
         @Parameter(name = "body", description = "", required = true) @Valid @RequestBody org.springframework.core.io.Resource body
-    ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"filename\" : \"filename\", \"guid\" : \"guid\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
 
     String PATH_GET_DOCUMENT = "/bcf/{version}/projects/{project_id}/topics/{topic_id}/documents";
@@ -110,23 +91,11 @@ public interface DocumentsApi {
         value = DocumentsApi.PATH_GET_DOCUMENT,
         produces = { "application/json" }
     )
-    default ResponseEntity<List<DocumentGET>> getDocument(
+    ResponseEntity<List<DocumentGET>> getDocument(
         @NotNull @Parameter(name = "version", description = "", required = true, in = ParameterIn.PATH) @PathVariable("version") String version,
         @NotNull @Parameter(name = "project_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("project_id") String projectId,
         @NotNull @Parameter(name = "topic_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("topic_id") String topicId
-    ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "[ { \"filename\" : \"filename\", \"guid\" : \"guid\" }, { \"filename\" : \"filename\", \"guid\" : \"guid\" } ]";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
 
     String PATH_GET_DOCUMENT_BY_ID = "/bcf/{version}/projects/{project_id}/documents/{document_id}";
@@ -155,13 +124,10 @@ public interface DocumentsApi {
         value = DocumentsApi.PATH_GET_DOCUMENT_BY_ID,
         produces = { "application/octet-stream" }
     )
-    default ResponseEntity<org.springframework.core.io.Resource> getDocumentById(
+    ResponseEntity<org.springframework.core.io.Resource> getDocumentById(
         @NotNull @Parameter(name = "version", description = "", required = true, in = ParameterIn.PATH) @PathVariable("version") String version,
         @NotNull @Parameter(name = "project_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("project_id") String projectId,
         @NotNull @Parameter(name = "document_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("document_id") String documentId
-    ) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
 }

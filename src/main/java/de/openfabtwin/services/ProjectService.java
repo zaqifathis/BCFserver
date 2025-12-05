@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -86,13 +87,13 @@ public class ProjectService {
     public static ExtensionEntity createDefaultExtension(ProjectEntity project) {
         ExtensionEntity ext = new ExtensionEntity();
         ext.setProject(project);
-        ext.setTopicType(new ArrayList<>(List.of("Issue", "Info", "Request")));
-        ext.setTopicStatus(new ArrayList<>(List.of("Open", "In Progress", "Closed")));
-        ext.setTopicLabel(new ArrayList<>(List.of("Architecture", "Structure", "MEP")));
-        ext.setSnippetType(new ArrayList<>(List.of("Screenshot", "ModelCutout")));
-        ext.setPriority(new ArrayList<>(List.of("Low", "Medium", "High")));
-        ext.setUsers(new ArrayList<>(List.of("admin")));
-        ext.setStage(new ArrayList<>(List.of("Design", "Construction", "Review")));
+        ext.setTopicType(new ArrayList<>(Arrays.asList("Issue", "Info", "Request")));
+        ext.setTopicStatus(new ArrayList<>(Arrays.asList("Open", "In Progress", "Closed")));
+        ext.setTopicLabel(new ArrayList<>(Arrays.asList("Architecture", "Structure", "MEP")));
+        ext.setSnippetType(new ArrayList<>(Arrays.asList("Screenshot", "ModelCutout")));
+        ext.setPriority(new ArrayList<>(Arrays.asList("Low", "Medium", "High")));
+        ext.setUsers(new ArrayList<>(Arrays.asList("admin")));
+        ext.setStage(new ArrayList<>(Arrays.asList("Design", "Construction", "Review")));
 
         return ext;
     }

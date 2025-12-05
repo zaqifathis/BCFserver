@@ -15,7 +15,7 @@ import jakarta.annotation.Generated;
 
 @Schema(name = "project_file_display_information", description = "Schema for the display information of a project file, BCF REST API.")
 @JsonTypeName("project_file_display_information")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-03T12:04:39.178099100+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-05T09:23:37.160769500+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
 public class ProjectFileDisplayInformation {
 
   private String fieldDisplayName;

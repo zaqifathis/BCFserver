@@ -3,8 +3,7 @@ package de.openfabtwin.dto;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import java.util.Arrays;
-import org.openapitools.jackson.nullable.JsonNullable;
+import org.springframework.lang.Nullable;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 
@@ -15,19 +14,19 @@ import jakarta.annotation.Generated;
  */
 
 @JsonTypeName("document_reference_POST")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-03T12:04:39.178099100+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-05T09:23:37.160769500+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
 public class DocumentReferencePOST {
 
-  private JsonNullable<String> guid = JsonNullable.<String>undefined();
+  private @Nullable String guid = null;
 
-  private JsonNullable<String> documentGuid = JsonNullable.<String>undefined();
+  private @Nullable String documentGuid = null;
 
-  private JsonNullable<String> url = JsonNullable.<String>undefined();
+  private @Nullable String url = null;
 
-  private JsonNullable<String> description = JsonNullable.<String>undefined();
+  private @Nullable String description = null;
 
-  public DocumentReferencePOST guid(String guid) {
-    this.guid = JsonNullable.of(guid);
+  public DocumentReferencePOST guid(@Nullable String guid) {
+    this.guid = guid;
     return this;
   }
 
@@ -38,16 +37,16 @@ public class DocumentReferencePOST {
   
   @Schema(name = "guid", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("guid")
-  public JsonNullable<String> getGuid() {
+  public @Nullable String getGuid() {
     return guid;
   }
 
-  public void setGuid(JsonNullable<String> guid) {
+  public void setGuid(@Nullable String guid) {
     this.guid = guid;
   }
 
-  public DocumentReferencePOST documentGuid(String documentGuid) {
-    this.documentGuid = JsonNullable.of(documentGuid);
+  public DocumentReferencePOST documentGuid(@Nullable String documentGuid) {
+    this.documentGuid = documentGuid;
     return this;
   }
 
@@ -58,16 +57,16 @@ public class DocumentReferencePOST {
   
   @Schema(name = "document_guid", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("document_guid")
-  public JsonNullable<String> getDocumentGuid() {
+  public @Nullable String getDocumentGuid() {
     return documentGuid;
   }
 
-  public void setDocumentGuid(JsonNullable<String> documentGuid) {
+  public void setDocumentGuid(@Nullable String documentGuid) {
     this.documentGuid = documentGuid;
   }
 
-  public DocumentReferencePOST url(String url) {
-    this.url = JsonNullable.of(url);
+  public DocumentReferencePOST url(@Nullable String url) {
+    this.url = url;
     return this;
   }
 
@@ -78,16 +77,16 @@ public class DocumentReferencePOST {
   
   @Schema(name = "url", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("url")
-  public JsonNullable<String> getUrl() {
+  public @Nullable String getUrl() {
     return url;
   }
 
-  public void setUrl(JsonNullable<String> url) {
+  public void setUrl(@Nullable String url) {
     this.url = url;
   }
 
-  public DocumentReferencePOST description(String description) {
-    this.description = JsonNullable.of(description);
+  public DocumentReferencePOST description(@Nullable String description) {
+    this.description = description;
     return this;
   }
 
@@ -98,11 +97,11 @@ public class DocumentReferencePOST {
   
   @Schema(name = "description", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("description")
-  public JsonNullable<String> getDescription() {
+  public @Nullable String getDescription() {
     return description;
   }
 
-  public void setDescription(JsonNullable<String> description) {
+  public void setDescription(@Nullable String description) {
     this.description = description;
   }
 
@@ -115,26 +114,15 @@ public class DocumentReferencePOST {
       return false;
     }
     DocumentReferencePOST documentReferencePOST = (DocumentReferencePOST) o;
-    return equalsNullable(this.guid, documentReferencePOST.guid) &&
-        equalsNullable(this.documentGuid, documentReferencePOST.documentGuid) &&
-        equalsNullable(this.url, documentReferencePOST.url) &&
-        equalsNullable(this.description, documentReferencePOST.description);
-  }
-
-  private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
-    return a == b || (a != null && b != null && a.isPresent() && b.isPresent() && Objects.deepEquals(a.get(), b.get()));
+    return Objects.equals(this.guid, documentReferencePOST.guid) &&
+        Objects.equals(this.documentGuid, documentReferencePOST.documentGuid) &&
+        Objects.equals(this.url, documentReferencePOST.url) &&
+        Objects.equals(this.description, documentReferencePOST.description);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(hashCodeNullable(guid), hashCodeNullable(documentGuid), hashCodeNullable(url), hashCodeNullable(description));
-  }
-
-  private static <T> int hashCodeNullable(JsonNullable<T> a) {
-    if (a == null) {
-      return 1;
-    }
-    return a.isPresent() ? Arrays.deepHashCode(new Object[]{a.get()}) : 31;
+    return Objects.hash(guid, documentGuid, url, description);
   }
 
   @Override
@@ -185,18 +173,8 @@ public class DocumentReferencePOST {
       return this;
     }
     
-    public DocumentReferencePOST.Builder guid(JsonNullable<String> guid) {
-      this.instance.guid = guid;
-      return this;
-    }
-    
     public DocumentReferencePOST.Builder documentGuid(String documentGuid) {
       this.instance.documentGuid(documentGuid);
-      return this;
-    }
-    
-    public DocumentReferencePOST.Builder documentGuid(JsonNullable<String> documentGuid) {
-      this.instance.documentGuid = documentGuid;
       return this;
     }
     
@@ -205,18 +183,8 @@ public class DocumentReferencePOST {
       return this;
     }
     
-    public DocumentReferencePOST.Builder url(JsonNullable<String> url) {
-      this.instance.url = url;
-      return this;
-    }
-    
     public DocumentReferencePOST.Builder description(String description) {
       this.instance.description(description);
-      return this;
-    }
-    
-    public DocumentReferencePOST.Builder description(JsonNullable<String> description) {
-      this.instance.description = description;
       return this;
     }
     

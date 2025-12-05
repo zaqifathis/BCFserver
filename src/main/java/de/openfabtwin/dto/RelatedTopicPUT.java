@@ -15,7 +15,7 @@ import jakarta.annotation.Generated;
 
 @Schema(name = "related_topic_PUT", description = "Schema for related topic PUT, BCF REST API.")
 @JsonTypeName("related_topic_PUT")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-03T12:04:39.178099100+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-05T09:23:37.160769500+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
 public class RelatedTopicPUT {
 
   private String relatedTopicGuid;

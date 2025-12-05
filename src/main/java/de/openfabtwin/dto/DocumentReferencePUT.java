@@ -3,8 +3,7 @@ package de.openfabtwin.dto;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import java.util.Arrays;
-import org.openapitools.jackson.nullable.JsonNullable;
+import org.springframework.lang.Nullable;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 
@@ -15,17 +14,17 @@ import jakarta.annotation.Generated;
  */
 
 @JsonTypeName("document_reference_PUT")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-03T12:04:39.178099100+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-05T09:23:37.160769500+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
 public class DocumentReferencePUT {
 
-  private JsonNullable<String> documentGuid = JsonNullable.<String>undefined();
+  private @Nullable String documentGuid = null;
 
-  private JsonNullable<String> url = JsonNullable.<String>undefined();
+  private @Nullable String url = null;
 
-  private JsonNullable<String> description = JsonNullable.<String>undefined();
+  private @Nullable String description = null;
 
-  public DocumentReferencePUT documentGuid(String documentGuid) {
-    this.documentGuid = JsonNullable.of(documentGuid);
+  public DocumentReferencePUT documentGuid(@Nullable String documentGuid) {
+    this.documentGuid = documentGuid;
     return this;
   }
 
@@ -36,16 +35,16 @@ public class DocumentReferencePUT {
   
   @Schema(name = "document_guid", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("document_guid")
-  public JsonNullable<String> getDocumentGuid() {
+  public @Nullable String getDocumentGuid() {
     return documentGuid;
   }
 
-  public void setDocumentGuid(JsonNullable<String> documentGuid) {
+  public void setDocumentGuid(@Nullable String documentGuid) {
     this.documentGuid = documentGuid;
   }
 
-  public DocumentReferencePUT url(String url) {
-    this.url = JsonNullable.of(url);
+  public DocumentReferencePUT url(@Nullable String url) {
+    this.url = url;
     return this;
   }
 
@@ -56,16 +55,16 @@ public class DocumentReferencePUT {
   
   @Schema(name = "url", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("url")
-  public JsonNullable<String> getUrl() {
+  public @Nullable String getUrl() {
     return url;
   }
 
-  public void setUrl(JsonNullable<String> url) {
+  public void setUrl(@Nullable String url) {
     this.url = url;
   }
 
-  public DocumentReferencePUT description(String description) {
-    this.description = JsonNullable.of(description);
+  public DocumentReferencePUT description(@Nullable String description) {
+    this.description = description;
     return this;
   }
 
@@ -76,11 +75,11 @@ public class DocumentReferencePUT {
   
   @Schema(name = "description", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("description")
-  public JsonNullable<String> getDescription() {
+  public @Nullable String getDescription() {
     return description;
   }
 
-  public void setDescription(JsonNullable<String> description) {
+  public void setDescription(@Nullable String description) {
     this.description = description;
   }
 
@@ -93,25 +92,14 @@ public class DocumentReferencePUT {
       return false;
     }
     DocumentReferencePUT documentReferencePUT = (DocumentReferencePUT) o;
-    return equalsNullable(this.documentGuid, documentReferencePUT.documentGuid) &&
-        equalsNullable(this.url, documentReferencePUT.url) &&
-        equalsNullable(this.description, documentReferencePUT.description);
-  }
-
-  private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
-    return a == b || (a != null && b != null && a.isPresent() && b.isPresent() && Objects.deepEquals(a.get(), b.get()));
+    return Objects.equals(this.documentGuid, documentReferencePUT.documentGuid) &&
+        Objects.equals(this.url, documentReferencePUT.url) &&
+        Objects.equals(this.description, documentReferencePUT.description);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(hashCodeNullable(documentGuid), hashCodeNullable(url), hashCodeNullable(description));
-  }
-
-  private static <T> int hashCodeNullable(JsonNullable<T> a) {
-    if (a == null) {
-      return 1;
-    }
-    return a.isPresent() ? Arrays.deepHashCode(new Object[]{a.get()}) : 31;
+    return Objects.hash(documentGuid, url, description);
   }
 
   @Override
@@ -160,28 +148,13 @@ public class DocumentReferencePUT {
       return this;
     }
     
-    public DocumentReferencePUT.Builder documentGuid(JsonNullable<String> documentGuid) {
-      this.instance.documentGuid = documentGuid;
-      return this;
-    }
-    
     public DocumentReferencePUT.Builder url(String url) {
       this.instance.url(url);
       return this;
     }
     
-    public DocumentReferencePUT.Builder url(JsonNullable<String> url) {
-      this.instance.url = url;
-      return this;
-    }
-    
     public DocumentReferencePUT.Builder description(String description) {
       this.instance.description(description);
-      return this;
-    }
-    
-    public DocumentReferencePUT.Builder description(JsonNullable<String> description) {
-      this.instance.description = description;
       return this;
     }
     

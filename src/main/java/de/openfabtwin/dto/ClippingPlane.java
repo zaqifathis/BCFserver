@@ -3,9 +3,6 @@ package de.openfabtwin.dto;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-
-import java.util.Arrays;
-import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.lang.Nullable;
 import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -18,15 +15,15 @@ import jakarta.annotation.Generated;
  */
 
 @JsonTypeName("clipping_plane")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-03T12:04:39.178099100+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-05T09:23:37.160769500+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
 public class ClippingPlane {
 
-  private JsonNullable<Location> location = JsonNullable.<Location>undefined();
+  private @Nullable Location location = null;
 
   private @Nullable Direction direction;
 
-  public ClippingPlane location(Location location) {
-    this.location = JsonNullable.of(location);
+  public ClippingPlane location(@Nullable Location location) {
+    this.location = location;
     return this;
   }
 
@@ -37,11 +34,11 @@ public class ClippingPlane {
   @Valid 
   @Schema(name = "location", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("location")
-  public JsonNullable<Location> getLocation() {
+  public @Nullable Location getLocation() {
     return location;
   }
 
-  public void setLocation(JsonNullable<Location> location) {
+  public void setLocation(@Nullable Location location) {
     this.location = location;
   }
 
@@ -74,24 +71,13 @@ public class ClippingPlane {
       return false;
     }
     ClippingPlane clippingPlane = (ClippingPlane) o;
-    return equalsNullable(this.location, clippingPlane.location) &&
+    return Objects.equals(this.location, clippingPlane.location) &&
         Objects.equals(this.direction, clippingPlane.direction);
-  }
-
-  private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
-    return a == b || (a != null && b != null && a.isPresent() && b.isPresent() && Objects.deepEquals(a.get(), b.get()));
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(hashCodeNullable(location), direction);
-  }
-
-  private static <T> int hashCodeNullable(JsonNullable<T> a) {
-    if (a == null) {
-      return 1;
-    }
-    return a.isPresent() ? Arrays.deepHashCode(new Object[]{a.get()}) : 31;
+    return Objects.hash(location, direction);
   }
 
   @Override
@@ -135,11 +121,6 @@ public class ClippingPlane {
 
     public ClippingPlane.Builder location(Location location) {
       this.instance.location(location);
-      return this;
-    }
-    
-    public ClippingPlane.Builder location(JsonNullable<Location> location) {
-      this.instance.location = location;
       return this;
     }
     

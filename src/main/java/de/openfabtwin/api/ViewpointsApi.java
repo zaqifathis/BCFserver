@@ -18,27 +18,20 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.NativeWebRequest;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import java.util.List;
-import java.util.Optional;
+
 import jakarta.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-03T12:04:39.178099100+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-05T09:23:37.160769500+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
 @Validated
 @Tag(name = "Viewpoints", description = "the Viewpoints API")
 public interface ViewpointsApi {
-
-    default Optional<NativeWebRequest> getRequest() {
-        return Optional.empty();
-    }
 
     String PATH_CREATE_VIEWPOINTS = "/bcf/{version}/projects/{project_id}/topics/{topic_id}/viewpoints";
     /**
@@ -68,24 +61,12 @@ public interface ViewpointsApi {
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    default ResponseEntity<ViewpointGET> createViewpoints(
+    ResponseEntity<ViewpointGET> createViewpoints(
         @NotNull @Parameter(name = "version", description = "", required = true, in = ParameterIn.PATH) @PathVariable("version") String version,
         @NotNull @Parameter(name = "project_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("project_id") String projectId,
         @NotNull @Parameter(name = "topic_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("topic_id") String topicId,
         @Parameter(name = "ViewpointPOST", description = "", required = true) @Valid @RequestBody ViewpointPOST viewpointPOST
-    ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"authorization\" : { \"viewpoint_actions\" : [ \"delete\", \"delete\" ] }, \"orthogonal_camera\" : { \"aspect_ratio\" : 3.616076749251911, \"view_to_world_scale\" : 9.301444243932576, \"camera_direction\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 }, \"camera_up_vector\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 }, \"camera_view_point\" : { \"x\" : 6.027456183070403, \"y\" : 1.4658129805029452, \"z\" : 5.962133916683182 } }, \"bitmaps\" : [ { \"bitmap_type\" : \"jpg\", \"normal\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 }, \"guid\" : \"guid\", \"location\" : { \"x\" : 7.386281948385884, \"y\" : 1.2315135367772556, \"z\" : 1.0246457001441578 }, \"up\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 }, \"height\" : 1.4894159098541704 }, { \"bitmap_type\" : \"jpg\", \"normal\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 }, \"guid\" : \"guid\", \"location\" : { \"x\" : 7.386281948385884, \"y\" : 1.2315135367772556, \"z\" : 1.0246457001441578 }, \"up\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 }, \"height\" : 1.4894159098541704 } ], \"index\" : 0, \"guid\" : \"guid\", \"clipping_planes\" : [ { \"location\" : { \"x\" : 7.386281948385884, \"y\" : 1.2315135367772556, \"z\" : 1.0246457001441578 }, \"direction\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 } }, { \"location\" : { \"x\" : 7.386281948385884, \"y\" : 1.2315135367772556, \"z\" : 1.0246457001441578 }, \"direction\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 } } ], \"lines\" : [ { \"start_point\" : { \"x\" : 6.027456183070403, \"y\" : 1.4658129805029452, \"z\" : 5.962133916683182 }, \"end_point\" : { \"x\" : 6.027456183070403, \"y\" : 1.4658129805029452, \"z\" : 5.962133916683182 } }, { \"start_point\" : { \"x\" : 6.027456183070403, \"y\" : 1.4658129805029452, \"z\" : 5.962133916683182 }, \"end_point\" : { \"x\" : 6.027456183070403, \"y\" : 1.4658129805029452, \"z\" : 5.962133916683182 } } ], \"perspective_camera\" : { \"aspect_ratio\" : 4.145608029883936, \"camera_direction\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 }, \"camera_up_vector\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 }, \"camera_view_point\" : { \"x\" : 6.027456183070403, \"y\" : 1.4658129805029452, \"z\" : 5.962133916683182 }, \"field_of_view\" : 2.027123023002322 }, \"snapshot\" : { \"snapshot_type\" : \"jpg\" } }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
 
     String PATH_DELETE_VIEWPOINT_BY_ID = "/bcf/{version}/projects/{project_id}/topics/{topic_id}/viewpoints/{viewpoint_id}";
@@ -112,15 +93,12 @@ public interface ViewpointsApi {
         method = RequestMethod.DELETE,
         value = ViewpointsApi.PATH_DELETE_VIEWPOINT_BY_ID
     )
-    default ResponseEntity<Void> deleteViewpointById(
+    ResponseEntity<Void> deleteViewpointById(
         @NotNull @Parameter(name = "version", description = "", required = true, in = ParameterIn.PATH) @PathVariable("version") String version,
         @NotNull @Parameter(name = "project_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("project_id") String projectId,
         @NotNull @Parameter(name = "topic_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("topic_id") String topicId,
         @NotNull @Parameter(name = "viewpoint_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("viewpoint_id") String viewpointId
-    ) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
 
     String PATH_GET_BITMAP = "/bcf/{version}/projects/{project_id}/topics/{topic_id}/viewpoints/{viewpoint_id}/bitmaps/{bitmap_id}";
@@ -151,16 +129,13 @@ public interface ViewpointsApi {
         value = ViewpointsApi.PATH_GET_BITMAP,
         produces = { "application/octet-stream" }
     )
-    default ResponseEntity<org.springframework.core.io.Resource> getBitmap(
+    ResponseEntity<org.springframework.core.io.Resource> getBitmap(
         @NotNull @Parameter(name = "version", description = "", required = true, in = ParameterIn.PATH) @PathVariable("version") String version,
         @NotNull @Parameter(name = "project_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("project_id") String projectId,
         @NotNull @Parameter(name = "topic_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("topic_id") String topicId,
         @NotNull @Parameter(name = "viewpoint_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("viewpoint_id") String viewpointId,
         @NotNull @Parameter(name = "bitmap_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("bitmap_id") String bitmapId
-    ) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
 
     String PATH_GET_COLORING = "/bcf/{version}/projects/{project_id}/topics/{topic_id}/viewpoints/{viewpoint_id}/coloring";
@@ -190,24 +165,12 @@ public interface ViewpointsApi {
         value = ViewpointsApi.PATH_GET_COLORING,
         produces = { "application/json" }
     )
-    default ResponseEntity<ColoringGET> getColoring(
+    ResponseEntity<ColoringGET> getColoring(
         @NotNull @Parameter(name = "version", description = "", required = true, in = ParameterIn.PATH) @PathVariable("version") String version,
         @NotNull @Parameter(name = "project_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("project_id") String projectId,
         @NotNull @Parameter(name = "topic_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("topic_id") String topicId,
         @NotNull @Parameter(name = "viewpoint_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("viewpoint_id") String viewpointId
-    ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"coloring\" : [ { \"components\" : [ { \"ifc_guid\" : \"ifc_guid\", \"authoring_tool_id\" : \"authoring_tool_id\", \"originating_system\" : \"originating_system\" }, { \"ifc_guid\" : \"ifc_guid\", \"authoring_tool_id\" : \"authoring_tool_id\", \"originating_system\" : \"originating_system\" } ], \"color\" : \"color\" }, { \"components\" : [ { \"ifc_guid\" : \"ifc_guid\", \"authoring_tool_id\" : \"authoring_tool_id\", \"originating_system\" : \"originating_system\" }, { \"ifc_guid\" : \"ifc_guid\", \"authoring_tool_id\" : \"authoring_tool_id\", \"originating_system\" : \"originating_system\" } ], \"color\" : \"color\" } ] }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
 
     String PATH_GET_SELECTION = "/bcf/{version}/projects/{project_id}/topics/{topic_id}/viewpoints/{viewpoint_id}/selection";
@@ -237,24 +200,12 @@ public interface ViewpointsApi {
         value = ViewpointsApi.PATH_GET_SELECTION,
         produces = { "application/json" }
     )
-    default ResponseEntity<SelectionGET> getSelection(
+    ResponseEntity<SelectionGET> getSelection(
         @NotNull @Parameter(name = "version", description = "", required = true, in = ParameterIn.PATH) @PathVariable("version") String version,
         @NotNull @Parameter(name = "project_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("project_id") String projectId,
         @NotNull @Parameter(name = "topic_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("topic_id") String topicId,
         @NotNull @Parameter(name = "viewpoint_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("viewpoint_id") String viewpointId
-    ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"selection\" : [ { \"ifc_guid\" : \"ifc_guid\", \"authoring_tool_id\" : \"authoring_tool_id\", \"originating_system\" : \"originating_system\" }, { \"ifc_guid\" : \"ifc_guid\", \"authoring_tool_id\" : \"authoring_tool_id\", \"originating_system\" : \"originating_system\" } ] }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
 
     String PATH_GET_SNAPSHOT = "/bcf/{version}/projects/{project_id}/topics/{topic_id}/viewpoints/{viewpoint_id}/snapshot";
@@ -284,15 +235,12 @@ public interface ViewpointsApi {
         value = ViewpointsApi.PATH_GET_SNAPSHOT,
         produces = { "application/octet-stream" }
     )
-    default ResponseEntity<org.springframework.core.io.Resource> getSnapshot(
+    ResponseEntity<org.springframework.core.io.Resource> getSnapshot(
         @NotNull @Parameter(name = "version", description = "", required = true, in = ParameterIn.PATH) @PathVariable("version") String version,
         @NotNull @Parameter(name = "project_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("project_id") String projectId,
         @NotNull @Parameter(name = "topic_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("topic_id") String topicId,
         @NotNull @Parameter(name = "viewpoint_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("viewpoint_id") String viewpointId
-    ) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
 
     String PATH_GET_VIEWPOINT_BY_ID = "/bcf/{version}/projects/{project_id}/topics/{topic_id}/viewpoints/{viewpoint_id}";
@@ -322,24 +270,12 @@ public interface ViewpointsApi {
         value = ViewpointsApi.PATH_GET_VIEWPOINT_BY_ID,
         produces = { "application/json" }
     )
-    default ResponseEntity<ViewpointGET> getViewpointById(
+    ResponseEntity<ViewpointGET> getViewpointById(
         @NotNull @Parameter(name = "version", description = "", required = true, in = ParameterIn.PATH) @PathVariable("version") String version,
         @NotNull @Parameter(name = "project_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("project_id") String projectId,
         @NotNull @Parameter(name = "topic_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("topic_id") String topicId,
         @NotNull @Parameter(name = "viewpoint_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("viewpoint_id") String viewpointId
-    ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"authorization\" : { \"viewpoint_actions\" : [ \"delete\", \"delete\" ] }, \"orthogonal_camera\" : { \"aspect_ratio\" : 3.616076749251911, \"view_to_world_scale\" : 9.301444243932576, \"camera_direction\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 }, \"camera_up_vector\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 }, \"camera_view_point\" : { \"x\" : 6.027456183070403, \"y\" : 1.4658129805029452, \"z\" : 5.962133916683182 } }, \"bitmaps\" : [ { \"bitmap_type\" : \"jpg\", \"normal\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 }, \"guid\" : \"guid\", \"location\" : { \"x\" : 7.386281948385884, \"y\" : 1.2315135367772556, \"z\" : 1.0246457001441578 }, \"up\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 }, \"height\" : 1.4894159098541704 }, { \"bitmap_type\" : \"jpg\", \"normal\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 }, \"guid\" : \"guid\", \"location\" : { \"x\" : 7.386281948385884, \"y\" : 1.2315135367772556, \"z\" : 1.0246457001441578 }, \"up\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 }, \"height\" : 1.4894159098541704 } ], \"index\" : 0, \"guid\" : \"guid\", \"clipping_planes\" : [ { \"location\" : { \"x\" : 7.386281948385884, \"y\" : 1.2315135367772556, \"z\" : 1.0246457001441578 }, \"direction\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 } }, { \"location\" : { \"x\" : 7.386281948385884, \"y\" : 1.2315135367772556, \"z\" : 1.0246457001441578 }, \"direction\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 } } ], \"lines\" : [ { \"start_point\" : { \"x\" : 6.027456183070403, \"y\" : 1.4658129805029452, \"z\" : 5.962133916683182 }, \"end_point\" : { \"x\" : 6.027456183070403, \"y\" : 1.4658129805029452, \"z\" : 5.962133916683182 } }, { \"start_point\" : { \"x\" : 6.027456183070403, \"y\" : 1.4658129805029452, \"z\" : 5.962133916683182 }, \"end_point\" : { \"x\" : 6.027456183070403, \"y\" : 1.4658129805029452, \"z\" : 5.962133916683182 } } ], \"perspective_camera\" : { \"aspect_ratio\" : 4.145608029883936, \"camera_direction\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 }, \"camera_up_vector\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 }, \"camera_view_point\" : { \"x\" : 6.027456183070403, \"y\" : 1.4658129805029452, \"z\" : 5.962133916683182 }, \"field_of_view\" : 2.027123023002322 }, \"snapshot\" : { \"snapshot_type\" : \"jpg\" } }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
 
     String PATH_GET_VIEWPOINTS = "/bcf/{version}/projects/{project_id}/topics/{topic_id}/viewpoints";
@@ -368,23 +304,11 @@ public interface ViewpointsApi {
         value = ViewpointsApi.PATH_GET_VIEWPOINTS,
         produces = { "application/json" }
     )
-    default ResponseEntity<List<ViewpointGET>> getViewpoints(
+    ResponseEntity<List<ViewpointGET>> getViewpoints(
         @NotNull @Parameter(name = "version", description = "", required = true, in = ParameterIn.PATH) @PathVariable("version") String version,
         @NotNull @Parameter(name = "project_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("project_id") String projectId,
         @NotNull @Parameter(name = "topic_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("topic_id") String topicId
-    ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "[ { \"authorization\" : { \"viewpoint_actions\" : [ \"delete\", \"delete\" ] }, \"orthogonal_camera\" : { \"aspect_ratio\" : 3.616076749251911, \"view_to_world_scale\" : 9.301444243932576, \"camera_direction\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 }, \"camera_up_vector\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 }, \"camera_view_point\" : { \"x\" : 6.027456183070403, \"y\" : 1.4658129805029452, \"z\" : 5.962133916683182 } }, \"bitmaps\" : [ { \"bitmap_type\" : \"jpg\", \"normal\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 }, \"guid\" : \"guid\", \"location\" : { \"x\" : 7.386281948385884, \"y\" : 1.2315135367772556, \"z\" : 1.0246457001441578 }, \"up\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 }, \"height\" : 1.4894159098541704 }, { \"bitmap_type\" : \"jpg\", \"normal\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 }, \"guid\" : \"guid\", \"location\" : { \"x\" : 7.386281948385884, \"y\" : 1.2315135367772556, \"z\" : 1.0246457001441578 }, \"up\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 }, \"height\" : 1.4894159098541704 } ], \"index\" : 0, \"guid\" : \"guid\", \"clipping_planes\" : [ { \"location\" : { \"x\" : 7.386281948385884, \"y\" : 1.2315135367772556, \"z\" : 1.0246457001441578 }, \"direction\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 } }, { \"location\" : { \"x\" : 7.386281948385884, \"y\" : 1.2315135367772556, \"z\" : 1.0246457001441578 }, \"direction\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 } } ], \"lines\" : [ { \"start_point\" : { \"x\" : 6.027456183070403, \"y\" : 1.4658129805029452, \"z\" : 5.962133916683182 }, \"end_point\" : { \"x\" : 6.027456183070403, \"y\" : 1.4658129805029452, \"z\" : 5.962133916683182 } }, { \"start_point\" : { \"x\" : 6.027456183070403, \"y\" : 1.4658129805029452, \"z\" : 5.962133916683182 }, \"end_point\" : { \"x\" : 6.027456183070403, \"y\" : 1.4658129805029452, \"z\" : 5.962133916683182 } } ], \"perspective_camera\" : { \"aspect_ratio\" : 4.145608029883936, \"camera_direction\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 }, \"camera_up_vector\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 }, \"camera_view_point\" : { \"x\" : 6.027456183070403, \"y\" : 1.4658129805029452, \"z\" : 5.962133916683182 }, \"field_of_view\" : 2.027123023002322 }, \"snapshot\" : { \"snapshot_type\" : \"jpg\" } }, { \"authorization\" : { \"viewpoint_actions\" : [ \"delete\", \"delete\" ] }, \"orthogonal_camera\" : { \"aspect_ratio\" : 3.616076749251911, \"view_to_world_scale\" : 9.301444243932576, \"camera_direction\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 }, \"camera_up_vector\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 }, \"camera_view_point\" : { \"x\" : 6.027456183070403, \"y\" : 1.4658129805029452, \"z\" : 5.962133916683182 } }, \"bitmaps\" : [ { \"bitmap_type\" : \"jpg\", \"normal\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 }, \"guid\" : \"guid\", \"location\" : { \"x\" : 7.386281948385884, \"y\" : 1.2315135367772556, \"z\" : 1.0246457001441578 }, \"up\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 }, \"height\" : 1.4894159098541704 }, { \"bitmap_type\" : \"jpg\", \"normal\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 }, \"guid\" : \"guid\", \"location\" : { \"x\" : 7.386281948385884, \"y\" : 1.2315135367772556, \"z\" : 1.0246457001441578 }, \"up\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 }, \"height\" : 1.4894159098541704 } ], \"index\" : 0, \"guid\" : \"guid\", \"clipping_planes\" : [ { \"location\" : { \"x\" : 7.386281948385884, \"y\" : 1.2315135367772556, \"z\" : 1.0246457001441578 }, \"direction\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 } }, { \"location\" : { \"x\" : 7.386281948385884, \"y\" : 1.2315135367772556, \"z\" : 1.0246457001441578 }, \"direction\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 } } ], \"lines\" : [ { \"start_point\" : { \"x\" : 6.027456183070403, \"y\" : 1.4658129805029452, \"z\" : 5.962133916683182 }, \"end_point\" : { \"x\" : 6.027456183070403, \"y\" : 1.4658129805029452, \"z\" : 5.962133916683182 } }, { \"start_point\" : { \"x\" : 6.027456183070403, \"y\" : 1.4658129805029452, \"z\" : 5.962133916683182 }, \"end_point\" : { \"x\" : 6.027456183070403, \"y\" : 1.4658129805029452, \"z\" : 5.962133916683182 } } ], \"perspective_camera\" : { \"aspect_ratio\" : 4.145608029883936, \"camera_direction\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 }, \"camera_up_vector\" : { \"x\" : 5.637376656633329, \"y\" : 2.3021358869347655, \"z\" : 7.061401241503109 }, \"camera_view_point\" : { \"x\" : 6.027456183070403, \"y\" : 1.4658129805029452, \"z\" : 5.962133916683182 }, \"field_of_view\" : 2.027123023002322 }, \"snapshot\" : { \"snapshot_type\" : \"jpg\" } } ]";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
 
     String PATH_GET_VISIBILITY = "/bcf/{version}/projects/{project_id}/topics/{topic_id}/viewpoints/{viewpoint_id}/visibility";
@@ -414,23 +338,11 @@ public interface ViewpointsApi {
         value = ViewpointsApi.PATH_GET_VISIBILITY,
         produces = { "application/json" }
     )
-    default ResponseEntity<VisibilityGET> getVisibility(
+    ResponseEntity<VisibilityGET> getVisibility(
         @NotNull @Parameter(name = "version", description = "", required = true, in = ParameterIn.PATH) @PathVariable("version") String version,
         @NotNull @Parameter(name = "project_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("project_id") String projectId,
         @NotNull @Parameter(name = "topic_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("topic_id") String topicId,
         @NotNull @Parameter(name = "viewpoint_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("viewpoint_id") String viewpointId
-    ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"visibility\" : { \"view_setup_hints\" : { \"openings_visible\" : false, \"space_boundaries_visible\" : false, \"spaces_visible\" : false }, \"default_visibility\" : false, \"exceptions\" : [ { \"ifc_guid\" : \"ifc_guid\", \"authoring_tool_id\" : \"authoring_tool_id\", \"originating_system\" : \"originating_system\" }, { \"ifc_guid\" : \"ifc_guid\", \"authoring_tool_id\" : \"authoring_tool_id\", \"originating_system\" : \"originating_system\" } ] } }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
 }

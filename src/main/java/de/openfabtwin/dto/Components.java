@@ -5,9 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.lang.Nullable;
 import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,27 +18,27 @@ import jakarta.annotation.Generated;
  */
 
 @JsonTypeName("components")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-03T12:04:39.178099100+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-05T09:23:37.160769500+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
 public class Components {
 
   @Valid
-  private JsonNullable<List<@Valid Component>> selection = JsonNullable.<List<@Valid Component>>undefined();
+  private @Nullable List<@Valid Component> selection;
 
   @Valid
-  private JsonNullable<List<@Valid Coloring>> coloring = JsonNullable.<List<@Valid Coloring>>undefined();
+  private @Nullable List<@Valid Coloring> coloring;
 
   private @Nullable Visibility visibility;
 
-  public Components selection(List<@Valid Component> selection) {
-    this.selection = JsonNullable.of(selection);
+  public Components selection(@Nullable List<@Valid Component> selection) {
+    this.selection = selection;
     return this;
   }
 
   public Components addSelectionItem(Component selectionItem) {
-    if (this.selection == null || !this.selection.isPresent()) {
-      this.selection = JsonNullable.of(new ArrayList<>());
+    if (this.selection == null) {
+      this.selection = new ArrayList<>();
     }
-    this.selection.get().add(selectionItem);
+    this.selection.add(selectionItem);
     return this;
   }
 
@@ -51,24 +49,24 @@ public class Components {
   @Valid 
   @Schema(name = "selection", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("selection")
-  public JsonNullable<List<@Valid Component>> getSelection() {
+  public @Nullable List<@Valid Component> getSelection() {
     return selection;
   }
 
-  public void setSelection(JsonNullable<List<@Valid Component>> selection) {
+  public void setSelection(@Nullable List<@Valid Component> selection) {
     this.selection = selection;
   }
 
-  public Components coloring(List<@Valid Coloring> coloring) {
-    this.coloring = JsonNullable.of(coloring);
+  public Components coloring(@Nullable List<@Valid Coloring> coloring) {
+    this.coloring = coloring;
     return this;
   }
 
   public Components addColoringItem(Coloring coloringItem) {
-    if (this.coloring == null || !this.coloring.isPresent()) {
-      this.coloring = JsonNullable.of(new ArrayList<>());
+    if (this.coloring == null) {
+      this.coloring = new ArrayList<>();
     }
-    this.coloring.get().add(coloringItem);
+    this.coloring.add(coloringItem);
     return this;
   }
 
@@ -79,11 +77,11 @@ public class Components {
   @Valid 
   @Schema(name = "coloring", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("coloring")
-  public JsonNullable<List<@Valid Coloring>> getColoring() {
+  public @Nullable List<@Valid Coloring> getColoring() {
     return coloring;
   }
 
-  public void setColoring(JsonNullable<List<@Valid Coloring>> coloring) {
+  public void setColoring(@Nullable List<@Valid Coloring> coloring) {
     this.coloring = coloring;
   }
 
@@ -116,25 +114,14 @@ public class Components {
       return false;
     }
     Components components = (Components) o;
-    return equalsNullable(this.selection, components.selection) &&
-        equalsNullable(this.coloring, components.coloring) &&
+    return Objects.equals(this.selection, components.selection) &&
+        Objects.equals(this.coloring, components.coloring) &&
         Objects.equals(this.visibility, components.visibility);
-  }
-
-  private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
-    return a == b || (a != null && b != null && a.isPresent() && b.isPresent() && Objects.deepEquals(a.get(), b.get()));
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(hashCodeNullable(selection), hashCodeNullable(coloring), visibility);
-  }
-
-  private static <T> int hashCodeNullable(JsonNullable<T> a) {
-    if (a == null) {
-      return 1;
-    }
-    return a.isPresent() ? Arrays.deepHashCode(new Object[]{a.get()}) : 31;
+    return Objects.hash(selection, coloring, visibility);
   }
 
   @Override
@@ -183,18 +170,8 @@ public class Components {
       return this;
     }
     
-    public Components.Builder selection(JsonNullable<List<Component>> selection) {
-      this.instance.selection = selection;
-      return this;
-    }
-    
     public Components.Builder coloring(List<Coloring> coloring) {
       this.instance.coloring(coloring);
-      return this;
-    }
-    
-    public Components.Builder coloring(JsonNullable<List<Coloring>> coloring) {
-      this.instance.coloring = coloring;
       return this;
     }
     

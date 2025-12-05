@@ -8,7 +8,6 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openapitools.jackson.nullable.JsonNullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -21,29 +20,29 @@ import jakarta.annotation.Generated;
  */
 
 @JsonTypeName("extensions_GET")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-03T12:04:39.178099100+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-05T09:23:37.160769500+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
 public class ExtensionsGET {
 
   @Valid
-  private JsonNullable<List<String>> topicType = JsonNullable.<List<String>>undefined();
+  private List<String> topicType;
 
   @Valid
-  private JsonNullable<List<String>> topicStatus = JsonNullable.<List<String>>undefined();
+  private List<String> topicStatus;
 
   @Valid
-  private JsonNullable<List<String>> topicLabel = JsonNullable.<List<String>>undefined();
+  private List<String> topicLabel;
 
   @Valid
-  private JsonNullable<List<String>> snippetType = JsonNullable.<List<String>>undefined();
+  private List<String> snippetType;
 
   @Valid
-  private JsonNullable<List<String>> priority = JsonNullable.<List<String>>undefined();
+  private List<String> priority;
 
   @Valid
-  private JsonNullable<List<String>> users = JsonNullable.<List<String>>undefined();
+  private List<String> users;
 
   @Valid
-  private JsonNullable<List<String>> stage = JsonNullable.<List<String>>undefined();
+  private List<String> stage;
 
   /**
    * Gets or Sets projectActions
@@ -181,25 +180,25 @@ public class ExtensionsGET {
    * Constructor with only required parameters
    */
   public ExtensionsGET(List<String> topicType, List<String> topicStatus, List<String> topicLabel, List<String> snippetType, List<String> priority, List<String> users, List<String> stage) {
-    this.topicType = JsonNullable.of(topicType);
-    this.topicStatus = JsonNullable.of(topicStatus);
-    this.topicLabel = JsonNullable.of(topicLabel);
-    this.snippetType = JsonNullable.of(snippetType);
-    this.priority = JsonNullable.of(priority);
-    this.users = JsonNullable.of(users);
-    this.stage = JsonNullable.of(stage);
+    this.topicType = topicType;
+    this.topicStatus = topicStatus;
+    this.topicLabel = topicLabel;
+    this.snippetType = snippetType;
+    this.priority = priority;
+    this.users = users;
+    this.stage = stage;
   }
 
   public ExtensionsGET topicType(List<String> topicType) {
-    this.topicType = JsonNullable.of(topicType);
+    this.topicType = topicType;
     return this;
   }
 
   public ExtensionsGET addTopicTypeItem(String topicTypeItem) {
-    if (this.topicType == null || !this.topicType.isPresent()) {
-      this.topicType = JsonNullable.of(new ArrayList<>());
+    if (this.topicType == null) {
+      this.topicType = new ArrayList<>();
     }
-    this.topicType.get().add(topicTypeItem);
+    this.topicType.add(topicTypeItem);
     return this;
   }
 
@@ -210,24 +209,24 @@ public class ExtensionsGET {
   @NotNull 
   @Schema(name = "topic_type", requiredMode = Schema.RequiredMode.REQUIRED)
   @JsonProperty("topic_type")
-  public JsonNullable<List<String>> getTopicType() {
+  public List<String> getTopicType() {
     return topicType;
   }
 
-  public void setTopicType(JsonNullable<List<String>> topicType) {
+  public void setTopicType(List<String> topicType) {
     this.topicType = topicType;
   }
 
   public ExtensionsGET topicStatus(List<String> topicStatus) {
-    this.topicStatus = JsonNullable.of(topicStatus);
+    this.topicStatus = topicStatus;
     return this;
   }
 
   public ExtensionsGET addTopicStatusItem(String topicStatusItem) {
-    if (this.topicStatus == null || !this.topicStatus.isPresent()) {
-      this.topicStatus = JsonNullable.of(new ArrayList<>());
+    if (this.topicStatus == null) {
+      this.topicStatus = new ArrayList<>();
     }
-    this.topicStatus.get().add(topicStatusItem);
+    this.topicStatus.add(topicStatusItem);
     return this;
   }
 
@@ -238,24 +237,24 @@ public class ExtensionsGET {
   @NotNull 
   @Schema(name = "topic_status", requiredMode = Schema.RequiredMode.REQUIRED)
   @JsonProperty("topic_status")
-  public JsonNullable<List<String>> getTopicStatus() {
+  public List<String> getTopicStatus() {
     return topicStatus;
   }
 
-  public void setTopicStatus(JsonNullable<List<String>> topicStatus) {
+  public void setTopicStatus(List<String> topicStatus) {
     this.topicStatus = topicStatus;
   }
 
   public ExtensionsGET topicLabel(List<String> topicLabel) {
-    this.topicLabel = JsonNullable.of(topicLabel);
+    this.topicLabel = topicLabel;
     return this;
   }
 
   public ExtensionsGET addTopicLabelItem(String topicLabelItem) {
-    if (this.topicLabel == null || !this.topicLabel.isPresent()) {
-      this.topicLabel = JsonNullable.of(new ArrayList<>());
+    if (this.topicLabel == null) {
+      this.topicLabel = new ArrayList<>();
     }
-    this.topicLabel.get().add(topicLabelItem);
+    this.topicLabel.add(topicLabelItem);
     return this;
   }
 
@@ -266,24 +265,24 @@ public class ExtensionsGET {
   @NotNull 
   @Schema(name = "topic_label", requiredMode = Schema.RequiredMode.REQUIRED)
   @JsonProperty("topic_label")
-  public JsonNullable<List<String>> getTopicLabel() {
+  public List<String> getTopicLabel() {
     return topicLabel;
   }
 
-  public void setTopicLabel(JsonNullable<List<String>> topicLabel) {
+  public void setTopicLabel(List<String> topicLabel) {
     this.topicLabel = topicLabel;
   }
 
   public ExtensionsGET snippetType(List<String> snippetType) {
-    this.snippetType = JsonNullable.of(snippetType);
+    this.snippetType = snippetType;
     return this;
   }
 
   public ExtensionsGET addSnippetTypeItem(String snippetTypeItem) {
-    if (this.snippetType == null || !this.snippetType.isPresent()) {
-      this.snippetType = JsonNullable.of(new ArrayList<>());
+    if (this.snippetType == null) {
+      this.snippetType = new ArrayList<>();
     }
-    this.snippetType.get().add(snippetTypeItem);
+    this.snippetType.add(snippetTypeItem);
     return this;
   }
 
@@ -294,24 +293,24 @@ public class ExtensionsGET {
   @NotNull 
   @Schema(name = "snippet_type", requiredMode = Schema.RequiredMode.REQUIRED)
   @JsonProperty("snippet_type")
-  public JsonNullable<List<String>> getSnippetType() {
+  public List<String> getSnippetType() {
     return snippetType;
   }
 
-  public void setSnippetType(JsonNullable<List<String>> snippetType) {
+  public void setSnippetType(List<String> snippetType) {
     this.snippetType = snippetType;
   }
 
   public ExtensionsGET priority(List<String> priority) {
-    this.priority = JsonNullable.of(priority);
+    this.priority = priority;
     return this;
   }
 
   public ExtensionsGET addPriorityItem(String priorityItem) {
-    if (this.priority == null || !this.priority.isPresent()) {
-      this.priority = JsonNullable.of(new ArrayList<>());
+    if (this.priority == null) {
+      this.priority = new ArrayList<>();
     }
-    this.priority.get().add(priorityItem);
+    this.priority.add(priorityItem);
     return this;
   }
 
@@ -322,24 +321,24 @@ public class ExtensionsGET {
   @NotNull 
   @Schema(name = "priority", requiredMode = Schema.RequiredMode.REQUIRED)
   @JsonProperty("priority")
-  public JsonNullable<List<String>> getPriority() {
+  public List<String> getPriority() {
     return priority;
   }
 
-  public void setPriority(JsonNullable<List<String>> priority) {
+  public void setPriority(List<String> priority) {
     this.priority = priority;
   }
 
   public ExtensionsGET users(List<String> users) {
-    this.users = JsonNullable.of(users);
+    this.users = users;
     return this;
   }
 
   public ExtensionsGET addUsersItem(String usersItem) {
-    if (this.users == null || !this.users.isPresent()) {
-      this.users = JsonNullable.of(new ArrayList<>());
+    if (this.users == null) {
+      this.users = new ArrayList<>();
     }
-    this.users.get().add(usersItem);
+    this.users.add(usersItem);
     return this;
   }
 
@@ -350,24 +349,24 @@ public class ExtensionsGET {
   @NotNull 
   @Schema(name = "users", requiredMode = Schema.RequiredMode.REQUIRED)
   @JsonProperty("users")
-  public JsonNullable<List<String>> getUsers() {
+  public List<String> getUsers() {
     return users;
   }
 
-  public void setUsers(JsonNullable<List<String>> users) {
+  public void setUsers(List<String> users) {
     this.users = users;
   }
 
   public ExtensionsGET stage(List<String> stage) {
-    this.stage = JsonNullable.of(stage);
+    this.stage = stage;
     return this;
   }
 
   public ExtensionsGET addStageItem(String stageItem) {
-    if (this.stage == null || !this.stage.isPresent()) {
-      this.stage = JsonNullable.of(new ArrayList<>());
+    if (this.stage == null) {
+      this.stage = new ArrayList<>();
     }
-    this.stage.get().add(stageItem);
+    this.stage.add(stageItem);
     return this;
   }
 
@@ -378,11 +377,11 @@ public class ExtensionsGET {
   @NotNull 
   @Schema(name = "stage", requiredMode = Schema.RequiredMode.REQUIRED)
   @JsonProperty("stage")
-  public JsonNullable<List<String>> getStage() {
+  public List<String> getStage() {
     return stage;
   }
 
-  public void setStage(JsonNullable<List<String>> stage) {
+  public void setStage(List<String> stage) {
     this.stage = stage;
   }
 
@@ -556,18 +555,8 @@ public class ExtensionsGET {
       return this;
     }
     
-    public ExtensionsGET.Builder topicType(JsonNullable<List<String>> topicType) {
-      this.instance.topicType = topicType;
-      return this;
-    }
-    
     public ExtensionsGET.Builder topicStatus(List<String> topicStatus) {
       this.instance.topicStatus(topicStatus);
-      return this;
-    }
-    
-    public ExtensionsGET.Builder topicStatus(JsonNullable<List<String>> topicStatus) {
-      this.instance.topicStatus = topicStatus;
       return this;
     }
     
@@ -576,18 +565,8 @@ public class ExtensionsGET {
       return this;
     }
     
-    public ExtensionsGET.Builder topicLabel(JsonNullable<List<String>> topicLabel) {
-      this.instance.topicLabel = topicLabel;
-      return this;
-    }
-    
     public ExtensionsGET.Builder snippetType(List<String> snippetType) {
       this.instance.snippetType(snippetType);
-      return this;
-    }
-    
-    public ExtensionsGET.Builder snippetType(JsonNullable<List<String>> snippetType) {
-      this.instance.snippetType = snippetType;
       return this;
     }
     
@@ -596,28 +575,13 @@ public class ExtensionsGET {
       return this;
     }
     
-    public ExtensionsGET.Builder priority(JsonNullable<List<String>> priority) {
-      this.instance.priority = priority;
-      return this;
-    }
-    
     public ExtensionsGET.Builder users(List<String> users) {
       this.instance.users(users);
       return this;
     }
     
-    public ExtensionsGET.Builder users(JsonNullable<List<String>> users) {
-      this.instance.users = users;
-      return this;
-    }
-    
     public ExtensionsGET.Builder stage(List<String> stage) {
       this.instance.stage(stage);
-      return this;
-    }
-    
-    public ExtensionsGET.Builder stage(JsonNullable<List<String>> stage) {
-      this.instance.stage = stage;
       return this;
     }
     

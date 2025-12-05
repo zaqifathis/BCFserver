@@ -5,9 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import org.openapitools.jackson.nullable.JsonNullable;
+import org.springframework.lang.Nullable;
 import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -20,22 +19,22 @@ import jakarta.annotation.Generated;
 
 @Schema(name = "selection_GET", description = "Schema for selection GET, BCF REST API.")
 @JsonTypeName("selection_GET")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-03T12:04:39.178099100+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-05T09:23:37.160769500+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
 public class SelectionGET {
 
   @Valid
-  private JsonNullable<List<@Valid Component>> selection = JsonNullable.<List<@Valid Component>>undefined();
+  private @Nullable List<@Valid Component> selection;
 
-  public SelectionGET selection(List<@Valid Component> selection) {
-    this.selection = JsonNullable.of(selection);
+  public SelectionGET selection(@Nullable List<@Valid Component> selection) {
+    this.selection = selection;
     return this;
   }
 
   public SelectionGET addSelectionItem(Component selectionItem) {
-    if (this.selection == null || !this.selection.isPresent()) {
-      this.selection = JsonNullable.of(new ArrayList<>());
+    if (this.selection == null) {
+      this.selection = new ArrayList<>();
     }
-    this.selection.get().add(selectionItem);
+    this.selection.add(selectionItem);
     return this;
   }
 
@@ -46,11 +45,11 @@ public class SelectionGET {
   @Valid 
   @Schema(name = "selection", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("selection")
-  public JsonNullable<List<@Valid Component>> getSelection() {
+  public @Nullable List<@Valid Component> getSelection() {
     return selection;
   }
 
-  public void setSelection(JsonNullable<List<@Valid Component>> selection) {
+  public void setSelection(@Nullable List<@Valid Component> selection) {
     this.selection = selection;
   }
 
@@ -63,23 +62,12 @@ public class SelectionGET {
       return false;
     }
     SelectionGET selectionGET = (SelectionGET) o;
-    return equalsNullable(this.selection, selectionGET.selection);
-  }
-
-  private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
-    return a == b || (a != null && b != null && a.isPresent() && b.isPresent() && Objects.deepEquals(a.get(), b.get()));
+    return Objects.equals(this.selection, selectionGET.selection);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(hashCodeNullable(selection));
-  }
-
-  private static <T> int hashCodeNullable(JsonNullable<T> a) {
-    if (a == null) {
-      return 1;
-    }
-    return a.isPresent() ? Arrays.deepHashCode(new Object[]{a.get()}) : 31;
+    return Objects.hash(selection);
   }
 
   @Override
@@ -121,11 +109,6 @@ public class SelectionGET {
 
     public SelectionGET.Builder selection(List<Component> selection) {
       this.instance.selection(selection);
-      return this;
-    }
-    
-    public SelectionGET.Builder selection(JsonNullable<List<Component>> selection) {
-      this.instance.selection = selection;
       return this;
     }
     

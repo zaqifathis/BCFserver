@@ -16,27 +16,20 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.NativeWebRequest;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import java.util.List;
-import java.util.Optional;
+
 import jakarta.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-03T12:04:39.178099100+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-05T09:23:37.160769500+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
 @Validated
 @Tag(name = "Project", description = "the Project API")
 public interface ProjectApi {
-
-    default Optional<NativeWebRequest> getRequest() {
-        return Optional.empty();
-    }
 
     String PATH_GET_ALL_PROJECTS = "/bcf/{version}/projects";
     /**
@@ -62,21 +55,9 @@ public interface ProjectApi {
         value = ProjectApi.PATH_GET_ALL_PROJECTS,
         produces = { "application/json" }
     )
-    default ResponseEntity<List<ProjectGET>> getAllProjects(
+    ResponseEntity<List<ProjectGET>> getAllProjects(
         @NotNull @Parameter(name = "version", description = "", required = true, in = ParameterIn.PATH) @PathVariable("version") String version
-    ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "[ { \"authorization\" : { \"project_actions\" : [ \"update\", \"update\" ] }, \"project_id\" : \"project_id\", \"name\" : \"name\" }, { \"authorization\" : { \"project_actions\" : [ \"update\", \"update\" ] }, \"project_id\" : \"project_id\", \"name\" : \"name\" } ]";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
 
     String PATH_GET_PROJECT_BY_ID = "/bcf/{version}/projects/{project_id}";
@@ -104,22 +85,10 @@ public interface ProjectApi {
         value = ProjectApi.PATH_GET_PROJECT_BY_ID,
         produces = { "application/json" }
     )
-    default ResponseEntity<ProjectGET> getProjectById(
+    ResponseEntity<ProjectGET> getProjectById(
         @NotNull @Parameter(name = "version", description = "", required = true, in = ParameterIn.PATH) @PathVariable("version") String version,
         @NotNull @Parameter(name = "project_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("project_id") String projectId
-    ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"authorization\" : { \"project_actions\" : [ \"update\", \"update\" ] }, \"project_id\" : \"project_id\", \"name\" : \"name\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
 
     String PATH_GET_PROJECT_EXTENSION = "/bcf/{version}/projects/{project_id}/extensions";
@@ -147,22 +116,10 @@ public interface ProjectApi {
         value = ProjectApi.PATH_GET_PROJECT_EXTENSION,
         produces = { "application/json" }
     )
-    default ResponseEntity<ExtensionsGET> getProjectExtension(
+    ResponseEntity<ExtensionsGET> getProjectExtension(
         @NotNull @Parameter(name = "version", description = "", required = true, in = ParameterIn.PATH) @PathVariable("version") String version,
         @NotNull @Parameter(name = "project_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("project_id") String projectId
-    ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"comment_actions\" : [ \"update\", \"update\" ], \"snippet_type\" : [ \"snippet_type\", \"snippet_type\" ], \"project_actions\" : [ \"update\", \"update\" ], \"stage\" : [ \"stage\", \"stage\" ], \"topic_actions\" : [ \"update\", \"update\" ], \"topic_type\" : [ \"topic_type\", \"topic_type\" ], \"priority\" : [ \"priority\", \"priority\" ], \"topic_label\" : [ \"topic_label\", \"topic_label\" ], \"users\" : [ \"users\", \"users\" ], \"topic_status\" : [ \"topic_status\", \"topic_status\" ] }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
 
     String PATH_UPDATE_PROJECT_BY_ID = "/bcf/{version}/projects/{project_id}";
@@ -192,22 +149,10 @@ public interface ProjectApi {
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    default ResponseEntity<ProjectGET> updateProjectById(
+    ResponseEntity<ProjectGET> updateProjectById(
         @NotNull @Parameter(name = "version", description = "", required = true, in = ParameterIn.PATH) @PathVariable("version") String version,
         @NotNull @Parameter(name = "project_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("project_id") String projectId,
         @Parameter(name = "ProjectPUT", description = "", required = true) @Valid @RequestBody ProjectPUT projectPUT
-    ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"authorization\" : { \"project_actions\" : [ \"update\", \"update\" ] }, \"project_id\" : \"project_id\", \"name\" : \"name\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
 }

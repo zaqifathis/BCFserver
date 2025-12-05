@@ -15,27 +15,20 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.NativeWebRequest;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import java.util.List;
-import java.util.Optional;
+
 import jakarta.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-03T12:04:39.178099100+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-05T09:23:37.160769500+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
 @Validated
 @Tag(name = "Related Topics", description = "the Related Topics API")
 public interface RelatedTopicsApi {
-
-    default Optional<NativeWebRequest> getRequest() {
-        return Optional.empty();
-    }
 
     String PATH_GET_RELATED_TOPICS = "/bcf/{version}/projects/{project_id}/topics/{topic_id}/related_topics";
     /**
@@ -63,23 +56,11 @@ public interface RelatedTopicsApi {
         value = RelatedTopicsApi.PATH_GET_RELATED_TOPICS,
         produces = { "application/json" }
     )
-    default ResponseEntity<List<RelatedTopicGET>> getRelatedTopics(
+    ResponseEntity<List<RelatedTopicGET>> getRelatedTopics(
         @NotNull @Parameter(name = "version", description = "", required = true, in = ParameterIn.PATH) @PathVariable("version") String version,
         @NotNull @Parameter(name = "project_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("project_id") String projectId,
         @NotNull @Parameter(name = "topic_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("topic_id") String topicId
-    ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "[ { \"related_topic_guid\" : \"related_topic_guid\" }, { \"related_topic_guid\" : \"related_topic_guid\" } ]";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
 
     String PATH_UPDATE_RELATED_TOPICS = "/bcf/{version}/projects/{project_id}/topics/{topic_id}/related_topics";
@@ -110,23 +91,11 @@ public interface RelatedTopicsApi {
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    default ResponseEntity<List<RelatedTopicGET>> updateRelatedTopics(
+    ResponseEntity<List<RelatedTopicGET>> updateRelatedTopics(
         @NotNull @Parameter(name = "version", description = "", required = true, in = ParameterIn.PATH) @PathVariable("version") String version,
         @NotNull @Parameter(name = "project_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("project_id") String projectId,
         @NotNull @Parameter(name = "topic_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("topic_id") String topicId,
         @Parameter(name = "RelatedTopicPUT", description = "", required = true) @Valid @RequestBody List<@Valid RelatedTopicPUT> relatedTopicPUT
-    ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "[ { \"related_topic_guid\" : \"related_topic_guid\" }, { \"related_topic_guid\" : \"related_topic_guid\" } ]";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
 }

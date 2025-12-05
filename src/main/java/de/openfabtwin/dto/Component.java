@@ -3,8 +3,7 @@ package de.openfabtwin.dto;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import java.util.Arrays;
-import org.openapitools.jackson.nullable.JsonNullable;
+import org.springframework.lang.Nullable;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 
@@ -15,17 +14,17 @@ import jakarta.annotation.Generated;
  */
 
 @JsonTypeName("component")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-03T12:04:39.178099100+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-05T09:23:37.160769500+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
 public class Component {
 
-  private JsonNullable<String> ifcGuid = JsonNullable.<String>undefined();
+  private @Nullable String ifcGuid = null;
 
-  private JsonNullable<String> originatingSystem = JsonNullable.<String>undefined();
+  private @Nullable String originatingSystem = null;
 
-  private JsonNullable<String> authoringToolId = JsonNullable.<String>undefined();
+  private @Nullable String authoringToolId = null;
 
-  public Component ifcGuid(String ifcGuid) {
-    this.ifcGuid = JsonNullable.of(ifcGuid);
+  public Component ifcGuid(@Nullable String ifcGuid) {
+    this.ifcGuid = ifcGuid;
     return this;
   }
 
@@ -36,16 +35,16 @@ public class Component {
   
   @Schema(name = "ifc_guid", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("ifc_guid")
-  public JsonNullable<String> getIfcGuid() {
+  public @Nullable String getIfcGuid() {
     return ifcGuid;
   }
 
-  public void setIfcGuid(JsonNullable<String> ifcGuid) {
+  public void setIfcGuid(@Nullable String ifcGuid) {
     this.ifcGuid = ifcGuid;
   }
 
-  public Component originatingSystem(String originatingSystem) {
-    this.originatingSystem = JsonNullable.of(originatingSystem);
+  public Component originatingSystem(@Nullable String originatingSystem) {
+    this.originatingSystem = originatingSystem;
     return this;
   }
 
@@ -56,16 +55,16 @@ public class Component {
   
   @Schema(name = "originating_system", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("originating_system")
-  public JsonNullable<String> getOriginatingSystem() {
+  public @Nullable String getOriginatingSystem() {
     return originatingSystem;
   }
 
-  public void setOriginatingSystem(JsonNullable<String> originatingSystem) {
+  public void setOriginatingSystem(@Nullable String originatingSystem) {
     this.originatingSystem = originatingSystem;
   }
 
-  public Component authoringToolId(String authoringToolId) {
-    this.authoringToolId = JsonNullable.of(authoringToolId);
+  public Component authoringToolId(@Nullable String authoringToolId) {
+    this.authoringToolId = authoringToolId;
     return this;
   }
 
@@ -76,11 +75,11 @@ public class Component {
   
   @Schema(name = "authoring_tool_id", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("authoring_tool_id")
-  public JsonNullable<String> getAuthoringToolId() {
+  public @Nullable String getAuthoringToolId() {
     return authoringToolId;
   }
 
-  public void setAuthoringToolId(JsonNullable<String> authoringToolId) {
+  public void setAuthoringToolId(@Nullable String authoringToolId) {
     this.authoringToolId = authoringToolId;
   }
 
@@ -93,25 +92,14 @@ public class Component {
       return false;
     }
     Component component = (Component) o;
-    return equalsNullable(this.ifcGuid, component.ifcGuid) &&
-        equalsNullable(this.originatingSystem, component.originatingSystem) &&
-        equalsNullable(this.authoringToolId, component.authoringToolId);
-  }
-
-  private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
-    return a == b || (a != null && b != null && a.isPresent() && b.isPresent() && Objects.deepEquals(a.get(), b.get()));
+    return Objects.equals(this.ifcGuid, component.ifcGuid) &&
+        Objects.equals(this.originatingSystem, component.originatingSystem) &&
+        Objects.equals(this.authoringToolId, component.authoringToolId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(hashCodeNullable(ifcGuid), hashCodeNullable(originatingSystem), hashCodeNullable(authoringToolId));
-  }
-
-  private static <T> int hashCodeNullable(JsonNullable<T> a) {
-    if (a == null) {
-      return 1;
-    }
-    return a.isPresent() ? Arrays.deepHashCode(new Object[]{a.get()}) : 31;
+    return Objects.hash(ifcGuid, originatingSystem, authoringToolId);
   }
 
   @Override
@@ -160,28 +148,13 @@ public class Component {
       return this;
     }
     
-    public Component.Builder ifcGuid(JsonNullable<String> ifcGuid) {
-      this.instance.ifcGuid = ifcGuid;
-      return this;
-    }
-    
     public Component.Builder originatingSystem(String originatingSystem) {
       this.instance.originatingSystem(originatingSystem);
       return this;
     }
     
-    public Component.Builder originatingSystem(JsonNullable<String> originatingSystem) {
-      this.instance.originatingSystem = originatingSystem;
-      return this;
-    }
-    
     public Component.Builder authoringToolId(String authoringToolId) {
       this.instance.authoringToolId(authoringToolId);
-      return this;
-    }
-    
-    public Component.Builder authoringToolId(JsonNullable<String> authoringToolId) {
-      this.instance.authoringToolId = authoringToolId;
       return this;
     }
     

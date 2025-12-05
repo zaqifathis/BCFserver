@@ -6,9 +6,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import org.openapitools.jackson.nullable.JsonNullable;
+import org.springframework.lang.Nullable;
 import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -20,7 +19,7 @@ import jakarta.annotation.Generated;
  */
 
 @JsonTypeName("topic_GET_authorization")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-03T12:04:39.178099100+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-05T09:23:37.160769500+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
 public class TopicGETAuthorization {
 
   /**
@@ -74,7 +73,7 @@ public class TopicGETAuthorization {
   private List<TopicActionsEnum> topicActions = new ArrayList<>();
 
   @Valid
-  private JsonNullable<List<String>> topicStatus = JsonNullable.<List<String>>undefined();
+  private @Nullable List<String> topicStatus;
 
   public TopicGETAuthorization topicActions(List<TopicActionsEnum> topicActions) {
     this.topicActions = topicActions;
@@ -104,16 +103,16 @@ public class TopicGETAuthorization {
     this.topicActions = topicActions;
   }
 
-  public TopicGETAuthorization topicStatus(List<String> topicStatus) {
-    this.topicStatus = JsonNullable.of(topicStatus);
+  public TopicGETAuthorization topicStatus(@Nullable List<String> topicStatus) {
+    this.topicStatus = topicStatus;
     return this;
   }
 
   public TopicGETAuthorization addTopicStatusItem(String topicStatusItem) {
-    if (this.topicStatus == null || !this.topicStatus.isPresent()) {
-      this.topicStatus = JsonNullable.of(new ArrayList<>());
+    if (this.topicStatus == null) {
+      this.topicStatus = new ArrayList<>();
     }
-    this.topicStatus.get().add(topicStatusItem);
+    this.topicStatus.add(topicStatusItem);
     return this;
   }
 
@@ -124,11 +123,11 @@ public class TopicGETAuthorization {
   
   @Schema(name = "topic_status", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("topic_status")
-  public JsonNullable<List<String>> getTopicStatus() {
+  public @Nullable List<String> getTopicStatus() {
     return topicStatus;
   }
 
-  public void setTopicStatus(JsonNullable<List<String>> topicStatus) {
+  public void setTopicStatus(@Nullable List<String> topicStatus) {
     this.topicStatus = topicStatus;
   }
 
@@ -142,23 +141,12 @@ public class TopicGETAuthorization {
     }
     TopicGETAuthorization topicGETAuthorization = (TopicGETAuthorization) o;
     return Objects.equals(this.topicActions, topicGETAuthorization.topicActions) &&
-        equalsNullable(this.topicStatus, topicGETAuthorization.topicStatus);
-  }
-
-  private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
-    return a == b || (a != null && b != null && a.isPresent() && b.isPresent() && Objects.deepEquals(a.get(), b.get()));
+        Objects.equals(this.topicStatus, topicGETAuthorization.topicStatus);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(topicActions, hashCodeNullable(topicStatus));
-  }
-
-  private static <T> int hashCodeNullable(JsonNullable<T> a) {
-    if (a == null) {
-      return 1;
-    }
-    return a.isPresent() ? Arrays.deepHashCode(new Object[]{a.get()}) : 31;
+    return Objects.hash(topicActions, topicStatus);
   }
 
   @Override
@@ -207,11 +195,6 @@ public class TopicGETAuthorization {
     
     public TopicGETAuthorization.Builder topicStatus(List<String> topicStatus) {
       this.instance.topicStatus(topicStatus);
-      return this;
-    }
-    
-    public TopicGETAuthorization.Builder topicStatus(JsonNullable<List<String>> topicStatus) {
-      this.instance.topicStatus = topicStatus;
       return this;
     }
     

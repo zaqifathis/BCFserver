@@ -5,9 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.lang.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -21,28 +19,28 @@ import jakarta.annotation.Generated;
  */
 
 @JsonTypeName("topic_GET")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-03T12:04:39.178099100+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-05T09:23:37.160769500+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
 public class TopicGET {
 
   private String guid;
 
   private @Nullable String serverAssigendId;
 
-  private JsonNullable<String> topicType = JsonNullable.<String>undefined();
+  private @Nullable String topicType = null;
 
-  private JsonNullable<String> topicStatus = JsonNullable.<String>undefined();
+  private @Nullable String topicStatus = null;
 
   @Valid
-  private JsonNullable<List<String>> referenceLinks = JsonNullable.<List<String>>undefined();
+  private @Nullable List<String> referenceLinks;
 
   private String title;
 
-  private JsonNullable<String> priority = JsonNullable.<String>undefined();
+  private @Nullable String priority = null;
 
-  private JsonNullable<Integer> index = JsonNullable.<Integer>undefined();
+  private @Nullable Integer index = null;
 
   @Valid
-  private JsonNullable<List<String>> labels = JsonNullable.<List<String>>undefined();
+  private @Nullable List<String> labels;
 
   private String creationDate;
 
@@ -50,17 +48,17 @@ public class TopicGET {
 
   private @Nullable String modifiedDate;
 
-  private JsonNullable<String> modifiedAuthor = JsonNullable.<String>undefined();
+  private @Nullable String modifiedAuthor = null;
 
-  private JsonNullable<String> assignedTo = JsonNullable.<String>undefined();
+  private @Nullable String assignedTo = null;
 
-  private JsonNullable<String> stage = JsonNullable.<String>undefined();
+  private @Nullable String stage = null;
 
-  private JsonNullable<String> description = JsonNullable.<String>undefined();
+  private @Nullable String description = null;
 
-  private JsonNullable<BimSnippet> bimSnippet = JsonNullable.<BimSnippet>undefined();
+  private @Nullable BimSnippet bimSnippet = null;
 
-  private JsonNullable<String> dueDate = JsonNullable.<String>undefined();
+  private @Nullable String dueDate = null;
 
   private @Nullable TopicGETAuthorization authorization;
 
@@ -118,8 +116,8 @@ public class TopicGET {
     this.serverAssigendId = serverAssigendId;
   }
 
-  public TopicGET topicType(String topicType) {
-    this.topicType = JsonNullable.of(topicType);
+  public TopicGET topicType(@Nullable String topicType) {
+    this.topicType = topicType;
     return this;
   }
 
@@ -130,16 +128,16 @@ public class TopicGET {
   
   @Schema(name = "topic_type", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("topic_type")
-  public JsonNullable<String> getTopicType() {
+  public @Nullable String getTopicType() {
     return topicType;
   }
 
-  public void setTopicType(JsonNullable<String> topicType) {
+  public void setTopicType(@Nullable String topicType) {
     this.topicType = topicType;
   }
 
-  public TopicGET topicStatus(String topicStatus) {
-    this.topicStatus = JsonNullable.of(topicStatus);
+  public TopicGET topicStatus(@Nullable String topicStatus) {
+    this.topicStatus = topicStatus;
     return this;
   }
 
@@ -150,24 +148,24 @@ public class TopicGET {
   
   @Schema(name = "topic_status", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("topic_status")
-  public JsonNullable<String> getTopicStatus() {
+  public @Nullable String getTopicStatus() {
     return topicStatus;
   }
 
-  public void setTopicStatus(JsonNullable<String> topicStatus) {
+  public void setTopicStatus(@Nullable String topicStatus) {
     this.topicStatus = topicStatus;
   }
 
-  public TopicGET referenceLinks(List<String> referenceLinks) {
-    this.referenceLinks = JsonNullable.of(referenceLinks);
+  public TopicGET referenceLinks(@Nullable List<String> referenceLinks) {
+    this.referenceLinks = referenceLinks;
     return this;
   }
 
   public TopicGET addReferenceLinksItem(String referenceLinksItem) {
-    if (this.referenceLinks == null || !this.referenceLinks.isPresent()) {
-      this.referenceLinks = JsonNullable.of(new ArrayList<>());
+    if (this.referenceLinks == null) {
+      this.referenceLinks = new ArrayList<>();
     }
-    this.referenceLinks.get().add(referenceLinksItem);
+    this.referenceLinks.add(referenceLinksItem);
     return this;
   }
 
@@ -178,11 +176,11 @@ public class TopicGET {
   
   @Schema(name = "reference_links", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("reference_links")
-  public JsonNullable<List<String>> getReferenceLinks() {
+  public @Nullable List<String> getReferenceLinks() {
     return referenceLinks;
   }
 
-  public void setReferenceLinks(JsonNullable<List<String>> referenceLinks) {
+  public void setReferenceLinks(@Nullable List<String> referenceLinks) {
     this.referenceLinks = referenceLinks;
   }
 
@@ -206,8 +204,8 @@ public class TopicGET {
     this.title = title;
   }
 
-  public TopicGET priority(String priority) {
-    this.priority = JsonNullable.of(priority);
+  public TopicGET priority(@Nullable String priority) {
+    this.priority = priority;
     return this;
   }
 
@@ -218,16 +216,16 @@ public class TopicGET {
   
   @Schema(name = "priority", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("priority")
-  public JsonNullable<String> getPriority() {
+  public @Nullable String getPriority() {
     return priority;
   }
 
-  public void setPriority(JsonNullable<String> priority) {
+  public void setPriority(@Nullable String priority) {
     this.priority = priority;
   }
 
-  public TopicGET index(Integer index) {
-    this.index = JsonNullable.of(index);
+  public TopicGET index(@Nullable Integer index) {
+    this.index = index;
     return this;
   }
 
@@ -238,24 +236,24 @@ public class TopicGET {
   
   @Schema(name = "index", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("index")
-  public JsonNullable<Integer> getIndex() {
+  public @Nullable Integer getIndex() {
     return index;
   }
 
-  public void setIndex(JsonNullable<Integer> index) {
+  public void setIndex(@Nullable Integer index) {
     this.index = index;
   }
 
-  public TopicGET labels(List<String> labels) {
-    this.labels = JsonNullable.of(labels);
+  public TopicGET labels(@Nullable List<String> labels) {
+    this.labels = labels;
     return this;
   }
 
   public TopicGET addLabelsItem(String labelsItem) {
-    if (this.labels == null || !this.labels.isPresent()) {
-      this.labels = JsonNullable.of(new ArrayList<>());
+    if (this.labels == null) {
+      this.labels = new ArrayList<>();
     }
-    this.labels.get().add(labelsItem);
+    this.labels.add(labelsItem);
     return this;
   }
 
@@ -266,11 +264,11 @@ public class TopicGET {
   
   @Schema(name = "labels", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("labels")
-  public JsonNullable<List<String>> getLabels() {
+  public @Nullable List<String> getLabels() {
     return labels;
   }
 
-  public void setLabels(JsonNullable<List<String>> labels) {
+  public void setLabels(@Nullable List<String> labels) {
     this.labels = labels;
   }
 
@@ -334,8 +332,8 @@ public class TopicGET {
     this.modifiedDate = modifiedDate;
   }
 
-  public TopicGET modifiedAuthor(String modifiedAuthor) {
-    this.modifiedAuthor = JsonNullable.of(modifiedAuthor);
+  public TopicGET modifiedAuthor(@Nullable String modifiedAuthor) {
+    this.modifiedAuthor = modifiedAuthor;
     return this;
   }
 
@@ -346,16 +344,16 @@ public class TopicGET {
   
   @Schema(name = "modified_author", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("modified_author")
-  public JsonNullable<String> getModifiedAuthor() {
+  public @Nullable String getModifiedAuthor() {
     return modifiedAuthor;
   }
 
-  public void setModifiedAuthor(JsonNullable<String> modifiedAuthor) {
+  public void setModifiedAuthor(@Nullable String modifiedAuthor) {
     this.modifiedAuthor = modifiedAuthor;
   }
 
-  public TopicGET assignedTo(String assignedTo) {
-    this.assignedTo = JsonNullable.of(assignedTo);
+  public TopicGET assignedTo(@Nullable String assignedTo) {
+    this.assignedTo = assignedTo;
     return this;
   }
 
@@ -366,16 +364,16 @@ public class TopicGET {
   
   @Schema(name = "assigned_to", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("assigned_to")
-  public JsonNullable<String> getAssignedTo() {
+  public @Nullable String getAssignedTo() {
     return assignedTo;
   }
 
-  public void setAssignedTo(JsonNullable<String> assignedTo) {
+  public void setAssignedTo(@Nullable String assignedTo) {
     this.assignedTo = assignedTo;
   }
 
-  public TopicGET stage(String stage) {
-    this.stage = JsonNullable.of(stage);
+  public TopicGET stage(@Nullable String stage) {
+    this.stage = stage;
     return this;
   }
 
@@ -386,16 +384,16 @@ public class TopicGET {
   
   @Schema(name = "stage", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("stage")
-  public JsonNullable<String> getStage() {
+  public @Nullable String getStage() {
     return stage;
   }
 
-  public void setStage(JsonNullable<String> stage) {
+  public void setStage(@Nullable String stage) {
     this.stage = stage;
   }
 
-  public TopicGET description(String description) {
-    this.description = JsonNullable.of(description);
+  public TopicGET description(@Nullable String description) {
+    this.description = description;
     return this;
   }
 
@@ -406,16 +404,16 @@ public class TopicGET {
   
   @Schema(name = "description", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("description")
-  public JsonNullable<String> getDescription() {
+  public @Nullable String getDescription() {
     return description;
   }
 
-  public void setDescription(JsonNullable<String> description) {
+  public void setDescription(@Nullable String description) {
     this.description = description;
   }
 
-  public TopicGET bimSnippet(BimSnippet bimSnippet) {
-    this.bimSnippet = JsonNullable.of(bimSnippet);
+  public TopicGET bimSnippet(@Nullable BimSnippet bimSnippet) {
+    this.bimSnippet = bimSnippet;
     return this;
   }
 
@@ -426,16 +424,16 @@ public class TopicGET {
   @Valid 
   @Schema(name = "bim_snippet", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("bim_snippet")
-  public JsonNullable<BimSnippet> getBimSnippet() {
+  public @Nullable BimSnippet getBimSnippet() {
     return bimSnippet;
   }
 
-  public void setBimSnippet(JsonNullable<BimSnippet> bimSnippet) {
+  public void setBimSnippet(@Nullable BimSnippet bimSnippet) {
     this.bimSnippet = bimSnippet;
   }
 
-  public TopicGET dueDate(String dueDate) {
-    this.dueDate = JsonNullable.of(dueDate);
+  public TopicGET dueDate(@Nullable String dueDate) {
+    this.dueDate = dueDate;
     return this;
   }
 
@@ -446,11 +444,11 @@ public class TopicGET {
   
   @Schema(name = "due_date", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("due_date")
-  public JsonNullable<String> getDueDate() {
+  public @Nullable String getDueDate() {
     return dueDate;
   }
 
-  public void setDueDate(JsonNullable<String> dueDate) {
+  public void setDueDate(@Nullable String dueDate) {
     this.dueDate = dueDate;
   }
 
@@ -485,39 +483,28 @@ public class TopicGET {
     TopicGET topicGET = (TopicGET) o;
     return Objects.equals(this.guid, topicGET.guid) &&
         Objects.equals(this.serverAssigendId, topicGET.serverAssigendId) &&
-        equalsNullable(this.topicType, topicGET.topicType) &&
-        equalsNullable(this.topicStatus, topicGET.topicStatus) &&
-        equalsNullable(this.referenceLinks, topicGET.referenceLinks) &&
+        Objects.equals(this.topicType, topicGET.topicType) &&
+        Objects.equals(this.topicStatus, topicGET.topicStatus) &&
+        Objects.equals(this.referenceLinks, topicGET.referenceLinks) &&
         Objects.equals(this.title, topicGET.title) &&
-        equalsNullable(this.priority, topicGET.priority) &&
-        equalsNullable(this.index, topicGET.index) &&
-        equalsNullable(this.labels, topicGET.labels) &&
+        Objects.equals(this.priority, topicGET.priority) &&
+        Objects.equals(this.index, topicGET.index) &&
+        Objects.equals(this.labels, topicGET.labels) &&
         Objects.equals(this.creationDate, topicGET.creationDate) &&
         Objects.equals(this.creationAuthor, topicGET.creationAuthor) &&
         Objects.equals(this.modifiedDate, topicGET.modifiedDate) &&
-        equalsNullable(this.modifiedAuthor, topicGET.modifiedAuthor) &&
-        equalsNullable(this.assignedTo, topicGET.assignedTo) &&
-        equalsNullable(this.stage, topicGET.stage) &&
-        equalsNullable(this.description, topicGET.description) &&
-        equalsNullable(this.bimSnippet, topicGET.bimSnippet) &&
-        equalsNullable(this.dueDate, topicGET.dueDate) &&
+        Objects.equals(this.modifiedAuthor, topicGET.modifiedAuthor) &&
+        Objects.equals(this.assignedTo, topicGET.assignedTo) &&
+        Objects.equals(this.stage, topicGET.stage) &&
+        Objects.equals(this.description, topicGET.description) &&
+        Objects.equals(this.bimSnippet, topicGET.bimSnippet) &&
+        Objects.equals(this.dueDate, topicGET.dueDate) &&
         Objects.equals(this.authorization, topicGET.authorization);
-  }
-
-  private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
-    return a == b || (a != null && b != null && a.isPresent() && b.isPresent() && Objects.deepEquals(a.get(), b.get()));
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(guid, serverAssigendId, hashCodeNullable(topicType), hashCodeNullable(topicStatus), hashCodeNullable(referenceLinks), title, hashCodeNullable(priority), hashCodeNullable(index), hashCodeNullable(labels), creationDate, creationAuthor, modifiedDate, hashCodeNullable(modifiedAuthor), hashCodeNullable(assignedTo), hashCodeNullable(stage), hashCodeNullable(description), hashCodeNullable(bimSnippet), hashCodeNullable(dueDate), authorization);
-  }
-
-  private static <T> int hashCodeNullable(JsonNullable<T> a) {
-    if (a == null) {
-      return 1;
-    }
-    return a.isPresent() ? Arrays.deepHashCode(new Object[]{a.get()}) : 31;
+    return Objects.hash(guid, serverAssigendId, topicType, topicStatus, referenceLinks, title, priority, index, labels, creationDate, creationAuthor, modifiedDate, modifiedAuthor, assignedTo, stage, description, bimSnippet, dueDate, authorization);
   }
 
   @Override
@@ -608,28 +595,13 @@ public class TopicGET {
       return this;
     }
     
-    public TopicGET.Builder topicType(JsonNullable<String> topicType) {
-      this.instance.topicType = topicType;
-      return this;
-    }
-    
     public TopicGET.Builder topicStatus(String topicStatus) {
       this.instance.topicStatus(topicStatus);
       return this;
     }
     
-    public TopicGET.Builder topicStatus(JsonNullable<String> topicStatus) {
-      this.instance.topicStatus = topicStatus;
-      return this;
-    }
-    
     public TopicGET.Builder referenceLinks(List<String> referenceLinks) {
       this.instance.referenceLinks(referenceLinks);
-      return this;
-    }
-    
-    public TopicGET.Builder referenceLinks(JsonNullable<List<String>> referenceLinks) {
-      this.instance.referenceLinks = referenceLinks;
       return this;
     }
     
@@ -643,28 +615,13 @@ public class TopicGET {
       return this;
     }
     
-    public TopicGET.Builder priority(JsonNullable<String> priority) {
-      this.instance.priority = priority;
-      return this;
-    }
-    
     public TopicGET.Builder index(Integer index) {
       this.instance.index(index);
       return this;
     }
     
-    public TopicGET.Builder index(JsonNullable<Integer> index) {
-      this.instance.index = index;
-      return this;
-    }
-    
     public TopicGET.Builder labels(List<String> labels) {
       this.instance.labels(labels);
-      return this;
-    }
-    
-    public TopicGET.Builder labels(JsonNullable<List<String>> labels) {
-      this.instance.labels = labels;
       return this;
     }
     
@@ -688,18 +645,8 @@ public class TopicGET {
       return this;
     }
     
-    public TopicGET.Builder modifiedAuthor(JsonNullable<String> modifiedAuthor) {
-      this.instance.modifiedAuthor = modifiedAuthor;
-      return this;
-    }
-    
     public TopicGET.Builder assignedTo(String assignedTo) {
       this.instance.assignedTo(assignedTo);
-      return this;
-    }
-    
-    public TopicGET.Builder assignedTo(JsonNullable<String> assignedTo) {
-      this.instance.assignedTo = assignedTo;
       return this;
     }
     
@@ -708,18 +655,8 @@ public class TopicGET {
       return this;
     }
     
-    public TopicGET.Builder stage(JsonNullable<String> stage) {
-      this.instance.stage = stage;
-      return this;
-    }
-    
     public TopicGET.Builder description(String description) {
       this.instance.description(description);
-      return this;
-    }
-    
-    public TopicGET.Builder description(JsonNullable<String> description) {
-      this.instance.description = description;
       return this;
     }
     
@@ -728,18 +665,8 @@ public class TopicGET {
       return this;
     }
     
-    public TopicGET.Builder bimSnippet(JsonNullable<BimSnippet> bimSnippet) {
-      this.instance.bimSnippet = bimSnippet;
-      return this;
-    }
-    
     public TopicGET.Builder dueDate(String dueDate) {
       this.instance.dueDate(dueDate);
-      return this;
-    }
-    
-    public TopicGET.Builder dueDate(JsonNullable<String> dueDate) {
-      this.instance.dueDate = dueDate;
       return this;
     }
     

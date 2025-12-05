@@ -3,8 +3,7 @@ package de.openfabtwin.dto;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import java.util.Arrays;
-import org.openapitools.jackson.nullable.JsonNullable;
+import org.springframework.lang.Nullable;
 import jakarta.validation.constraints.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -16,14 +15,14 @@ import jakarta.annotation.Generated;
  */
 
 @JsonTypeName("comment_POST")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-03T12:04:39.178099100+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-05T09:23:37.160769500+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
 public class CommentPOST {
 
   private String comment;
 
-  private JsonNullable<String> viewpointGuid = JsonNullable.<String>undefined();
+  private @Nullable String viewpointGuid = null;
 
-  private JsonNullable<String> replyToCommentGuid = JsonNullable.<String>undefined();
+  private @Nullable String replyToCommentGuid = null;
 
   public CommentPOST() {
     super();
@@ -56,8 +55,8 @@ public class CommentPOST {
     this.comment = comment;
   }
 
-  public CommentPOST viewpointGuid(String viewpointGuid) {
-    this.viewpointGuid = JsonNullable.of(viewpointGuid);
+  public CommentPOST viewpointGuid(@Nullable String viewpointGuid) {
+    this.viewpointGuid = viewpointGuid;
     return this;
   }
 
@@ -68,16 +67,16 @@ public class CommentPOST {
   
   @Schema(name = "viewpoint_guid", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("viewpoint_guid")
-  public JsonNullable<String> getViewpointGuid() {
+  public @Nullable String getViewpointGuid() {
     return viewpointGuid;
   }
 
-  public void setViewpointGuid(JsonNullable<String> viewpointGuid) {
+  public void setViewpointGuid(@Nullable String viewpointGuid) {
     this.viewpointGuid = viewpointGuid;
   }
 
-  public CommentPOST replyToCommentGuid(String replyToCommentGuid) {
-    this.replyToCommentGuid = JsonNullable.of(replyToCommentGuid);
+  public CommentPOST replyToCommentGuid(@Nullable String replyToCommentGuid) {
+    this.replyToCommentGuid = replyToCommentGuid;
     return this;
   }
 
@@ -88,11 +87,11 @@ public class CommentPOST {
   
   @Schema(name = "reply_to_comment_guid", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("reply_to_comment_guid")
-  public JsonNullable<String> getReplyToCommentGuid() {
+  public @Nullable String getReplyToCommentGuid() {
     return replyToCommentGuid;
   }
 
-  public void setReplyToCommentGuid(JsonNullable<String> replyToCommentGuid) {
+  public void setReplyToCommentGuid(@Nullable String replyToCommentGuid) {
     this.replyToCommentGuid = replyToCommentGuid;
   }
 
@@ -106,24 +105,13 @@ public class CommentPOST {
     }
     CommentPOST commentPOST = (CommentPOST) o;
     return Objects.equals(this.comment, commentPOST.comment) &&
-        equalsNullable(this.viewpointGuid, commentPOST.viewpointGuid) &&
-        equalsNullable(this.replyToCommentGuid, commentPOST.replyToCommentGuid);
-  }
-
-  private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
-    return a == b || (a != null && b != null && a.isPresent() && b.isPresent() && Objects.deepEquals(a.get(), b.get()));
+        Objects.equals(this.viewpointGuid, commentPOST.viewpointGuid) &&
+        Objects.equals(this.replyToCommentGuid, commentPOST.replyToCommentGuid);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(comment, hashCodeNullable(viewpointGuid), hashCodeNullable(replyToCommentGuid));
-  }
-
-  private static <T> int hashCodeNullable(JsonNullable<T> a) {
-    if (a == null) {
-      return 1;
-    }
-    return a.isPresent() ? Arrays.deepHashCode(new Object[]{a.get()}) : 31;
+    return Objects.hash(comment, viewpointGuid, replyToCommentGuid);
   }
 
   @Override
@@ -177,18 +165,8 @@ public class CommentPOST {
       return this;
     }
     
-    public CommentPOST.Builder viewpointGuid(JsonNullable<String> viewpointGuid) {
-      this.instance.viewpointGuid = viewpointGuid;
-      return this;
-    }
-    
     public CommentPOST.Builder replyToCommentGuid(String replyToCommentGuid) {
       this.instance.replyToCommentGuid(replyToCommentGuid);
-      return this;
-    }
-    
-    public CommentPOST.Builder replyToCommentGuid(JsonNullable<String> replyToCommentGuid) {
-      this.instance.replyToCommentGuid = replyToCommentGuid;
       return this;
     }
     

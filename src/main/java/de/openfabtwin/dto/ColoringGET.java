@@ -5,9 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import org.openapitools.jackson.nullable.JsonNullable;
+import org.springframework.lang.Nullable;
 import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -20,22 +19,22 @@ import jakarta.annotation.Generated;
 
 @Schema(name = "coloring_GET", description = "Schema for coloring GET, BCF REST API.")
 @JsonTypeName("coloring_GET")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-03T12:04:39.178099100+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-05T09:23:37.160769500+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
 public class ColoringGET {
 
   @Valid
-  private JsonNullable<List<@Valid Coloring>> coloring = JsonNullable.<List<@Valid Coloring>>undefined();
+  private @Nullable List<@Valid Coloring> coloring;
 
-  public ColoringGET coloring(List<@Valid Coloring> coloring) {
-    this.coloring = JsonNullable.of(coloring);
+  public ColoringGET coloring(@Nullable List<@Valid Coloring> coloring) {
+    this.coloring = coloring;
     return this;
   }
 
   public ColoringGET addColoringItem(Coloring coloringItem) {
-    if (this.coloring == null || !this.coloring.isPresent()) {
-      this.coloring = JsonNullable.of(new ArrayList<>());
+    if (this.coloring == null) {
+      this.coloring = new ArrayList<>();
     }
-    this.coloring.get().add(coloringItem);
+    this.coloring.add(coloringItem);
     return this;
   }
 
@@ -46,11 +45,11 @@ public class ColoringGET {
   @Valid 
   @Schema(name = "coloring", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("coloring")
-  public JsonNullable<List<@Valid Coloring>> getColoring() {
+  public @Nullable List<@Valid Coloring> getColoring() {
     return coloring;
   }
 
-  public void setColoring(JsonNullable<List<@Valid Coloring>> coloring) {
+  public void setColoring(@Nullable List<@Valid Coloring> coloring) {
     this.coloring = coloring;
   }
 
@@ -63,23 +62,12 @@ public class ColoringGET {
       return false;
     }
     ColoringGET coloringGET = (ColoringGET) o;
-    return equalsNullable(this.coloring, coloringGET.coloring);
-  }
-
-  private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
-    return a == b || (a != null && b != null && a.isPresent() && b.isPresent() && Objects.deepEquals(a.get(), b.get()));
+    return Objects.equals(this.coloring, coloringGET.coloring);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(hashCodeNullable(coloring));
-  }
-
-  private static <T> int hashCodeNullable(JsonNullable<T> a) {
-    if (a == null) {
-      return 1;
-    }
-    return a.isPresent() ? Arrays.deepHashCode(new Object[]{a.get()}) : 31;
+    return Objects.hash(coloring);
   }
 
   @Override
@@ -121,11 +109,6 @@ public class ColoringGET {
 
     public ColoringGET.Builder coloring(List<Coloring> coloring) {
       this.instance.coloring(coloring);
-      return this;
-    }
-    
-    public ColoringGET.Builder coloring(JsonNullable<List<Coloring>> coloring) {
-      this.instance.coloring = coloring;
       return this;
     }
     

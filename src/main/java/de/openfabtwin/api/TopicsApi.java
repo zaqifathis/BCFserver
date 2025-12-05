@@ -17,27 +17,20 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.NativeWebRequest;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import java.util.List;
-import java.util.Optional;
+
 import jakarta.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-03T12:04:39.178099100+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-05T09:23:37.160769500+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
 @Validated
 @Tag(name = "Topics", description = "the Topics API")
 public interface TopicsApi {
-
-    default Optional<NativeWebRequest> getRequest() {
-        return Optional.empty();
-    }
 
     String PATH_CREATE_TOPIC = "/bcf/{version}/projects/{project_id}/topics";
     /**
@@ -66,23 +59,11 @@ public interface TopicsApi {
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    default ResponseEntity<TopicGET> createTopic(
+    ResponseEntity<TopicGET> createTopic(
         @NotNull @Parameter(name = "version", description = "", required = true, in = ParameterIn.PATH) @PathVariable("version") String version,
         @NotNull @Parameter(name = "project_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("project_id") String projectId,
         @Parameter(name = "TopicPOST", description = "", required = true) @Valid @RequestBody TopicPOST topicPOST
-    ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"creation_author\" : \"creation_author\", \"server_assigend_id\" : \"server_assigend_id\", \"reference_links\" : [ \"reference_links\", \"reference_links\" ], \"due_date\" : \"due_date\", \"index\" : 0, \"description\" : \"description\", \"creation_date\" : \"creation_date\", \"topic_type\" : \"topic_type\", \"title\" : \"title\", \"priority\" : \"priority\", \"modified_date\" : \"modified_date\", \"topic_status\" : \"topic_status\", \"labels\" : [ \"labels\", \"labels\" ], \"authorization\" : { \"topic_actions\" : [ \"update\", \"update\" ], \"topic_status\" : [ \"topic_status\", \"topic_status\" ] }, \"modified_author\" : \"modified_author\", \"stage\" : \"stage\", \"bim_snippet\" : { \"reference\" : \"reference\", \"snippet_type\" : \"snippet_type\", \"is_external\" : \"is_external\", \"reference_schema\" : \"reference_schema\" }, \"guid\" : \"guid\", \"assigned_to\" : \"assigned_to\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
 
     String PATH_DELETE_TOPIC = "/bcf/{version}/projects/{project_id}/topics/{topic_id}";
@@ -108,14 +89,11 @@ public interface TopicsApi {
         method = RequestMethod.DELETE,
         value = TopicsApi.PATH_DELETE_TOPIC
     )
-    default ResponseEntity<Void> deleteTopic(
+    ResponseEntity<Void> deleteTopic(
         @NotNull @Parameter(name = "version", description = "", required = true, in = ParameterIn.PATH) @PathVariable("version") String version,
         @NotNull @Parameter(name = "project_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("project_id") String projectId,
         @NotNull @Parameter(name = "topic_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("topic_id") String topicId
-    ) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
 
     String PATH_GET_TOPIC_BY_ID = "/bcf/{version}/projects/{project_id}/topics/{topic_id}";
@@ -144,23 +122,11 @@ public interface TopicsApi {
         value = TopicsApi.PATH_GET_TOPIC_BY_ID,
         produces = { "application/json" }
     )
-    default ResponseEntity<TopicGET> getTopicById(
+    ResponseEntity<TopicGET> getTopicById(
         @NotNull @Parameter(name = "version", description = "", required = true, in = ParameterIn.PATH) @PathVariable("version") String version,
         @NotNull @Parameter(name = "project_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("project_id") String projectId,
         @NotNull @Parameter(name = "topic_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("topic_id") String topicId
-    ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"creation_author\" : \"creation_author\", \"server_assigend_id\" : \"server_assigend_id\", \"reference_links\" : [ \"reference_links\", \"reference_links\" ], \"due_date\" : \"due_date\", \"index\" : 0, \"description\" : \"description\", \"creation_date\" : \"creation_date\", \"topic_type\" : \"topic_type\", \"title\" : \"title\", \"priority\" : \"priority\", \"modified_date\" : \"modified_date\", \"topic_status\" : \"topic_status\", \"labels\" : [ \"labels\", \"labels\" ], \"authorization\" : { \"topic_actions\" : [ \"update\", \"update\" ], \"topic_status\" : [ \"topic_status\", \"topic_status\" ] }, \"modified_author\" : \"modified_author\", \"stage\" : \"stage\", \"bim_snippet\" : { \"reference\" : \"reference\", \"snippet_type\" : \"snippet_type\", \"is_external\" : \"is_external\", \"reference_schema\" : \"reference_schema\" }, \"guid\" : \"guid\", \"assigned_to\" : \"assigned_to\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
 
     String PATH_GET_TOPICS = "/bcf/{version}/projects/{project_id}/topics";
@@ -192,26 +158,14 @@ public interface TopicsApi {
         value = TopicsApi.PATH_GET_TOPICS,
         produces = { "application/json" }
     )
-    default ResponseEntity<List<TopicGET>> getTopics(
+    ResponseEntity<List<TopicGET>> getTopics(
         @NotNull @Parameter(name = "version", description = "", required = true, in = ParameterIn.PATH) @PathVariable("version") String version,
         @NotNull @Parameter(name = "project_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("project_id") String projectId,
         @Parameter(name = "$filter", description = "Filter items by property values, see [OData Filtering](http://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part1-protocol.html#sec_SystemQueryOptionfilter)  |parameter|type|description| |---------|----|-----------| |creation_author|string|userId of the creation author (value from extensions)| |modified_author|string|userId of the modified author (value from extensions)| |assigned_to|string|userId of the assigned person (value from extensions)| |stage|string|stage this topic is part of (value from extensions)| |topic_status|string|status of a topic (value from extensions)| |topic_type|string|type of a topic (value from extensions)| |creation_date|datetime|creation date of a topic| |modified_date|datetime|modification date of a topic| |labels|array (string)|labels of a topic (value from extensions)| |priority|string|priority of a topic (value from extensions)| ", in = ParameterIn.QUERY) @Valid @RequestParam(value = "$filter", required = false) @Nullable String $filter,
         @Parameter(name = "$orderby", description = "Filter items by property values, see [OData Filtering](http://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part1-protocol.html#sec_SystemQueryOptionfilter)  |parameter|description| |---------|-----------| |creation_date|creation date of a topic| |modified_date|modification date of a topic| |server_assigned_id|the server_assigned_id of the topic| |index|index of a topic| ", in = ParameterIn.QUERY) @Valid @RequestParam(value = "$orderby", required = false) @Nullable String $orderby,
         @Parameter(name = "$top", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "$top", required = false) @Nullable String $top,
         @Parameter(name = "$skip", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "$skip", required = false) @Nullable String $skip
-    ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "[ { \"creation_author\" : \"creation_author\", \"server_assigend_id\" : \"server_assigend_id\", \"reference_links\" : [ \"reference_links\", \"reference_links\" ], \"due_date\" : \"due_date\", \"index\" : 0, \"description\" : \"description\", \"creation_date\" : \"creation_date\", \"topic_type\" : \"topic_type\", \"title\" : \"title\", \"priority\" : \"priority\", \"modified_date\" : \"modified_date\", \"topic_status\" : \"topic_status\", \"labels\" : [ \"labels\", \"labels\" ], \"authorization\" : { \"topic_actions\" : [ \"update\", \"update\" ], \"topic_status\" : [ \"topic_status\", \"topic_status\" ] }, \"modified_author\" : \"modified_author\", \"stage\" : \"stage\", \"bim_snippet\" : { \"reference\" : \"reference\", \"snippet_type\" : \"snippet_type\", \"is_external\" : \"is_external\", \"reference_schema\" : \"reference_schema\" }, \"guid\" : \"guid\", \"assigned_to\" : \"assigned_to\" }, { \"creation_author\" : \"creation_author\", \"server_assigend_id\" : \"server_assigend_id\", \"reference_links\" : [ \"reference_links\", \"reference_links\" ], \"due_date\" : \"due_date\", \"index\" : 0, \"description\" : \"description\", \"creation_date\" : \"creation_date\", \"topic_type\" : \"topic_type\", \"title\" : \"title\", \"priority\" : \"priority\", \"modified_date\" : \"modified_date\", \"topic_status\" : \"topic_status\", \"labels\" : [ \"labels\", \"labels\" ], \"authorization\" : { \"topic_actions\" : [ \"update\", \"update\" ], \"topic_status\" : [ \"topic_status\", \"topic_status\" ] }, \"modified_author\" : \"modified_author\", \"stage\" : \"stage\", \"bim_snippet\" : { \"reference\" : \"reference\", \"snippet_type\" : \"snippet_type\", \"is_external\" : \"is_external\", \"reference_schema\" : \"reference_schema\" }, \"guid\" : \"guid\", \"assigned_to\" : \"assigned_to\" } ]";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
 
     String PATH_UPDATE_TOPIC = "/bcf/{version}/projects/{project_id}/topics/{topic_id}";
@@ -242,23 +196,11 @@ public interface TopicsApi {
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    default ResponseEntity<TopicGET> updateTopic(
+    ResponseEntity<TopicGET> updateTopic(
         @NotNull @Parameter(name = "version", description = "", required = true, in = ParameterIn.PATH) @PathVariable("version") String version,
         @NotNull @Parameter(name = "project_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("project_id") String projectId,
         @NotNull @Parameter(name = "topic_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("topic_id") String topicId,
         @Parameter(name = "TopicPUT", description = "", required = true) @Valid @RequestBody TopicPUT topicPUT
-    ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"creation_author\" : \"creation_author\", \"server_assigend_id\" : \"server_assigend_id\", \"reference_links\" : [ \"reference_links\", \"reference_links\" ], \"due_date\" : \"due_date\", \"index\" : 0, \"description\" : \"description\", \"creation_date\" : \"creation_date\", \"topic_type\" : \"topic_type\", \"title\" : \"title\", \"priority\" : \"priority\", \"modified_date\" : \"modified_date\", \"topic_status\" : \"topic_status\", \"labels\" : [ \"labels\", \"labels\" ], \"authorization\" : { \"topic_actions\" : [ \"update\", \"update\" ], \"topic_status\" : [ \"topic_status\", \"topic_status\" ] }, \"modified_author\" : \"modified_author\", \"stage\" : \"stage\", \"bim_snippet\" : { \"reference\" : \"reference\", \"snippet_type\" : \"snippet_type\", \"is_external\" : \"is_external\", \"reference_schema\" : \"reference_schema\" }, \"guid\" : \"guid\", \"assigned_to\" : \"assigned_to\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
 }

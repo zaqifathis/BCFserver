@@ -5,9 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.lang.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -21,27 +19,27 @@ import jakarta.annotation.Generated;
  */
 
 @JsonTypeName("viewpoint_GET")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-03T12:04:39.178099100+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-05T09:23:37.160769500+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
 public class ViewpointGET {
 
-  private JsonNullable<Integer> index = JsonNullable.<Integer>undefined();
+  private @Nullable Integer index = null;
 
   private String guid;
 
-  private JsonNullable<OrthogonalCamera> orthogonalCamera = JsonNullable.<OrthogonalCamera>undefined();
+  private @Nullable OrthogonalCamera orthogonalCamera = null;
 
-  private JsonNullable<PerspectiveCamera> perspectiveCamera = JsonNullable.<PerspectiveCamera>undefined();
-
-  @Valid
-  private JsonNullable<List<@Valid Line>> lines = JsonNullable.<List<@Valid Line>>undefined();
+  private @Nullable PerspectiveCamera perspectiveCamera = null;
 
   @Valid
-  private JsonNullable<List<@Valid ClippingPlane>> clippingPlanes = JsonNullable.<List<@Valid ClippingPlane>>undefined();
+  private @Nullable List<@Valid Line> lines;
 
   @Valid
-  private JsonNullable<List<@Valid BitmapGET>> bitmaps = JsonNullable.<List<@Valid BitmapGET>>undefined();
+  private @Nullable List<@Valid ClippingPlane> clippingPlanes;
 
-  private JsonNullable<SnapshotGET> snapshot = JsonNullable.<SnapshotGET>undefined();
+  @Valid
+  private @Nullable List<@Valid BitmapGET> bitmaps;
+
+  private @Nullable SnapshotGET snapshot = null;
 
   private @Nullable ViewpointGETAuthorization authorization;
 
@@ -56,8 +54,8 @@ public class ViewpointGET {
     this.guid = guid;
   }
 
-  public ViewpointGET index(Integer index) {
-    this.index = JsonNullable.of(index);
+  public ViewpointGET index(@Nullable Integer index) {
+    this.index = index;
     return this;
   }
 
@@ -68,11 +66,11 @@ public class ViewpointGET {
   
   @Schema(name = "index", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("index")
-  public JsonNullable<Integer> getIndex() {
+  public @Nullable Integer getIndex() {
     return index;
   }
 
-  public void setIndex(JsonNullable<Integer> index) {
+  public void setIndex(@Nullable Integer index) {
     this.index = index;
   }
 
@@ -96,8 +94,8 @@ public class ViewpointGET {
     this.guid = guid;
   }
 
-  public ViewpointGET orthogonalCamera(OrthogonalCamera orthogonalCamera) {
-    this.orthogonalCamera = JsonNullable.of(orthogonalCamera);
+  public ViewpointGET orthogonalCamera(@Nullable OrthogonalCamera orthogonalCamera) {
+    this.orthogonalCamera = orthogonalCamera;
     return this;
   }
 
@@ -108,16 +106,16 @@ public class ViewpointGET {
   @Valid 
   @Schema(name = "orthogonal_camera", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("orthogonal_camera")
-  public JsonNullable<OrthogonalCamera> getOrthogonalCamera() {
+  public @Nullable OrthogonalCamera getOrthogonalCamera() {
     return orthogonalCamera;
   }
 
-  public void setOrthogonalCamera(JsonNullable<OrthogonalCamera> orthogonalCamera) {
+  public void setOrthogonalCamera(@Nullable OrthogonalCamera orthogonalCamera) {
     this.orthogonalCamera = orthogonalCamera;
   }
 
-  public ViewpointGET perspectiveCamera(PerspectiveCamera perspectiveCamera) {
-    this.perspectiveCamera = JsonNullable.of(perspectiveCamera);
+  public ViewpointGET perspectiveCamera(@Nullable PerspectiveCamera perspectiveCamera) {
+    this.perspectiveCamera = perspectiveCamera;
     return this;
   }
 
@@ -128,24 +126,24 @@ public class ViewpointGET {
   @Valid 
   @Schema(name = "perspective_camera", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("perspective_camera")
-  public JsonNullable<PerspectiveCamera> getPerspectiveCamera() {
+  public @Nullable PerspectiveCamera getPerspectiveCamera() {
     return perspectiveCamera;
   }
 
-  public void setPerspectiveCamera(JsonNullable<PerspectiveCamera> perspectiveCamera) {
+  public void setPerspectiveCamera(@Nullable PerspectiveCamera perspectiveCamera) {
     this.perspectiveCamera = perspectiveCamera;
   }
 
-  public ViewpointGET lines(List<@Valid Line> lines) {
-    this.lines = JsonNullable.of(lines);
+  public ViewpointGET lines(@Nullable List<@Valid Line> lines) {
+    this.lines = lines;
     return this;
   }
 
   public ViewpointGET addLinesItem(Line linesItem) {
-    if (this.lines == null || !this.lines.isPresent()) {
-      this.lines = JsonNullable.of(new ArrayList<>());
+    if (this.lines == null) {
+      this.lines = new ArrayList<>();
     }
-    this.lines.get().add(linesItem);
+    this.lines.add(linesItem);
     return this;
   }
 
@@ -156,24 +154,24 @@ public class ViewpointGET {
   @Valid 
   @Schema(name = "lines", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("lines")
-  public JsonNullable<List<@Valid Line>> getLines() {
+  public @Nullable List<@Valid Line> getLines() {
     return lines;
   }
 
-  public void setLines(JsonNullable<List<@Valid Line>> lines) {
+  public void setLines(@Nullable List<@Valid Line> lines) {
     this.lines = lines;
   }
 
-  public ViewpointGET clippingPlanes(List<@Valid ClippingPlane> clippingPlanes) {
-    this.clippingPlanes = JsonNullable.of(clippingPlanes);
+  public ViewpointGET clippingPlanes(@Nullable List<@Valid ClippingPlane> clippingPlanes) {
+    this.clippingPlanes = clippingPlanes;
     return this;
   }
 
   public ViewpointGET addClippingPlanesItem(ClippingPlane clippingPlanesItem) {
-    if (this.clippingPlanes == null || !this.clippingPlanes.isPresent()) {
-      this.clippingPlanes = JsonNullable.of(new ArrayList<>());
+    if (this.clippingPlanes == null) {
+      this.clippingPlanes = new ArrayList<>();
     }
-    this.clippingPlanes.get().add(clippingPlanesItem);
+    this.clippingPlanes.add(clippingPlanesItem);
     return this;
   }
 
@@ -184,24 +182,24 @@ public class ViewpointGET {
   @Valid 
   @Schema(name = "clipping_planes", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("clipping_planes")
-  public JsonNullable<List<@Valid ClippingPlane>> getClippingPlanes() {
+  public @Nullable List<@Valid ClippingPlane> getClippingPlanes() {
     return clippingPlanes;
   }
 
-  public void setClippingPlanes(JsonNullable<List<@Valid ClippingPlane>> clippingPlanes) {
+  public void setClippingPlanes(@Nullable List<@Valid ClippingPlane> clippingPlanes) {
     this.clippingPlanes = clippingPlanes;
   }
 
-  public ViewpointGET bitmaps(List<@Valid BitmapGET> bitmaps) {
-    this.bitmaps = JsonNullable.of(bitmaps);
+  public ViewpointGET bitmaps(@Nullable List<@Valid BitmapGET> bitmaps) {
+    this.bitmaps = bitmaps;
     return this;
   }
 
   public ViewpointGET addBitmapsItem(BitmapGET bitmapsItem) {
-    if (this.bitmaps == null || !this.bitmaps.isPresent()) {
-      this.bitmaps = JsonNullable.of(new ArrayList<>());
+    if (this.bitmaps == null) {
+      this.bitmaps = new ArrayList<>();
     }
-    this.bitmaps.get().add(bitmapsItem);
+    this.bitmaps.add(bitmapsItem);
     return this;
   }
 
@@ -212,16 +210,16 @@ public class ViewpointGET {
   @Valid 
   @Schema(name = "bitmaps", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("bitmaps")
-  public JsonNullable<List<@Valid BitmapGET>> getBitmaps() {
+  public @Nullable List<@Valid BitmapGET> getBitmaps() {
     return bitmaps;
   }
 
-  public void setBitmaps(JsonNullable<List<@Valid BitmapGET>> bitmaps) {
+  public void setBitmaps(@Nullable List<@Valid BitmapGET> bitmaps) {
     this.bitmaps = bitmaps;
   }
 
-  public ViewpointGET snapshot(SnapshotGET snapshot) {
-    this.snapshot = JsonNullable.of(snapshot);
+  public ViewpointGET snapshot(@Nullable SnapshotGET snapshot) {
+    this.snapshot = snapshot;
     return this;
   }
 
@@ -232,11 +230,11 @@ public class ViewpointGET {
   @Valid 
   @Schema(name = "snapshot", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("snapshot")
-  public JsonNullable<SnapshotGET> getSnapshot() {
+  public @Nullable SnapshotGET getSnapshot() {
     return snapshot;
   }
 
-  public void setSnapshot(JsonNullable<SnapshotGET> snapshot) {
+  public void setSnapshot(@Nullable SnapshotGET snapshot) {
     this.snapshot = snapshot;
   }
 
@@ -269,31 +267,20 @@ public class ViewpointGET {
       return false;
     }
     ViewpointGET viewpointGET = (ViewpointGET) o;
-    return equalsNullable(this.index, viewpointGET.index) &&
+    return Objects.equals(this.index, viewpointGET.index) &&
         Objects.equals(this.guid, viewpointGET.guid) &&
-        equalsNullable(this.orthogonalCamera, viewpointGET.orthogonalCamera) &&
-        equalsNullable(this.perspectiveCamera, viewpointGET.perspectiveCamera) &&
-        equalsNullable(this.lines, viewpointGET.lines) &&
-        equalsNullable(this.clippingPlanes, viewpointGET.clippingPlanes) &&
-        equalsNullable(this.bitmaps, viewpointGET.bitmaps) &&
-        equalsNullable(this.snapshot, viewpointGET.snapshot) &&
+        Objects.equals(this.orthogonalCamera, viewpointGET.orthogonalCamera) &&
+        Objects.equals(this.perspectiveCamera, viewpointGET.perspectiveCamera) &&
+        Objects.equals(this.lines, viewpointGET.lines) &&
+        Objects.equals(this.clippingPlanes, viewpointGET.clippingPlanes) &&
+        Objects.equals(this.bitmaps, viewpointGET.bitmaps) &&
+        Objects.equals(this.snapshot, viewpointGET.snapshot) &&
         Objects.equals(this.authorization, viewpointGET.authorization);
-  }
-
-  private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
-    return a == b || (a != null && b != null && a.isPresent() && b.isPresent() && Objects.deepEquals(a.get(), b.get()));
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(hashCodeNullable(index), guid, hashCodeNullable(orthogonalCamera), hashCodeNullable(perspectiveCamera), hashCodeNullable(lines), hashCodeNullable(clippingPlanes), hashCodeNullable(bitmaps), hashCodeNullable(snapshot), authorization);
-  }
-
-  private static <T> int hashCodeNullable(JsonNullable<T> a) {
-    if (a == null) {
-      return 1;
-    }
-    return a.isPresent() ? Arrays.deepHashCode(new Object[]{a.get()}) : 31;
+    return Objects.hash(index, guid, orthogonalCamera, perspectiveCamera, lines, clippingPlanes, bitmaps, snapshot, authorization);
   }
 
   @Override
@@ -354,11 +341,6 @@ public class ViewpointGET {
       return this;
     }
     
-    public ViewpointGET.Builder index(JsonNullable<Integer> index) {
-      this.instance.index = index;
-      return this;
-    }
-    
     public ViewpointGET.Builder guid(String guid) {
       this.instance.guid(guid);
       return this;
@@ -369,18 +351,8 @@ public class ViewpointGET {
       return this;
     }
     
-    public ViewpointGET.Builder orthogonalCamera(JsonNullable<OrthogonalCamera> orthogonalCamera) {
-      this.instance.orthogonalCamera = orthogonalCamera;
-      return this;
-    }
-    
     public ViewpointGET.Builder perspectiveCamera(PerspectiveCamera perspectiveCamera) {
       this.instance.perspectiveCamera(perspectiveCamera);
-      return this;
-    }
-    
-    public ViewpointGET.Builder perspectiveCamera(JsonNullable<PerspectiveCamera> perspectiveCamera) {
-      this.instance.perspectiveCamera = perspectiveCamera;
       return this;
     }
     
@@ -389,18 +361,8 @@ public class ViewpointGET {
       return this;
     }
     
-    public ViewpointGET.Builder lines(JsonNullable<List<Line>> lines) {
-      this.instance.lines = lines;
-      return this;
-    }
-    
     public ViewpointGET.Builder clippingPlanes(List<ClippingPlane> clippingPlanes) {
       this.instance.clippingPlanes(clippingPlanes);
-      return this;
-    }
-    
-    public ViewpointGET.Builder clippingPlanes(JsonNullable<List<ClippingPlane>> clippingPlanes) {
-      this.instance.clippingPlanes = clippingPlanes;
       return this;
     }
     
@@ -409,18 +371,8 @@ public class ViewpointGET {
       return this;
     }
     
-    public ViewpointGET.Builder bitmaps(JsonNullable<List<BitmapGET>> bitmaps) {
-      this.instance.bitmaps = bitmaps;
-      return this;
-    }
-    
     public ViewpointGET.Builder snapshot(SnapshotGET snapshot) {
       this.instance.snapshot(snapshot);
-      return this;
-    }
-    
-    public ViewpointGET.Builder snapshot(JsonNullable<SnapshotGET> snapshot) {
-      this.instance.snapshot = snapshot;
       return this;
     }
     

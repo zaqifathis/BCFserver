@@ -16,27 +16,20 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.NativeWebRequest;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import java.util.List;
-import java.util.Optional;
+
 import jakarta.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-03T12:04:39.178099100+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-05T09:23:37.160769500+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
 @Validated
 @Tag(name = "Events", description = "the Events API")
 public interface EventsApi {
-
-    default Optional<NativeWebRequest> getRequest() {
-        return Optional.empty();
-    }
 
     String PATH_GET_COMMENT_EVENT = "/bcf/{version}/projects/{project_id}/topics/{topic_id}/comments/{comment_id}/events";
     /**
@@ -69,7 +62,7 @@ public interface EventsApi {
         value = EventsApi.PATH_GET_COMMENT_EVENT,
         produces = { "application/json" }
     )
-    default ResponseEntity<List<CommentEventGET>> getCommentEvent(
+    ResponseEntity<List<CommentEventGET>> getCommentEvent(
         @NotNull @Parameter(name = "version", description = "", required = true, in = ParameterIn.PATH) @PathVariable("version") String version,
         @NotNull @Parameter(name = "project_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("project_id") String projectId,
         @NotNull @Parameter(name = "topic_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("topic_id") String topicId,
@@ -78,19 +71,7 @@ public interface EventsApi {
         @Parameter(name = "$skip", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "$skip", required = false) @Nullable String $skip,
         @Parameter(name = "$filter", description = "Filter items by property values, see [OData Filtering](http://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part1-protocol.html#sec_SystemQueryOptionfilter)  |parameter|type|description| |---------|----|-----------| |author|string|userId of the author (value from extensions)| |date|datetime|date of the event| |type|string|type of the event (value from Comment event types, table above)| ", in = ParameterIn.QUERY) @Valid @RequestParam(value = "$filter", required = false) @Nullable String $filter,
         @Parameter(name = "$orderby", description = "Filter items by property values, see [OData Filtering](http://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part1-protocol.html#sec_SystemQueryOptionfilter)  |parameter|description| |---------|-----------| |date|date of the event| ", in = ParameterIn.QUERY) @Valid @RequestParam(value = "$orderby", required = false) @Nullable String $orderby
-    ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "[ { \"date\" : \"date\", \"author\" : \"author\", \"topic_guid\" : \"topic_guid\", \"actions\" : [ { \"type\" : \"type\", \"value\" : \"value\" }, { \"type\" : \"type\", \"value\" : \"value\" } ], \"comment_guid\" : \"comment_guid\" }, { \"date\" : \"date\", \"author\" : \"author\", \"topic_guid\" : \"topic_guid\", \"actions\" : [ { \"type\" : \"type\", \"value\" : \"value\" }, { \"type\" : \"type\", \"value\" : \"value\" } ], \"comment_guid\" : \"comment_guid\" } ]";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
 
     String PATH_GET_COMMENT_EVENTS = "/bcf/{version}/projects/{project_id}/topics/comments/events";
@@ -122,26 +103,14 @@ public interface EventsApi {
         value = EventsApi.PATH_GET_COMMENT_EVENTS,
         produces = { "application/json" }
     )
-    default ResponseEntity<List<CommentEventGET>> getCommentEvents(
+    ResponseEntity<List<CommentEventGET>> getCommentEvents(
         @NotNull @Parameter(name = "version", description = "", required = true, in = ParameterIn.PATH) @PathVariable("version") String version,
         @NotNull @Parameter(name = "project_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("project_id") String projectId,
         @Parameter(name = "$top", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "$top", required = false) @Nullable String $top,
         @Parameter(name = "$skip", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "$skip", required = false) @Nullable String $skip,
         @Parameter(name = "$filter", description = "Filter items by property values, see [OData Filtering](http://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part1-protocol.html#sec_SystemQueryOptionfilter)  |parameter|type|description| |---------|----|-----------| |comment_guid|string|guid of the comment | |topic_guid|string|guid of the topic | |author|string|userId of the author (value from extensions)| |date|datetime|date of the event| |type|string|type of the event (value from Comment event types, table above)| ", in = ParameterIn.QUERY) @Valid @RequestParam(value = "$filter", required = false) @Nullable String $filter,
         @Parameter(name = "$orderby", description = "Filter items by property values, see [OData Filtering](http://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part1-protocol.html#sec_SystemQueryOptionfilter)  |parameter|description| |---------|-----------| |date|date of the event| ", in = ParameterIn.QUERY) @Valid @RequestParam(value = "$orderby", required = false) @Nullable String $orderby
-    ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "[ { \"date\" : \"date\", \"author\" : \"author\", \"topic_guid\" : \"topic_guid\", \"actions\" : [ { \"type\" : \"type\", \"value\" : \"value\" }, { \"type\" : \"type\", \"value\" : \"value\" } ], \"comment_guid\" : \"comment_guid\" }, { \"date\" : \"date\", \"author\" : \"author\", \"topic_guid\" : \"topic_guid\", \"actions\" : [ { \"type\" : \"type\", \"value\" : \"value\" }, { \"type\" : \"type\", \"value\" : \"value\" } ], \"comment_guid\" : \"comment_guid\" } ]";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
 
     String PATH_GET_EVENTS = "/bcf/{version}/projects/{project_id}/topics/events";
@@ -173,26 +142,14 @@ public interface EventsApi {
         value = EventsApi.PATH_GET_EVENTS,
         produces = { "application/json" }
     )
-    default ResponseEntity<List<TopicEventGET>> getEvents(
+    ResponseEntity<List<TopicEventGET>> getEvents(
         @NotNull @Parameter(name = "version", description = "", required = true, in = ParameterIn.PATH) @PathVariable("version") String version,
         @NotNull @Parameter(name = "project_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("project_id") String projectId,
         @Parameter(name = "$top", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "$top", required = false) @Nullable String $top,
         @Parameter(name = "$skip", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "$skip", required = false) @Nullable String $skip,
         @Parameter(name = "$filter", description = "Filter items by property values, see [OData Filtering](http://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part1-protocol.html#sec_SystemQueryOptionfilter)  |parameter|type|description| |---------|----|-----------| |topic_guid|string|guid of the topic | |author|string|userId of the author (value from extensions)| |type|string|type of the event (value from Topic event types, table above)| |date|datetime|date of the event| ", in = ParameterIn.QUERY) @Valid @RequestParam(value = "$filter", required = false) @Nullable String $filter,
         @Parameter(name = "$orderby", description = "Filter items by property values, see [OData Filtering](http://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part1-protocol.html#sec_SystemQueryOptionfilter)  |parameter|description| |---------|-----------| |date|date of the event| ", in = ParameterIn.QUERY) @Valid @RequestParam(value = "$orderby", required = false) @Nullable String $orderby
-    ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "[ { \"date\" : \"date\", \"author\" : \"author\", \"topic_guid\" : \"topic_guid\", \"actions\" : [ { \"type\" : \"type\", \"value\" : \"value\" }, { \"type\" : \"type\", \"value\" : \"value\" } ] }, { \"date\" : \"date\", \"author\" : \"author\", \"topic_guid\" : \"topic_guid\", \"actions\" : [ { \"type\" : \"type\", \"value\" : \"value\" }, { \"type\" : \"type\", \"value\" : \"value\" } ] } ]";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
 
     String PATH_GET_TOPIC_EVENTS = "/bcf/{version}/projects/{project_id}/topics/{topic_id}/events";
@@ -225,7 +182,7 @@ public interface EventsApi {
         value = EventsApi.PATH_GET_TOPIC_EVENTS,
         produces = { "application/json" }
     )
-    default ResponseEntity<List<TopicEventGET>> getTopicEvents(
+    ResponseEntity<List<TopicEventGET>> getTopicEvents(
         @NotNull @Parameter(name = "version", description = "", required = true, in = ParameterIn.PATH) @PathVariable("version") String version,
         @NotNull @Parameter(name = "project_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("project_id") String projectId,
         @NotNull @Parameter(name = "topic_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("topic_id") String topicId,
@@ -233,18 +190,6 @@ public interface EventsApi {
         @Parameter(name = "$skip", description = "", in = ParameterIn.QUERY) @Valid @RequestParam(value = "$skip", required = false) @Nullable String $skip,
         @Parameter(name = "$filter", description = "Filter items by property values, see [OData Filtering](http://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part1-protocol.html#sec_SystemQueryOptionfilter)  |parameter|type|description| |---------|----|-----------| |author|string|userId of the author (value from extensions)| |type|string|type of the event (value from Topic event types, table above)| |date|datetime|date of the event| ", in = ParameterIn.QUERY) @Valid @RequestParam(value = "$filter", required = false) @Nullable String $filter,
         @Parameter(name = "$orderby", description = "Filter items by property values, see [OData Filtering](http://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part1-protocol.html#sec_SystemQueryOptionfilter)  |parameter|description| |---------|-----------| |date|date of the event| ", in = ParameterIn.QUERY) @Valid @RequestParam(value = "$orderby", required = false) @Nullable String $orderby
-    ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "[ { \"date\" : \"date\", \"author\" : \"author\", \"topic_guid\" : \"topic_guid\", \"actions\" : [ { \"type\" : \"type\", \"value\" : \"value\" }, { \"type\" : \"type\", \"value\" : \"value\" } ] }, { \"date\" : \"date\", \"author\" : \"author\", \"topic_guid\" : \"topic_guid\", \"actions\" : [ { \"type\" : \"type\", \"value\" : \"value\" }, { \"type\" : \"type\", \"value\" : \"value\" } ] } ]";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
 }

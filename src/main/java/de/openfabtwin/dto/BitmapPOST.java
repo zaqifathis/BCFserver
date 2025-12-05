@@ -7,8 +7,6 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.lang.Nullable;
 import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -21,7 +19,7 @@ import jakarta.annotation.Generated;
  */
 
 @JsonTypeName("bitmap_POST")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-03T12:04:39.178099100+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-05T09:23:37.160769500+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
 public class BitmapPOST {
 
   /**
@@ -63,7 +61,7 @@ public class BitmapPOST {
 
   private @Nullable String bitmapData;
 
-  private JsonNullable<Location> location = JsonNullable.<Location>undefined();
+  private @Nullable Location location = null;
 
   private @Nullable Direction normal;
 
@@ -111,8 +109,8 @@ public class BitmapPOST {
     this.bitmapData = bitmapData;
   }
 
-  public BitmapPOST location(Location location) {
-    this.location = JsonNullable.of(location);
+  public BitmapPOST location(@Nullable Location location) {
+    this.location = location;
     return this;
   }
 
@@ -123,11 +121,11 @@ public class BitmapPOST {
   @Valid 
   @Schema(name = "location", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("location")
-  public JsonNullable<Location> getLocation() {
+  public @Nullable Location getLocation() {
     return location;
   }
 
-  public void setLocation(JsonNullable<Location> location) {
+  public void setLocation(@Nullable Location location) {
     this.location = location;
   }
 
@@ -202,26 +200,15 @@ public class BitmapPOST {
     BitmapPOST bitmapPOST = (BitmapPOST) o;
     return Objects.equals(this.bitmapType, bitmapPOST.bitmapType) &&
         Objects.equals(this.bitmapData, bitmapPOST.bitmapData) &&
-        equalsNullable(this.location, bitmapPOST.location) &&
+        Objects.equals(this.location, bitmapPOST.location) &&
         Objects.equals(this.normal, bitmapPOST.normal) &&
         Objects.equals(this.up, bitmapPOST.up) &&
         Objects.equals(this.height, bitmapPOST.height);
   }
 
-  private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
-    return a == b || (a != null && b != null && a.isPresent() && b.isPresent() && Objects.deepEquals(a.get(), b.get()));
-  }
-
   @Override
   public int hashCode() {
-    return Objects.hash(bitmapType, bitmapData, hashCodeNullable(location), normal, up, height);
-  }
-
-  private static <T> int hashCodeNullable(JsonNullable<T> a) {
-    if (a == null) {
-      return 1;
-    }
-    return a.isPresent() ? Arrays.deepHashCode(new Object[]{a.get()}) : 31;
+    return Objects.hash(bitmapType, bitmapData, location, normal, up, height);
   }
 
   @Override
@@ -283,11 +270,6 @@ public class BitmapPOST {
     
     public BitmapPOST.Builder location(Location location) {
       this.instance.location(location);
-      return this;
-    }
-    
-    public BitmapPOST.Builder location(JsonNullable<Location> location) {
-      this.instance.location = location;
       return this;
     }
     

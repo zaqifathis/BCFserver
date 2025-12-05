@@ -3,8 +3,7 @@ package de.openfabtwin.dto;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import java.util.Arrays;
-import org.openapitools.jackson.nullable.JsonNullable;
+import org.springframework.lang.Nullable;
 import jakarta.validation.constraints.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -16,12 +15,12 @@ import jakarta.annotation.Generated;
  */
 
 @JsonTypeName("event_action")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-03T12:04:39.178099100+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-05T09:23:37.160769500+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
 public class EventAction {
 
   private String type;
 
-  private JsonNullable<String> value = JsonNullable.<String>undefined();
+  private @Nullable String value = null;
 
   public EventAction() {
     super();
@@ -54,8 +53,8 @@ public class EventAction {
     this.type = type;
   }
 
-  public EventAction value(String value) {
-    this.value = JsonNullable.of(value);
+  public EventAction value(@Nullable String value) {
+    this.value = value;
     return this;
   }
 
@@ -66,11 +65,11 @@ public class EventAction {
   
   @Schema(name = "value", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("value")
-  public JsonNullable<String> getValue() {
+  public @Nullable String getValue() {
     return value;
   }
 
-  public void setValue(JsonNullable<String> value) {
+  public void setValue(@Nullable String value) {
     this.value = value;
   }
 
@@ -84,23 +83,12 @@ public class EventAction {
     }
     EventAction eventAction = (EventAction) o;
     return Objects.equals(this.type, eventAction.type) &&
-        equalsNullable(this.value, eventAction.value);
-  }
-
-  private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
-    return a == b || (a != null && b != null && a.isPresent() && b.isPresent() && Objects.deepEquals(a.get(), b.get()));
+        Objects.equals(this.value, eventAction.value);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(type, hashCodeNullable(value));
-  }
-
-  private static <T> int hashCodeNullable(JsonNullable<T> a) {
-    if (a == null) {
-      return 1;
-    }
-    return a.isPresent() ? Arrays.deepHashCode(new Object[]{a.get()}) : 31;
+    return Objects.hash(type, value);
   }
 
   @Override
@@ -149,11 +137,6 @@ public class EventAction {
     
     public EventAction.Builder value(String value) {
       this.instance.value(value);
-      return this;
-    }
-    
-    public EventAction.Builder value(JsonNullable<String> value) {
-      this.instance.value = value;
       return this;
     }
     

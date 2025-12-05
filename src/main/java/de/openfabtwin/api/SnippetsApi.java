@@ -12,26 +12,18 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.NativeWebRequest;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
-
-import java.util.Optional;
 import jakarta.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-03T12:04:39.178099100+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-05T09:23:37.160769500+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
 @Validated
 @Tag(name = "Snippets", description = "the Snippets API")
 public interface SnippetsApi {
-
-    default Optional<NativeWebRequest> getRequest() {
-        return Optional.empty();
-    }
 
     String PATH_GET_TOPIC_SNIPPET = "/bcf/{version}/projects/{project_id}/topics/{topic_id}/snippet";
     /**
@@ -59,14 +51,11 @@ public interface SnippetsApi {
         value = SnippetsApi.PATH_GET_TOPIC_SNIPPET,
         produces = { "application/octet-stream" }
     )
-    default ResponseEntity<org.springframework.core.io.Resource> getTopicSnippet(
+    ResponseEntity<org.springframework.core.io.Resource> getTopicSnippet(
         @NotNull @Parameter(name = "version", description = "", required = true, in = ParameterIn.PATH) @PathVariable("version") String version,
         @NotNull @Parameter(name = "project_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("project_id") String projectId,
         @NotNull @Parameter(name = "topic_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("topic_id") String topicId
-    ) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
 
     String PATH_UPDATE_TOPIC_SNIPPET = "/bcf/{version}/projects/{project_id}/topics/{topic_id}/snippet";
@@ -94,14 +83,11 @@ public interface SnippetsApi {
         value = SnippetsApi.PATH_UPDATE_TOPIC_SNIPPET,
         consumes = { "application/octet-stream" }
     )
-    default ResponseEntity<Void> updateTopicSnippet(
+    ResponseEntity<Void> updateTopicSnippet(
         @NotNull @Parameter(name = "version", description = "", required = true, in = ParameterIn.PATH) @PathVariable("version") String version,
         @NotNull @Parameter(name = "project_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("project_id") String projectId,
         @NotNull @Parameter(name = "topic_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("topic_id") String topicId,
         @Parameter(name = "body", description = "", required = true) @Valid @RequestBody org.springframework.core.io.Resource body
-    ) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
 }

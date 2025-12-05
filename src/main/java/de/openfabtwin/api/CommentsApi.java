@@ -17,27 +17,20 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.NativeWebRequest;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import java.util.List;
-import java.util.Optional;
+
 import jakarta.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-03T12:04:39.178099100+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-05T09:23:37.160769500+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
 @Validated
 @Tag(name = "Comments", description = "the Comments API")
 public interface CommentsApi {
-
-    default Optional<NativeWebRequest> getRequest() {
-        return Optional.empty();
-    }
 
     String PATH_CREATE_COMMENT = "/bcf/{version}/projects/{project_id}/topics/{topic_id}/comments";
     /**
@@ -67,24 +60,12 @@ public interface CommentsApi {
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    default ResponseEntity<CommentGET> createComment(
+    ResponseEntity<CommentGET> createComment(
         @NotNull @Parameter(name = "version", description = "", required = true, in = ParameterIn.PATH) @PathVariable("version") String version,
         @NotNull @Parameter(name = "project_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("project_id") String projectId,
         @NotNull @Parameter(name = "topic_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("topic_id") String topicId,
         @Parameter(name = "CommentPOST", description = "", required = true) @Valid @RequestBody CommentPOST commentPOST
-    ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"date\" : \"date\", \"authorization\" : { \"comment_actions\" : [ \"update\", \"update\" ] }, \"modified_author\" : \"modified_author\", \"author\" : \"author\", \"guid\" : \"guid\", \"topic_guid\" : \"topic_guid\", \"comment\" : \"comment\", \"viewpoint_guid\" : \"viewpoint_guid\", \"reply_to_comment_guid\" : \"reply_to_comment_guid\", \"modified_date\" : \"modified_date\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
 
     String PATH_DELETE_COMMENT = "/bcf/{version}/projects/{project_id}/topics/{topic_id}/comments/{comment_id}";
@@ -111,15 +92,12 @@ public interface CommentsApi {
         method = RequestMethod.DELETE,
         value = CommentsApi.PATH_DELETE_COMMENT
     )
-    default ResponseEntity<Void> deleteComment(
+    ResponseEntity<Void> deleteComment(
         @NotNull @Parameter(name = "version", description = "", required = true, in = ParameterIn.PATH) @PathVariable("version") String version,
         @NotNull @Parameter(name = "project_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("project_id") String projectId,
         @NotNull @Parameter(name = "topic_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("topic_id") String topicId,
         @NotNull @Parameter(name = "comment_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("comment_id") String commentId
-    ) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
 
     String PATH_GET_COMMENT_BY_ID = "/bcf/{version}/projects/{project_id}/topics/{topic_id}/comments/{comment_id}";
@@ -149,24 +127,12 @@ public interface CommentsApi {
         value = CommentsApi.PATH_GET_COMMENT_BY_ID,
         produces = { "application/json" }
     )
-    default ResponseEntity<CommentGET> getCommentById(
+    ResponseEntity<CommentGET> getCommentById(
         @NotNull @Parameter(name = "version", description = "", required = true, in = ParameterIn.PATH) @PathVariable("version") String version,
         @NotNull @Parameter(name = "project_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("project_id") String projectId,
         @NotNull @Parameter(name = "topic_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("topic_id") String topicId,
         @NotNull @Parameter(name = "comment_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("comment_id") String commentId
-    ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"date\" : \"date\", \"authorization\" : { \"comment_actions\" : [ \"update\", \"update\" ] }, \"modified_author\" : \"modified_author\", \"author\" : \"author\", \"guid\" : \"guid\", \"topic_guid\" : \"topic_guid\", \"comment\" : \"comment\", \"viewpoint_guid\" : \"viewpoint_guid\", \"reply_to_comment_guid\" : \"reply_to_comment_guid\", \"modified_date\" : \"modified_date\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
 
     String PATH_GET_TOPIC_COMMENT = "/bcf/{version}/projects/{project_id}/topics/{topic_id}/comments";
@@ -197,25 +163,13 @@ public interface CommentsApi {
         value = CommentsApi.PATH_GET_TOPIC_COMMENT,
         produces = { "application/json" }
     )
-    default ResponseEntity<List<CommentGET>> getTopicComment(
+    ResponseEntity<List<CommentGET>> getTopicComment(
         @NotNull @Parameter(name = "version", description = "", required = true, in = ParameterIn.PATH) @PathVariable("version") String version,
         @NotNull @Parameter(name = "project_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("project_id") String projectId,
         @NotNull @Parameter(name = "topic_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("topic_id") String topicId,
         @Parameter(name = "$filter", description = "Filter items by property values, see [OData Filtering](http://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part1-protocol.html#sec_SystemQueryOptionfilter)  |parameter|type|description| |---------|----|-----------| |author|string|userId of the author (value from extensions)| |date|datetime|creation date of a comment| ", in = ParameterIn.QUERY) @Valid @RequestParam(value = "$filter", required = false) @Nullable String $filter,
         @Parameter(name = "$orderby", description = "Filter items by property values, see [OData Filtering](http://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part1-protocol.html#sec_SystemQueryOptionfilter)  |parameter|description| |---------|-----------| |date|creation date of a comment| ", in = ParameterIn.QUERY) @Valid @RequestParam(value = "$orderby", required = false) @Nullable String $orderby
-    ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "[ { \"date\" : \"date\", \"authorization\" : { \"comment_actions\" : [ \"update\", \"update\" ] }, \"modified_author\" : \"modified_author\", \"author\" : \"author\", \"guid\" : \"guid\", \"topic_guid\" : \"topic_guid\", \"comment\" : \"comment\", \"viewpoint_guid\" : \"viewpoint_guid\", \"reply_to_comment_guid\" : \"reply_to_comment_guid\", \"modified_date\" : \"modified_date\" }, { \"date\" : \"date\", \"authorization\" : { \"comment_actions\" : [ \"update\", \"update\" ] }, \"modified_author\" : \"modified_author\", \"author\" : \"author\", \"guid\" : \"guid\", \"topic_guid\" : \"topic_guid\", \"comment\" : \"comment\", \"viewpoint_guid\" : \"viewpoint_guid\", \"reply_to_comment_guid\" : \"reply_to_comment_guid\", \"modified_date\" : \"modified_date\" } ]";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
 
     String PATH_UPDATE_COMMENT = "/bcf/{version}/projects/{project_id}/topics/{topic_id}/comments/{comment_id}";
@@ -247,24 +201,12 @@ public interface CommentsApi {
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    default ResponseEntity<CommentGET> updateComment(
+    ResponseEntity<CommentGET> updateComment(
         @NotNull @Parameter(name = "version", description = "", required = true, in = ParameterIn.PATH) @PathVariable("version") String version,
         @NotNull @Parameter(name = "project_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("project_id") String projectId,
         @NotNull @Parameter(name = "topic_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("topic_id") String topicId,
         @NotNull @Parameter(name = "comment_id", description = "", required = true, in = ParameterIn.PATH) @PathVariable("comment_id") String commentId,
         @Parameter(name = "CommentPUT", description = "", required = true) @Valid @RequestBody CommentPUT commentPUT
-    ) {
-        getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
-                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
-                    String exampleString = "{ \"date\" : \"date\", \"authorization\" : { \"comment_actions\" : [ \"update\", \"update\" ] }, \"modified_author\" : \"modified_author\", \"author\" : \"author\", \"guid\" : \"guid\", \"topic_guid\" : \"topic_guid\", \"comment\" : \"comment\", \"viewpoint_guid\" : \"viewpoint_guid\", \"reply_to_comment_guid\" : \"reply_to_comment_guid\", \"modified_date\" : \"modified_date\" }";
-                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
-                    break;
-                }
-            }
-        });
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
+    );
 
 }

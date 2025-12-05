@@ -5,9 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import org.openapitools.jackson.nullable.JsonNullable;
+import org.springframework.lang.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,36 +19,36 @@ import jakarta.annotation.Generated;
  */
 
 @JsonTypeName("topic_POST")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-03T12:04:39.178099100+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-05T09:23:37.160769500+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
 public class TopicPOST {
 
-  private JsonNullable<String> guid = JsonNullable.<String>undefined();
+  private @Nullable String guid = null;
 
-  private JsonNullable<String> topicType = JsonNullable.<String>undefined();
+  private @Nullable String topicType = null;
 
-  private JsonNullable<String> topicStatus = JsonNullable.<String>undefined();
+  private @Nullable String topicStatus = null;
 
   @Valid
-  private JsonNullable<List<String>> referenceLinks = JsonNullable.<List<String>>undefined();
+  private @Nullable List<String> referenceLinks;
 
   private String title;
 
-  private JsonNullable<String> priority = JsonNullable.<String>undefined();
+  private @Nullable String priority = null;
 
-  private JsonNullable<Integer> index = JsonNullable.<Integer>undefined();
+  private @Nullable Integer index = null;
 
   @Valid
-  private JsonNullable<List<String>> labels = JsonNullable.<List<String>>undefined();
+  private @Nullable List<String> labels;
 
-  private JsonNullable<String> assignedTo = JsonNullable.<String>undefined();
+  private @Nullable String assignedTo = null;
 
-  private JsonNullable<String> stage = JsonNullable.<String>undefined();
+  private @Nullable String stage = null;
 
-  private JsonNullable<String> description = JsonNullable.<String>undefined();
+  private @Nullable String description = null;
 
-  private JsonNullable<BimSnippet> bimSnippet = JsonNullable.<BimSnippet>undefined();
+  private @Nullable BimSnippet bimSnippet = null;
 
-  private JsonNullable<String> dueDate = JsonNullable.<String>undefined();
+  private @Nullable String dueDate = null;
 
   public TopicPOST() {
     super();
@@ -62,8 +61,8 @@ public class TopicPOST {
     this.title = title;
   }
 
-  public TopicPOST guid(String guid) {
-    this.guid = JsonNullable.of(guid);
+  public TopicPOST guid(@Nullable String guid) {
+    this.guid = guid;
     return this;
   }
 
@@ -74,16 +73,16 @@ public class TopicPOST {
   
   @Schema(name = "guid", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("guid")
-  public JsonNullable<String> getGuid() {
+  public @Nullable String getGuid() {
     return guid;
   }
 
-  public void setGuid(JsonNullable<String> guid) {
+  public void setGuid(@Nullable String guid) {
     this.guid = guid;
   }
 
-  public TopicPOST topicType(String topicType) {
-    this.topicType = JsonNullable.of(topicType);
+  public TopicPOST topicType(@Nullable String topicType) {
+    this.topicType = topicType;
     return this;
   }
 
@@ -94,16 +93,16 @@ public class TopicPOST {
   
   @Schema(name = "topic_type", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("topic_type")
-  public JsonNullable<String> getTopicType() {
+  public @Nullable String getTopicType() {
     return topicType;
   }
 
-  public void setTopicType(JsonNullable<String> topicType) {
+  public void setTopicType(@Nullable String topicType) {
     this.topicType = topicType;
   }
 
-  public TopicPOST topicStatus(String topicStatus) {
-    this.topicStatus = JsonNullable.of(topicStatus);
+  public TopicPOST topicStatus(@Nullable String topicStatus) {
+    this.topicStatus = topicStatus;
     return this;
   }
 
@@ -114,24 +113,24 @@ public class TopicPOST {
   
   @Schema(name = "topic_status", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("topic_status")
-  public JsonNullable<String> getTopicStatus() {
+  public @Nullable String getTopicStatus() {
     return topicStatus;
   }
 
-  public void setTopicStatus(JsonNullable<String> topicStatus) {
+  public void setTopicStatus(@Nullable String topicStatus) {
     this.topicStatus = topicStatus;
   }
 
-  public TopicPOST referenceLinks(List<String> referenceLinks) {
-    this.referenceLinks = JsonNullable.of(referenceLinks);
+  public TopicPOST referenceLinks(@Nullable List<String> referenceLinks) {
+    this.referenceLinks = referenceLinks;
     return this;
   }
 
   public TopicPOST addReferenceLinksItem(String referenceLinksItem) {
-    if (this.referenceLinks == null || !this.referenceLinks.isPresent()) {
-      this.referenceLinks = JsonNullable.of(new ArrayList<>());
+    if (this.referenceLinks == null) {
+      this.referenceLinks = new ArrayList<>();
     }
-    this.referenceLinks.get().add(referenceLinksItem);
+    this.referenceLinks.add(referenceLinksItem);
     return this;
   }
 
@@ -142,11 +141,11 @@ public class TopicPOST {
   
   @Schema(name = "reference_links", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("reference_links")
-  public JsonNullable<List<String>> getReferenceLinks() {
+  public @Nullable List<String> getReferenceLinks() {
     return referenceLinks;
   }
 
-  public void setReferenceLinks(JsonNullable<List<String>> referenceLinks) {
+  public void setReferenceLinks(@Nullable List<String> referenceLinks) {
     this.referenceLinks = referenceLinks;
   }
 
@@ -170,8 +169,8 @@ public class TopicPOST {
     this.title = title;
   }
 
-  public TopicPOST priority(String priority) {
-    this.priority = JsonNullable.of(priority);
+  public TopicPOST priority(@Nullable String priority) {
+    this.priority = priority;
     return this;
   }
 
@@ -182,16 +181,16 @@ public class TopicPOST {
   
   @Schema(name = "priority", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("priority")
-  public JsonNullable<String> getPriority() {
+  public @Nullable String getPriority() {
     return priority;
   }
 
-  public void setPriority(JsonNullable<String> priority) {
+  public void setPriority(@Nullable String priority) {
     this.priority = priority;
   }
 
-  public TopicPOST index(Integer index) {
-    this.index = JsonNullable.of(index);
+  public TopicPOST index(@Nullable Integer index) {
+    this.index = index;
     return this;
   }
 
@@ -202,24 +201,24 @@ public class TopicPOST {
   
   @Schema(name = "index", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("index")
-  public JsonNullable<Integer> getIndex() {
+  public @Nullable Integer getIndex() {
     return index;
   }
 
-  public void setIndex(JsonNullable<Integer> index) {
+  public void setIndex(@Nullable Integer index) {
     this.index = index;
   }
 
-  public TopicPOST labels(List<String> labels) {
-    this.labels = JsonNullable.of(labels);
+  public TopicPOST labels(@Nullable List<String> labels) {
+    this.labels = labels;
     return this;
   }
 
   public TopicPOST addLabelsItem(String labelsItem) {
-    if (this.labels == null || !this.labels.isPresent()) {
-      this.labels = JsonNullable.of(new ArrayList<>());
+    if (this.labels == null) {
+      this.labels = new ArrayList<>();
     }
-    this.labels.get().add(labelsItem);
+    this.labels.add(labelsItem);
     return this;
   }
 
@@ -230,16 +229,16 @@ public class TopicPOST {
   
   @Schema(name = "labels", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("labels")
-  public JsonNullable<List<String>> getLabels() {
+  public @Nullable List<String> getLabels() {
     return labels;
   }
 
-  public void setLabels(JsonNullable<List<String>> labels) {
+  public void setLabels(@Nullable List<String> labels) {
     this.labels = labels;
   }
 
-  public TopicPOST assignedTo(String assignedTo) {
-    this.assignedTo = JsonNullable.of(assignedTo);
+  public TopicPOST assignedTo(@Nullable String assignedTo) {
+    this.assignedTo = assignedTo;
     return this;
   }
 
@@ -250,16 +249,16 @@ public class TopicPOST {
   
   @Schema(name = "assigned_to", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("assigned_to")
-  public JsonNullable<String> getAssignedTo() {
+  public @Nullable String getAssignedTo() {
     return assignedTo;
   }
 
-  public void setAssignedTo(JsonNullable<String> assignedTo) {
+  public void setAssignedTo(@Nullable String assignedTo) {
     this.assignedTo = assignedTo;
   }
 
-  public TopicPOST stage(String stage) {
-    this.stage = JsonNullable.of(stage);
+  public TopicPOST stage(@Nullable String stage) {
+    this.stage = stage;
     return this;
   }
 
@@ -270,16 +269,16 @@ public class TopicPOST {
   
   @Schema(name = "stage", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("stage")
-  public JsonNullable<String> getStage() {
+  public @Nullable String getStage() {
     return stage;
   }
 
-  public void setStage(JsonNullable<String> stage) {
+  public void setStage(@Nullable String stage) {
     this.stage = stage;
   }
 
-  public TopicPOST description(String description) {
-    this.description = JsonNullable.of(description);
+  public TopicPOST description(@Nullable String description) {
+    this.description = description;
     return this;
   }
 
@@ -290,16 +289,16 @@ public class TopicPOST {
   
   @Schema(name = "description", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("description")
-  public JsonNullable<String> getDescription() {
+  public @Nullable String getDescription() {
     return description;
   }
 
-  public void setDescription(JsonNullable<String> description) {
+  public void setDescription(@Nullable String description) {
     this.description = description;
   }
 
-  public TopicPOST bimSnippet(BimSnippet bimSnippet) {
-    this.bimSnippet = JsonNullable.of(bimSnippet);
+  public TopicPOST bimSnippet(@Nullable BimSnippet bimSnippet) {
+    this.bimSnippet = bimSnippet;
     return this;
   }
 
@@ -310,16 +309,16 @@ public class TopicPOST {
   @Valid 
   @Schema(name = "bim_snippet", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("bim_snippet")
-  public JsonNullable<BimSnippet> getBimSnippet() {
+  public @Nullable BimSnippet getBimSnippet() {
     return bimSnippet;
   }
 
-  public void setBimSnippet(JsonNullable<BimSnippet> bimSnippet) {
+  public void setBimSnippet(@Nullable BimSnippet bimSnippet) {
     this.bimSnippet = bimSnippet;
   }
 
-  public TopicPOST dueDate(String dueDate) {
-    this.dueDate = JsonNullable.of(dueDate);
+  public TopicPOST dueDate(@Nullable String dueDate) {
+    this.dueDate = dueDate;
     return this;
   }
 
@@ -330,11 +329,11 @@ public class TopicPOST {
   
   @Schema(name = "due_date", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("due_date")
-  public JsonNullable<String> getDueDate() {
+  public @Nullable String getDueDate() {
     return dueDate;
   }
 
-  public void setDueDate(JsonNullable<String> dueDate) {
+  public void setDueDate(@Nullable String dueDate) {
     this.dueDate = dueDate;
   }
 
@@ -347,35 +346,24 @@ public class TopicPOST {
       return false;
     }
     TopicPOST topicPOST = (TopicPOST) o;
-    return equalsNullable(this.guid, topicPOST.guid) &&
-        equalsNullable(this.topicType, topicPOST.topicType) &&
-        equalsNullable(this.topicStatus, topicPOST.topicStatus) &&
-        equalsNullable(this.referenceLinks, topicPOST.referenceLinks) &&
+    return Objects.equals(this.guid, topicPOST.guid) &&
+        Objects.equals(this.topicType, topicPOST.topicType) &&
+        Objects.equals(this.topicStatus, topicPOST.topicStatus) &&
+        Objects.equals(this.referenceLinks, topicPOST.referenceLinks) &&
         Objects.equals(this.title, topicPOST.title) &&
-        equalsNullable(this.priority, topicPOST.priority) &&
-        equalsNullable(this.index, topicPOST.index) &&
-        equalsNullable(this.labels, topicPOST.labels) &&
-        equalsNullable(this.assignedTo, topicPOST.assignedTo) &&
-        equalsNullable(this.stage, topicPOST.stage) &&
-        equalsNullable(this.description, topicPOST.description) &&
-        equalsNullable(this.bimSnippet, topicPOST.bimSnippet) &&
-        equalsNullable(this.dueDate, topicPOST.dueDate);
-  }
-
-  private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
-    return a == b || (a != null && b != null && a.isPresent() && b.isPresent() && Objects.deepEquals(a.get(), b.get()));
+        Objects.equals(this.priority, topicPOST.priority) &&
+        Objects.equals(this.index, topicPOST.index) &&
+        Objects.equals(this.labels, topicPOST.labels) &&
+        Objects.equals(this.assignedTo, topicPOST.assignedTo) &&
+        Objects.equals(this.stage, topicPOST.stage) &&
+        Objects.equals(this.description, topicPOST.description) &&
+        Objects.equals(this.bimSnippet, topicPOST.bimSnippet) &&
+        Objects.equals(this.dueDate, topicPOST.dueDate);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(hashCodeNullable(guid), hashCodeNullable(topicType), hashCodeNullable(topicStatus), hashCodeNullable(referenceLinks), title, hashCodeNullable(priority), hashCodeNullable(index), hashCodeNullable(labels), hashCodeNullable(assignedTo), hashCodeNullable(stage), hashCodeNullable(description), hashCodeNullable(bimSnippet), hashCodeNullable(dueDate));
-  }
-
-  private static <T> int hashCodeNullable(JsonNullable<T> a) {
-    if (a == null) {
-      return 1;
-    }
-    return a.isPresent() ? Arrays.deepHashCode(new Object[]{a.get()}) : 31;
+    return Objects.hash(guid, topicType, topicStatus, referenceLinks, title, priority, index, labels, assignedTo, stage, description, bimSnippet, dueDate);
   }
 
   @Override
@@ -444,18 +432,8 @@ public class TopicPOST {
       return this;
     }
     
-    public TopicPOST.Builder guid(JsonNullable<String> guid) {
-      this.instance.guid = guid;
-      return this;
-    }
-    
     public TopicPOST.Builder topicType(String topicType) {
       this.instance.topicType(topicType);
-      return this;
-    }
-    
-    public TopicPOST.Builder topicType(JsonNullable<String> topicType) {
-      this.instance.topicType = topicType;
       return this;
     }
     
@@ -464,18 +442,8 @@ public class TopicPOST {
       return this;
     }
     
-    public TopicPOST.Builder topicStatus(JsonNullable<String> topicStatus) {
-      this.instance.topicStatus = topicStatus;
-      return this;
-    }
-    
     public TopicPOST.Builder referenceLinks(List<String> referenceLinks) {
       this.instance.referenceLinks(referenceLinks);
-      return this;
-    }
-    
-    public TopicPOST.Builder referenceLinks(JsonNullable<List<String>> referenceLinks) {
-      this.instance.referenceLinks = referenceLinks;
       return this;
     }
     
@@ -489,18 +457,8 @@ public class TopicPOST {
       return this;
     }
     
-    public TopicPOST.Builder priority(JsonNullable<String> priority) {
-      this.instance.priority = priority;
-      return this;
-    }
-    
     public TopicPOST.Builder index(Integer index) {
       this.instance.index(index);
-      return this;
-    }
-    
-    public TopicPOST.Builder index(JsonNullable<Integer> index) {
-      this.instance.index = index;
       return this;
     }
     
@@ -509,18 +467,8 @@ public class TopicPOST {
       return this;
     }
     
-    public TopicPOST.Builder labels(JsonNullable<List<String>> labels) {
-      this.instance.labels = labels;
-      return this;
-    }
-    
     public TopicPOST.Builder assignedTo(String assignedTo) {
       this.instance.assignedTo(assignedTo);
-      return this;
-    }
-    
-    public TopicPOST.Builder assignedTo(JsonNullable<String> assignedTo) {
-      this.instance.assignedTo = assignedTo;
       return this;
     }
     
@@ -529,18 +477,8 @@ public class TopicPOST {
       return this;
     }
     
-    public TopicPOST.Builder stage(JsonNullable<String> stage) {
-      this.instance.stage = stage;
-      return this;
-    }
-    
     public TopicPOST.Builder description(String description) {
       this.instance.description(description);
-      return this;
-    }
-    
-    public TopicPOST.Builder description(JsonNullable<String> description) {
-      this.instance.description = description;
       return this;
     }
     
@@ -549,18 +487,8 @@ public class TopicPOST {
       return this;
     }
     
-    public TopicPOST.Builder bimSnippet(JsonNullable<BimSnippet> bimSnippet) {
-      this.instance.bimSnippet = bimSnippet;
-      return this;
-    }
-    
     public TopicPOST.Builder dueDate(String dueDate) {
       this.instance.dueDate(dueDate);
-      return this;
-    }
-    
-    public TopicPOST.Builder dueDate(JsonNullable<String> dueDate) {
-      this.instance.dueDate = dueDate;
       return this;
     }
     

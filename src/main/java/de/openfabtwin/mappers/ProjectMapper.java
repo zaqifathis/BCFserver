@@ -1,8 +1,8 @@
 package de.openfabtwin.mappers;
 
-import de.openfabtwin.dto.ExtensionsGET;
-import de.openfabtwin.dto.ProjectGET;
-import de.openfabtwin.dto.ProjectGETAuthorization;
+import de.openfabtwin.dto.generated.ExtensionsGET;
+import de.openfabtwin.dto.generated.ProjectGET;
+import de.openfabtwin.dto.generated.ProjectGETAuthorization;
 import de.openfabtwin.entities.ExtensionEntity;
 import de.openfabtwin.entities.ProjectEntity;
 import de.openfabtwin.services.ProjectService;

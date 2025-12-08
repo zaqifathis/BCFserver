@@ -1,10 +1,10 @@
 package de.openfabtwin.services;
 
-import de.openfabtwin.dto.ExtensionsGET.CommentActionsEnum;
-import de.openfabtwin.dto.ExtensionsGET.TopicActionsEnum;
-import de.openfabtwin.dto.ProjectGETAuthorization.ProjectActionsEnum;
-import de.openfabtwin.dto.ProjectPUT;
-import de.openfabtwin.ProjectPOST;
+import de.openfabtwin.dto.generated.ExtensionsGET.CommentActionsEnum;
+import de.openfabtwin.dto.generated.ExtensionsGET.TopicActionsEnum;
+import de.openfabtwin.dto.generated.ProjectGETAuthorization.ProjectActionsEnum;
+import de.openfabtwin.dto.generated.ProjectPUT;
+import de.openfabtwin.dto.ProjectPOST;
 import de.openfabtwin.entities.ExtensionEntity;
 import de.openfabtwin.entities.ProjectEntity;
 import de.openfabtwin.ResourceNotFoundException;

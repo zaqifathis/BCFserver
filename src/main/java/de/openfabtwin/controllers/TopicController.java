@@ -1,10 +1,10 @@
 package de.openfabtwin.controllers;
 
 import de.openfabtwin.BcfProperties;
-import de.openfabtwin.api.TopicsApi;
-import de.openfabtwin.dto.TopicGET;
-import de.openfabtwin.dto.TopicPOST;
-import de.openfabtwin.dto.TopicPUT;
+import de.openfabtwin.api.generated.TopicsApi;
+import de.openfabtwin.dto.generated.TopicGET;
+import de.openfabtwin.dto.generated.TopicPOST;
+import de.openfabtwin.dto.generated.TopicPUT;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

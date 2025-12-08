@@ -1,11 +1,11 @@
 package de.openfabtwin.controllers;
 
-import de.openfabtwin.api.ProjectApi;
+import de.openfabtwin.api.generated.ProjectApi;
 import de.openfabtwin.BcfProperties;
-import de.openfabtwin.dto.ExtensionsGET;
-import de.openfabtwin.dto.ProjectGET;
-import de.openfabtwin.dto.ProjectPUT;
-import de.openfabtwin.ProjectPOST;
+import de.openfabtwin.dto.generated.ExtensionsGET;
+import de.openfabtwin.dto.generated.ProjectGET;
+import de.openfabtwin.dto.generated.ProjectPUT;
+import de.openfabtwin.dto.ProjectPOST;
 import de.openfabtwin.mappers.ProjectMapper;
 import de.openfabtwin.services.ProjectService;
 import lombok.RequiredArgsConstructor;

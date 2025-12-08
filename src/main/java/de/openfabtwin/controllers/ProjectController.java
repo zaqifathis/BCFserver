@@ -1,7 +1,7 @@
 package de.openfabtwin.controllers;
 
 import de.openfabtwin.api.ProjectApi;
-import de.openfabtwin.BcfApiProperties;
+import de.openfabtwin.BcfProperties;
 import de.openfabtwin.dto.ExtensionsGET;
 import de.openfabtwin.dto.ProjectGET;
 import de.openfabtwin.dto.ProjectPUT;
@@ -21,17 +21,11 @@ public class ProjectController implements ProjectApi {
 
     private final ProjectService projectService;
     private final ProjectMapper projectMapper;
-    private final BcfApiProperties props;
-
-    private void validateVersion(String version) {
-        if (!version.equals(props.getVersion())) {
-            throw new IllegalArgumentException("Unsupported API version " + version);
-        }
-    }
+    private final BcfProperties props;
 
     @PostMapping("/bcf/{version}/projects")
     public ResponseEntity<ProjectGET> createProject(@PathVariable String version, @RequestBody ProjectPOST dto) {
-        validateVersion(version);
+        props.validateVersion(version);
         var created = projectService.create(dto);
         var dtoOut  = projectMapper.toDto(created);
         return ResponseEntity.status(201).body(dtoOut );
@@ -39,7 +33,7 @@ public class ProjectController implements ProjectApi {
 
     @Override
     public ResponseEntity<List<ProjectGET>> getAllProjects(String version) {
-        validateVersion(version);
+        props.validateVersion(version);
         List<ProjectGET> projects = projectService.getAllProjects()
                 .stream()
                 .map(projectMapper::toDto)
@@ -49,21 +43,21 @@ public class ProjectController implements ProjectApi {
 
     @Override
     public ResponseEntity<ProjectGET> getProjectById(String version, String projectId) {
-        validateVersion(version);
+        props.validateVersion(version);
         var project = projectService.getProject(projectId);
         return ResponseEntity.ok(projectMapper.toDto(project));
     }
 
     @Override
     public ResponseEntity<ExtensionsGET> getProjectExtension(String version, String projectId) {
-        validateVersion(version);
+        props.validateVersion(version);
         var ext = projectService.getProjectExtension(projectId);
         return ResponseEntity.ok(projectMapper.toExtensionDto(ext));
     }
 
     @Override
     public ResponseEntity<ProjectGET> updateProjectById(String version, String projectId, ProjectPUT projectPUT) {
-        validateVersion(version);
+        props.validateVersion(version);
         var updated = projectService.update(projectId, projectPUT);
         return ResponseEntity.ok(projectMapper.toDto(updated));
     }

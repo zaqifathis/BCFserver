@@ -61,6 +61,7 @@ public class ProjectService {
                 .orElseThrow(() -> new ResourceNotFoundException("Extension not found"));
     }
 
+    // DUMMY DATA
     public static List<ProjectActionsEnum> getProjectActions() {
         List<ProjectActionsEnum> actions = new ArrayList<>();
         actions.add(ProjectActionsEnum.UPDATE);
@@ -69,6 +70,7 @@ public class ProjectService {
         return actions;
     }
 
+    // DUMMY DATA
     public static List<TopicActionsEnum> getTopicActions() {
         List<TopicActionsEnum> actions = new ArrayList<>();
         actions.add(TopicActionsEnum.CREATE_COMMENT);
@@ -77,6 +79,7 @@ public class ProjectService {
         return actions;
     }
 
+    // DUMMY DATA
     public static List<CommentActionsEnum> getCommentActions(){
         List<CommentActionsEnum> actions = new ArrayList<>();
         actions.add(CommentActionsEnum.UPDATE);
@@ -84,6 +87,7 @@ public class ProjectService {
         return actions;
     }
 
+    // DUMMY DATA
     public static ExtensionEntity createDefaultExtension(ProjectEntity project) {
         ExtensionEntity ext = new ExtensionEntity();
         ext.setProject(project);

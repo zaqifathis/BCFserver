@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,6 +19,10 @@ public class TopicEntity {
     @Column(nullable = false, unique = true)
     private String guid;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id", nullable = false)
+    private ProjectEntity project;
+
     @Column(name = "server_assigned_id")
     private String serverAssignedId;
 
@@ -31,7 +36,11 @@ public class TopicEntity {
     private String title;
 
     private String priority;
-    private Integer indexNumber;
+
+    @Column(name = "index")
+    private Integer index;
+
+    @Column(nullable = false)
     private Instant creationDate;
 
     @Column(nullable = false)
@@ -43,8 +52,7 @@ public class TopicEntity {
     private Instant dueDate;
     private String assignedTo;
 
-    @Column(nullable = false)
-    private List<String> stage;
+    private String stage;
 
     @Column(columnDefinition = "TEXT")
     private String description;
@@ -54,4 +62,27 @@ public class TopicEntity {
     @Column(name = "label")
     private List<String> labels;
 
+    @ElementCollection
+    @CollectionTable(name = "topic_reference_links", joinColumns = @JoinColumn(name = "topic_id"))
+    @Column(name = "reference_link")
+    private List<String> referenceLinks;
+
+    // RelatedTopics: only Guid attributes
+    @ElementCollection
+    @CollectionTable(name = "topic_related_topics", joinColumns = @JoinColumn(name = "topic_id"))
+    @Column(name = "related_topic_guid")
+    private List<String> relatedTopics;
+
+    // Complex types:
+    @OneToOne(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
+    private BimSnippetEntity bimSnippet;
+
+    @OneToMany(mappedBy = "topic")
+    private List<DocumentReferenceEntity> documentReferences = new ArrayList<>();
+
+    @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CommentEntity> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ViewPointEntity> viewpoints = new ArrayList<>();
 }

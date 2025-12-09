@@ -3,6 +3,9 @@ package de.openfabtwin.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "projects")
 @Data
@@ -26,4 +29,7 @@ public class ProjectEntity {
 
     @OneToOne(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private ExtensionEntity extensions;
+
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<TopicEntity> topics = new ArrayList<>();
 }

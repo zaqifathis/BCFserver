@@ -9,7 +9,6 @@ import de.openfabtwin.dto.ProjectPOST;
 import de.openfabtwin.entities.ExtensionEntity;
 import de.openfabtwin.entities.ProjectEntity;
 import de.openfabtwin.ResourceNotFoundException;
-import de.openfabtwin.mappers.ProjectMapper;
 import de.openfabtwin.repositories.ExtensionRepository;
 import de.openfabtwin.repositories.ProjectRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +27,6 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final ExtensionRepository extensionRepository;
-    private final ProjectMapper projectMapper;
 
     public List<ProjectEntity> getAllProjects() {
         return projectRepository.findAll();

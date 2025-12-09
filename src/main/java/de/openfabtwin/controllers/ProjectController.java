@@ -23,12 +23,13 @@ public class ProjectController implements ProjectApi {
     private final ProjectMapper projectMapper;
     private final BcfProperties props;
 
+    // TEMPORARY
     @PostMapping("/bcf/{version}/projects")
     public ResponseEntity<ProjectGET> createProject(@PathVariable String version, @RequestBody ProjectPOST dto) {
         props.validateVersion(version);
         var created = projectService.create(dto);
-        var dtoOut  = projectMapper.toDto(created);
-        return ResponseEntity.status(201).body(dtoOut );
+        var createdDto = projectMapper.toDto(created);
+        return ResponseEntity.status(201).body(createdDto);
     }
 
     @Override

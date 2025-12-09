@@ -1,5 +1,6 @@
 package de.openfabtwin.services;
 
+import de.openfabtwin.dto.generated.ExtensionsGET;
 import de.openfabtwin.dto.generated.ExtensionsGET.CommentActionsEnum;
 import de.openfabtwin.dto.generated.ExtensionsGET.TopicActionsEnum;
 import de.openfabtwin.dto.generated.ProjectGETAuthorization.ProjectActionsEnum;
@@ -8,6 +9,7 @@ import de.openfabtwin.dto.ProjectPOST;
 import de.openfabtwin.entities.ExtensionEntity;
 import de.openfabtwin.entities.ProjectEntity;
 import de.openfabtwin.ResourceNotFoundException;
+import de.openfabtwin.mappers.ProjectMapper;
 import de.openfabtwin.repositories.ExtensionRepository;
 import de.openfabtwin.repositories.ProjectRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final ExtensionRepository extensionRepository;
+    private final ProjectMapper projectMapper;
 
     public List<ProjectEntity> getAllProjects() {
         return projectRepository.findAll();
@@ -44,15 +47,14 @@ public class ProjectService {
         return projectRepository.save(project);
     }
 
-    public ProjectEntity create(ProjectPOST dto) { //TODO: connection to user management
+    public ProjectEntity create(ProjectPOST dto) {
         var project = new ProjectEntity();
         project.setGuid(UUID.randomUUID().toString());
         project.setName(dto.getName());
-        project.setAuthor("default@author");
+        project.setAuthor("admin@bcfserver");
         project.setCreatedAt(Instant.now().toString());
-
         ExtensionEntity ext = createDefaultExtension(project);
-        project.setExtensions(ext);
+        project.setExtensions(ext);;
         return projectRepository.save(project);
     }
 
@@ -62,25 +64,49 @@ public class ProjectService {
     }
 
     // DUMMY DATA
-    public static List<ProjectActionsEnum> getProjectActions() {
+    public static List<ProjectActionsEnum> getAuthorizedProjectActions(String roles) {
         List<ProjectActionsEnum> actions = new ArrayList<>();
-        actions.add(ProjectActionsEnum.UPDATE);
-        actions.add(ProjectActionsEnum.CREATE_TOPIC);
-        actions.add(ProjectActionsEnum.CREATE_DOCUMENT);
+        if (roles.equals("admin")) {
+            actions.add(ProjectActionsEnum.UPDATE);
+            actions.add(ProjectActionsEnum.CREATE_TOPIC);
+            actions.add(ProjectActionsEnum.CREATE_DOCUMENT);
+        } else {
+            actions.add(ProjectActionsEnum.CREATE_TOPIC);
+            actions.add(ProjectActionsEnum.CREATE_DOCUMENT);
+        }
+        return actions;
+    }
+
+    public static List<ExtensionsGET.ProjectActionsEnum> getExtensionProjectActions(String roles) {
+        List<ExtensionsGET.ProjectActionsEnum> actions = new ArrayList<>();
+        if (roles.equals("admin")) {
+            actions.add(ExtensionsGET.ProjectActionsEnum.UPDATE);
+            actions.add(ExtensionsGET.ProjectActionsEnum.CREATE_TOPIC);
+            actions.add(ExtensionsGET.ProjectActionsEnum.CREATE_DOCUMENT);
+        } else {
+            actions.add(ExtensionsGET.ProjectActionsEnum.CREATE_TOPIC);
+            actions.add(ExtensionsGET.ProjectActionsEnum.CREATE_DOCUMENT);
+        }
         return actions;
     }
 
     // DUMMY DATA
-    public static List<TopicActionsEnum> getTopicActions() {
+    public static List<TopicActionsEnum> getTopicActions(String roles){
         List<TopicActionsEnum> actions = new ArrayList<>();
-        actions.add(TopicActionsEnum.CREATE_COMMENT);
-        actions.add(TopicActionsEnum.UPDATE);
-        actions.add(TopicActionsEnum.DELETE);
+        if(roles.equals("admin")) {
+            actions.add(TopicActionsEnum.CREATE_COMMENT);
+            actions.add(TopicActionsEnum.UPDATE);
+            actions.add(TopicActionsEnum.DELETE);
+        } else {
+            actions.add(TopicActionsEnum.CREATE_COMMENT);
+            actions.add(TopicActionsEnum.UPDATE);
+        }
+
         return actions;
     }
 
     // DUMMY DATA
-    public static List<CommentActionsEnum> getCommentActions(){
+    public static List<CommentActionsEnum> getCommentActions(String roles){
         List<CommentActionsEnum> actions = new ArrayList<>();
         actions.add(CommentActionsEnum.UPDATE);
         actions.add(CommentActionsEnum.DELETE);
@@ -96,7 +122,7 @@ public class ProjectService {
         ext.setTopicLabel(new ArrayList<>(Arrays.asList("Architecture", "Structure", "MEP")));
         ext.setSnippetType(new ArrayList<>(Arrays.asList("Screenshot", "ModelCutout")));
         ext.setPriority(new ArrayList<>(Arrays.asList("Low", "Medium", "High")));
-        ext.setUsers(new ArrayList<>(Arrays.asList("admin")));
+        ext.setUsers(new ArrayList<>(Arrays.asList("admin@bcfserver", "user@bcfserver")));
         ext.setStage(new ArrayList<>(Arrays.asList("Design", "Construction", "Review")));
 
         return ext;

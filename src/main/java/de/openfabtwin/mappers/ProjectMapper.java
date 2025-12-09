@@ -18,7 +18,7 @@ public class ProjectMapper {
         dto.setProjectId(entity.getGuid());
         dto.setName(entity.getName());
         ProjectGETAuthorization auth = new ProjectGETAuthorization();
-        auth.setProjectActions(ProjectService.getProjectActions());
+        auth.setProjectActions(ProjectService.getAuthorizedProjectActions("admin"));
         dto.setAuthorization(auth);
         return dto;
     }
@@ -32,9 +32,9 @@ public class ProjectMapper {
         dto.setPriority(ext.getPriority());
         dto.setUsers(ext.getUsers());
         dto.setStage(ext.getStage());
-        dto.setProjectActions(List.of(ExtensionsGET.ProjectActionsEnum.UPDATE, ExtensionsGET.ProjectActionsEnum.CREATE_TOPIC, ExtensionsGET.ProjectActionsEnum.CREATE_DOCUMENT));
-        dto.setCommentActions(ProjectService.getCommentActions()); //TODO: project actions should include in extensions
-        dto.setTopicActions(ProjectService.getTopicActions());
+        dto.setProjectActions(ProjectService.getExtensionProjectActions("admin"));
+        dto.setCommentActions(ProjectService.getCommentActions("admin"));
+        dto.setTopicActions(ProjectService.getTopicActions("admin"));
         return dto;
     }
 }

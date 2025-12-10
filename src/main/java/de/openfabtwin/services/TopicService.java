@@ -1,7 +1,6 @@
 package de.openfabtwin.services;
 
-import de.openfabtwin.dto.generated.TopicPOST;
-import de.openfabtwin.entities.ExtensionEntity;
+import de.openfabtwin.generated.dto.TopicPOST;
 import de.openfabtwin.entities.TopicEntity;
 import de.openfabtwin.repositories.TopicRepository;
 import lombok.RequiredArgsConstructor;

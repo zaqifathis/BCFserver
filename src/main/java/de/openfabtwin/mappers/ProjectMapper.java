@@ -1,14 +1,12 @@
 package de.openfabtwin.mappers;
 
-import de.openfabtwin.dto.generated.ExtensionsGET;
-import de.openfabtwin.dto.generated.ProjectGET;
-import de.openfabtwin.dto.generated.ProjectGETAuthorization;
+import de.openfabtwin.generated.dto.ExtensionsGET;
+import de.openfabtwin.generated.dto.ProjectGET;
+import de.openfabtwin.generated.dto.ProjectGETAuthorization;
 import de.openfabtwin.entities.ExtensionEntity;
 import de.openfabtwin.entities.ProjectEntity;
 import de.openfabtwin.services.ProjectService;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class ProjectMapper {

@@ -1,10 +1,10 @@
 package de.openfabtwin.controllers;
 
 import de.openfabtwin.utils.BcfProperties;
-import de.openfabtwin.api.generated.TopicsApi;
-import de.openfabtwin.dto.generated.TopicGET;
-import de.openfabtwin.dto.generated.TopicPOST;
-import de.openfabtwin.dto.generated.TopicPUT;
+import de.openfabtwin.generated.api.TopicsApi;
+import de.openfabtwin.generated.dto.TopicGET;
+import de.openfabtwin.generated.dto.TopicPOST;
+import de.openfabtwin.generated.dto.TopicPUT;
 import de.openfabtwin.entities.TopicEntity;
 import de.openfabtwin.mappers.TopicMapper;
 import de.openfabtwin.services.TopicService;

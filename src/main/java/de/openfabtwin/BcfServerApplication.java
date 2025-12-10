@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class BcFserverApplication {
+public class BcfServerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(BcFserverApplication.class, args);
+		SpringApplication.run(BcfServerApplication.class, args);
 	}
 
 }

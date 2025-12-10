@@ -1,6 +1,6 @@
 package de.openfabtwin.controllers;
 
-import de.openfabtwin.BcfProperties;
+import de.openfabtwin.utils.BcfProperties;
 import de.openfabtwin.api.generated.TopicsApi;
 import de.openfabtwin.dto.generated.TopicGET;
 import de.openfabtwin.dto.generated.TopicPOST;

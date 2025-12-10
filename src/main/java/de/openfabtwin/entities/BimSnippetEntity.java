@@ -12,7 +12,6 @@ public class BimSnippetEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Required in BCF
     @Column(nullable = false)
     private String snippetType;
 

@@ -1,17 +1,15 @@
 package de.openfabtwin.controllers;
 
 import de.openfabtwin.api.generated.ProjectApi;
-import de.openfabtwin.BcfProperties;
+import de.openfabtwin.utils.BcfProperties;
 import de.openfabtwin.dto.generated.ExtensionsGET;
 import de.openfabtwin.dto.generated.ProjectGET;
 import de.openfabtwin.dto.generated.ProjectPUT;
-import de.openfabtwin.dto.ProjectPOST;
 import de.openfabtwin.mappers.ProjectMapper;
 import de.openfabtwin.services.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,15 +20,6 @@ public class ProjectController implements ProjectApi {
     private final ProjectService projectService;
     private final ProjectMapper projectMapper;
     private final BcfProperties props;
-
-    // TEMPORARY
-    @PostMapping("/bcf/{version}/projects")
-    public ResponseEntity<ProjectGET> createProject(@PathVariable String version, @RequestBody ProjectPOST dto) {
-        props.validateVersion(version);
-        var created = projectService.create(dto);
-        var createdDto = projectMapper.toDto(created);
-        return ResponseEntity.status(201).body(createdDto);
-    }
 
     @Override
     public ResponseEntity<List<ProjectGET>> getAllProjects(String version) {

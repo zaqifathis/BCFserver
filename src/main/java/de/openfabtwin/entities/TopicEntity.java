@@ -67,7 +67,6 @@ public class TopicEntity {
     @Column(name = "reference_link")
     private List<String> referenceLinks;
 
-    // RelatedTopics: only Guid attributes
     @ElementCollection
     @CollectionTable(name = "topic_related_topics", joinColumns = @JoinColumn(name = "topic_id"))
     @Column(name = "related_topic_guid")

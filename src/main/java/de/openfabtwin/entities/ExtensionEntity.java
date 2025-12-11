@@ -1,5 +1,6 @@
 package de.openfabtwin.entities;
 
+import de.openfabtwin.generated.dto.ExtensionsGET.*;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -52,4 +53,23 @@ public class ExtensionEntity {
     @CollectionTable(name = "ext_stage", joinColumns = @JoinColumn(name = "extension_id"))
     @Column(name = "item")
     private List<String> stage;
+
+    @ElementCollection(targetClass = ProjectActionsEnum.class)
+    @CollectionTable(name = "ext_project_actions", joinColumns = @JoinColumn(name = "extension_id"))
+    @Column(name = "item", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private List<ProjectActionsEnum> projectActions;
+
+    @ElementCollection(targetClass = TopicActionsEnum.class)
+    @CollectionTable(name = "ext_topic_actions", joinColumns = @JoinColumn(name = "extension_id"))
+    @Column(name = "item", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private List<TopicActionsEnum> topicActions;
+
+    @ElementCollection(targetClass = CommentActionsEnum.class)
+    @CollectionTable(name = "ext_comment_actions", joinColumns = @JoinColumn(name = "extension_id"))
+    @Column(name = "item", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private List<CommentActionsEnum> commentActions;
+
 }

@@ -2,6 +2,7 @@ package de.openfabtwin;
 
 import de.openfabtwin.entities.ExtensionEntity;
 import de.openfabtwin.entities.ProjectEntity;
+import de.openfabtwin.generated.dto.ExtensionsGET.*;
 import de.openfabtwin.repositories.ProjectRepository;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
@@ -52,7 +53,12 @@ public class StartupProjectInitializer {
         ext.setPriority(new ArrayList<>(Arrays.asList("Low", "Medium", "High")));
         ext.setUsers(new ArrayList<>(Arrays.asList("admin@bcfserver", "user@bcfserver")));
         ext.setStage(new ArrayList<>(Arrays.asList("Design", "Construction", "Review")));
-
+        ext.setProjectActions(new ArrayList<>(Arrays.asList("update", "createTopic", "createDocument")).stream()
+                .map(ProjectActionsEnum::fromValue).toList());
+        ext.setTopicActions(new ArrayList<>(Arrays.asList("update", "updateBimSnippet", "updateRelatedTopics", "updateDocumentReferences", "updateFiles", "createComment", "createViewpoint", "delete")).stream()
+                .map(TopicActionsEnum::fromValue).toList());
+        ext.setCommentActions(new ArrayList<>(Arrays.asList("update", "delete")).stream()
+                .map(CommentActionsEnum::fromValue).toList());
         return ext;
     }
 }

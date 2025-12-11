@@ -1,9 +1,9 @@
 package de.openfabtwin.services;
 
-import de.openfabtwin.generated.dto.ExtensionsGET;
+import de.openfabtwin.generated.dto.ExtensionsGET.ProjectActionsEnum;
 import de.openfabtwin.generated.dto.ExtensionsGET.CommentActionsEnum;
 import de.openfabtwin.generated.dto.ExtensionsGET.TopicActionsEnum;
-import de.openfabtwin.generated.dto.ProjectGETAuthorization.ProjectActionsEnum;
+import de.openfabtwin.generated.dto.ProjectGETAuthorization;
 import de.openfabtwin.generated.dto.ProjectPUT;
 import de.openfabtwin.entities.ExtensionEntity;
 import de.openfabtwin.entities.ProjectEntity;
@@ -46,59 +46,16 @@ public class ProjectService {
                 .orElseThrow(() -> new EntityNotFoundException("Extension not found"));
     }
 
-    // DUMMY DATA
-    public static List<ProjectActionsEnum> getAuthorizedProjectActions(String roles) {
-        List<ProjectActionsEnum> actions = new ArrayList<>();
+    public static List<ProjectGETAuthorization.ProjectActionsEnum> getAuthorizedProjectActions(String roles) {
+        List<ProjectGETAuthorization.ProjectActionsEnum> actions = new ArrayList<>();
         if (roles.equals("admin")) {
-            actions.add(ProjectActionsEnum.UPDATE);
-            actions.add(ProjectActionsEnum.CREATE_TOPIC);
-            actions.add(ProjectActionsEnum.CREATE_DOCUMENT);
+            actions.add(ProjectGETAuthorization.ProjectActionsEnum.UPDATE);
+            actions.add(ProjectGETAuthorization.ProjectActionsEnum.CREATE_TOPIC);
+            actions.add(ProjectGETAuthorization.ProjectActionsEnum.CREATE_DOCUMENT);
         } else {
-            actions.add(ProjectActionsEnum.CREATE_TOPIC);
-            actions.add(ProjectActionsEnum.CREATE_DOCUMENT);
+            actions.add(ProjectGETAuthorization.ProjectActionsEnum.CREATE_TOPIC);
+            actions.add(ProjectGETAuthorization.ProjectActionsEnum.CREATE_DOCUMENT);
         }
-        return actions;
-    }
-
-    public static List<ExtensionsGET.ProjectActionsEnum> getExtensionProjectActions(String roles) {
-        List<ExtensionsGET.ProjectActionsEnum> actions = new ArrayList<>();
-        if (roles.equals("admin")) {
-            actions.add(ExtensionsGET.ProjectActionsEnum.UPDATE);
-            actions.add(ExtensionsGET.ProjectActionsEnum.CREATE_TOPIC);
-            actions.add(ExtensionsGET.ProjectActionsEnum.CREATE_DOCUMENT);
-        } else {
-            actions.add(ExtensionsGET.ProjectActionsEnum.CREATE_TOPIC);
-            actions.add(ExtensionsGET.ProjectActionsEnum.CREATE_DOCUMENT);
-        }
-        return actions;
-    }
-
-    // DUMMY DATA
-    public static List<TopicActionsEnum> getTopicActions(String roles){
-        List<TopicActionsEnum> actions = new ArrayList<>();
-        if(roles.equals("admin")) {
-            actions.add(TopicActionsEnum.UPDATE);
-            actions.add(TopicActionsEnum.UPDATE_BIM_SNIPPET);
-            actions.add(TopicActionsEnum.UPDATE_RELATED_TOPICS);
-            actions.add(TopicActionsEnum.UPDATE_DOCUMENT_REFERENCES);
-            actions.add(TopicActionsEnum.UPDATE_FILES);
-            actions.add(TopicActionsEnum.CREATE_COMMENT);
-            actions.add(TopicActionsEnum.CREATE_VIEWPOINT);
-            actions.add(TopicActionsEnum.DELETE);
-        } else {
-            actions.add(TopicActionsEnum.UPDATE);
-            actions.add(TopicActionsEnum.UPDATE_BIM_SNIPPET);
-            actions.add(TopicActionsEnum.CREATE_COMMENT);
-        }
-
-        return actions;
-    }
-
-    // DUMMY DATA
-    public static List<CommentActionsEnum> getCommentActions(String roles){
-        List<CommentActionsEnum> actions = new ArrayList<>();
-        actions.add(CommentActionsEnum.UPDATE);
-        actions.add(CommentActionsEnum.DELETE);
         return actions;
     }
 

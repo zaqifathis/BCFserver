@@ -30,9 +30,9 @@ public class ProjectMapper {
         dto.setPriority(ext.getPriority());
         dto.setUsers(ext.getUsers());
         dto.setStage(ext.getStage());
-        dto.setProjectActions(ProjectService.getExtensionProjectActions("admin"));
-        dto.setCommentActions(ProjectService.getCommentActions("admin"));
-        dto.setTopicActions(ProjectService.getTopicActions("admin"));
+        dto.setProjectActions(ext.getProjectActions());
+        dto.setTopicActions(ext.getTopicActions());
+        dto.setCommentActions(ext.getCommentActions());
         return dto;
     }
 }

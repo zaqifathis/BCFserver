@@ -60,17 +60,17 @@ public class TopicEntity {
     @ElementCollection
     @CollectionTable(name = "topic_labels", joinColumns = @JoinColumn(name = "topic_id"))
     @Column(name = "label")
-    private List<String> labels;
+    private List<String> labels = new ArrayList<>();
 
     @ElementCollection
     @CollectionTable(name = "topic_reference_links", joinColumns = @JoinColumn(name = "topic_id"))
     @Column(name = "reference_link")
-    private List<String> referenceLinks;
+    private List<String> referenceLinks = new ArrayList<>();
 
     @ElementCollection
     @CollectionTable(name = "topic_related_topics", joinColumns = @JoinColumn(name = "topic_id"))
     @Column(name = "related_topic_guid")
-    private List<String> relatedTopics;
+    private List<String> relatedTopics = new ArrayList<>();
 
     // Complex types:
     @OneToOne(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -16,7 +16,7 @@ public class ExtensionEntity {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "project_id", nullable = false)
+    @JoinColumn(name = "project_id", nullable = false, unique = true)
     private ProjectEntity project;
 
     @ElementCollection

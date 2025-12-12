@@ -37,13 +37,13 @@ public class StartupProjectInitializer {
         project.setGuid(UUID.randomUUID().toString());
         project.setName("Sample Project_" + (index + 1));
         project.setAuthor("admin@bcfserver");
-        project.setCreatedAt(Instant.now().toString());
+        project.setCreatedAt(Instant.now());
         ExtensionEntity ext = createDefaultExtension(project);
         project.setExtensions(ext);;
         projectRepository.save(project);
     }
 
-    private static ExtensionEntity createDefaultExtension(ProjectEntity project) {
+    private ExtensionEntity createDefaultExtension(ProjectEntity project) {
         ExtensionEntity ext = new ExtensionEntity();
         ext.setProject(project);
         ext.setTopicType(new ArrayList<>(Arrays.asList("Issue", "Info", "Request")));

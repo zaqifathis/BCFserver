@@ -26,7 +26,7 @@ public class TopicController implements TopicsApi {
     public ResponseEntity<TopicGET> createTopic(String version, String projectId, TopicPOST topicPOST) {
         props.validateVersion(version);
         TopicEntity created = topicService.create(projectId, topicPOST);
-        return ResponseEntity.status(201).body(null);
+        return ResponseEntity.status(201).body(topicMapper.toDto(projectId, created));
     }
 
     @Override

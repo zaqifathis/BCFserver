@@ -48,7 +48,7 @@ public class TopicMapper {
     private TopicGETAuthorization getTopicAuthorization(String projectId) {
         var authorization = new TopicGETAuthorization();
         var extension = extensionRepository.findByProject_Guid(projectId)
-                .orElseThrow(() -> new IllegalArgumentException("Extension not found for project: " + projectId));
+                .orElseThrow(() -> new IllegalArgumentException("Extension project not found: " + projectId));
 
         var topicActions = extension.getTopicActions().stream()
                 .map(actionEnum -> TopicGETAuthorization.TopicActionsEnum.fromValue(actionEnum.getValue()))
@@ -58,6 +58,14 @@ public class TopicMapper {
     }
 
     public BimSnippetEntity mapBimSnippetEntity(@Valid BimSnippet bimSnippet, TopicEntity topic) {
+        if(bimSnippet.getSnippetType() == null || bimSnippet.getIsExternal() == null ||
+                bimSnippet.getReference() == null || bimSnippet.getReferenceSchema() == null) {
+            throw new IllegalArgumentException("All BimSnippet fields are required");
+        }
+        if (!"true".equalsIgnoreCase(bimSnippet.getIsExternal())
+                && !"false".equalsIgnoreCase(bimSnippet.getIsExternal())) {
+            throw new IllegalArgumentException("is_external must be 'true' or 'false'");
+        }
         BimSnippetEntity entity = new BimSnippetEntity();
         entity.setSnippetType(bimSnippet.getSnippetType());
         entity.setIsExternal(Boolean.parseBoolean(bimSnippet.getIsExternal()));
@@ -77,5 +85,20 @@ public class TopicMapper {
         dto.setReference(entity.getReference());
         dto.setReferenceSchema(entity.getReferenceSchema());
         return dto;
+    }
+
+    public void updateBimSnippetEntity(@Valid BimSnippet bimSnippet, BimSnippetEntity snippet) {
+        if(bimSnippet.getSnippetType() == null || bimSnippet.getIsExternal() == null ||
+           bimSnippet.getReference() == null || bimSnippet.getReferenceSchema() == null) {
+            throw new IllegalArgumentException("All BimSnippet fields are required");
+        }
+        if (!"true".equalsIgnoreCase(bimSnippet.getIsExternal())
+                && !"false".equalsIgnoreCase(bimSnippet.getIsExternal())) {
+            throw new IllegalArgumentException("is_external must be 'true' or 'false'");
+        }
+        snippet.setSnippetType(bimSnippet.getSnippetType());
+        snippet.setIsExternal(Boolean.parseBoolean(bimSnippet.getIsExternal()));
+        snippet.setReference(bimSnippet.getReference());
+        snippet.setReferenceSchema(bimSnippet.getReferenceSchema());
     }
 }

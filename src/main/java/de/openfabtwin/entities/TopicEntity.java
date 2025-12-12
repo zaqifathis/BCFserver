@@ -8,7 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "topics")
+@Table(name = "topics",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"guid", "project_id"})
+        })
 @Data
 public class TopicEntity {
 
@@ -76,7 +79,7 @@ public class TopicEntity {
     @OneToOne(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
     private BimSnippetEntity bimSnippet;
 
-    @OneToMany(mappedBy = "topic")
+    @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DocumentReferenceEntity> documentReferences = new ArrayList<>();
 
     @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)

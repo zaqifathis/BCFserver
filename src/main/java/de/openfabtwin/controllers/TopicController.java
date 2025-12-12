@@ -32,13 +32,15 @@ public class TopicController implements TopicsApi {
     @Override
     public ResponseEntity<Void> deleteTopic(String version, String projectId, String topicId) {
         props.validateVersion(version);
-        return null;
+        topicService.delete(topicId, projectId);
+        return ResponseEntity.ok(null);
     }
 
     @Override
     public ResponseEntity<TopicGET> getTopicById(String version, String projectId, String topicId) {
         props.validateVersion(version);
-        return ResponseEntity.ok(null);
+        TopicEntity topic = topicService.getById(topicId, projectId);
+        return ResponseEntity.ok(topicMapper.toDto(projectId, topic));
     }
 
     @Override
@@ -50,6 +52,7 @@ public class TopicController implements TopicsApi {
     @Override
     public ResponseEntity<TopicGET> updateTopic(String version, String projectId, String topicId, TopicPUT topicPUT) {
         props.validateVersion(version);
-        return ResponseEntity.ok(null);
+        TopicEntity updated = topicService.update(topicId, projectId, topicPUT);
+        return ResponseEntity.ok(topicMapper.toDto(projectId, updated));
     }
 }

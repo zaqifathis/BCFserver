@@ -23,6 +23,7 @@ public class DateUtils {
     }
 
     public static Instant toInstant(TemporalAccessor ta) {
+        if (ta == null) return null;
         if (ta instanceof OffsetDateTime odt) {
             return odt.toInstant();
         }

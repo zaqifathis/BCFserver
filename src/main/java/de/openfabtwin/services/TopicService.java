@@ -15,13 +15,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAccessor;
-import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -88,11 +89,10 @@ public class TopicService {
         int limit = (top != null) ? Integer.parseInt(top) : 100;
         int offset = (skip != null) ? Integer.parseInt(skip) : 0;
         int page = offset / limit;
-        Pageable pageable = PageRequest.of(page, limit);
+        Sort sort = parseOrderBy(orderby);
+        Pageable pageable = PageRequest.of(page, limit, sort);
 
         Page<TopicEntity> topics = topicRepository.findAllByProject_Guid(projectId, pageable);
-        // TODO: apply filtering, ordering
-
         return topics.getContent();
     }
 
@@ -190,6 +190,31 @@ public class TopicService {
         return targets;
     }
 
+    private static final Map<String, String> ORDERBY_FIELD_MAPPING = Map.of(
+            "creation_date", "creationDate",
+            "modified_date", "modifiedDate",
+            "server_assigned_id", "serverAssignedId",
+            "index", "index"
+    );
 
+    private Sort parseOrderBy(String orderby) {
+        if (orderby == null || orderby.isBlank()) {
+            return Sort.by(Sort.Direction.ASC, "creationDate");
+        }
+        String[] parts = orderby.trim().split("\\s+");
+        String apiField = parts[0];
+        String entityField = ORDERBY_FIELD_MAPPING.get(apiField);
+
+        if (entityField == null) {
+            throw new IllegalArgumentException(
+                    "Invalid $orderby field according to BCF spec: " + apiField
+            );
+        }
+        Sort.Direction direction = Sort.Direction.ASC;
+        if (parts.length > 1 && parts[1].equalsIgnoreCase("desc")) {
+            direction = Sort.Direction.DESC;
+        }
+        return Sort.by(direction, entityField);
+    }
 
 }

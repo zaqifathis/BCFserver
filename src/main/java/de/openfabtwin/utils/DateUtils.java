@@ -2,8 +2,10 @@ package de.openfabtwin.utils;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 
 public class DateUtils {
 
@@ -12,14 +14,24 @@ public class DateUtils {
 
     private DateUtils() {}
 
-    public static Instant toInstant(String date) {
-        if (date == null) return null;
-        if (hasTimezone(date)) {
-            return Instant.parse(date);
+    public static TemporalAccessor parseBcfDateTime(String value) {
+        if (value == null) return null;
+        if (hasTimezone(value)) {
+            return OffsetDateTime.parse(value, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
         }
-        LocalDateTime ldt = LocalDateTime.parse(date, LOCAL_DATE_TIME_FORMATTER);
-        return ldt.toInstant(ZoneOffset.UTC);
+        return LocalDateTime.parse(value, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
+
+    public static Instant toInstant(TemporalAccessor ta) {
+        if (ta instanceof OffsetDateTime odt) {
+            return odt.toInstant();
+        }
+        if (ta instanceof LocalDateTime ldt) {
+            return ldt.toInstant(ZoneOffset.UTC);
+        }
+        throw new IllegalArgumentException("Unsupported type");
+    }
+
 
     private static boolean hasTimezone(String date) {
         return date.endsWith("Z")
@@ -27,7 +39,7 @@ public class DateUtils {
     }
 
     public static String toString(Instant instant) {
-        if (instant == null) return null;
-        return instant.toString();
+        return DateTimeFormatter.ISO_INSTANT.format(instant);
     }
+
 }

@@ -12,10 +12,15 @@ import de.openfabtwin.repositories.ProjectRepository;
 import de.openfabtwin.repositories.TopicRepository;
 import de.openfabtwin.utils.DateUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.TemporalAccessor;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -49,7 +54,8 @@ public class TopicService {
         topic.setAssignedTo(validateValue(topicPOST.getAssignedTo(), extension.getUsers()));
         topic.setStage(validateValue(topicPOST.getStage(), extension.getStage()));
         topic.setDescription(topicPOST.getDescription());
-        topic.setDueDate(DateUtils.toInstant(topicPOST.getDueDate()));
+        TemporalAccessor ta = DateUtils.parseBcfDateTime(topicPOST.getDueDate());
+        topic.setDueDate(DateUtils.toInstant(ta));
         topic.setCreationAuthor("admin@bcfserver"); // TODO: set actual user
         topic.setCreationDate(Instant.now());
         topic.setProject(projectRepository.findByGuid(projectId).orElseThrow(() -> new IllegalArgumentException("Project not found: " + projectId)));
@@ -75,6 +81,19 @@ public class TopicService {
     public TopicEntity getById(String topicId, String projectId) {
         return topicRepository.findByGuidAndProject_Guid(topicId, projectId)
                 .orElseThrow(() -> new IllegalArgumentException("Topic: " + topicId + " not found in project: " + projectId));
+    }
+
+    public List<TopicEntity> getAll(String projectId, String filter, String orderby, String top, String skip) {
+
+        int limit = (top != null) ? Integer.parseInt(top) : 100;
+        int offset = (skip != null) ? Integer.parseInt(skip) : 0;
+        int page = offset / limit;
+        Pageable pageable = PageRequest.of(page, limit);
+
+        Page<TopicEntity> topics = topicRepository.findAllByProject_Guid(projectId, pageable);
+        // TODO: apply filtering, ordering
+
+        return topics.getContent();
     }
 
     public TopicEntity update(String topicId, String projectId, TopicPUT topicPUT) {
@@ -138,7 +157,8 @@ public class TopicService {
         }
         if(topicPUT.getDueDate() != null) {
             try {
-                existingTopic.setDueDate(DateUtils.toInstant(topicPUT.getDueDate()));
+                TemporalAccessor ta = DateUtils.parseBcfDateTime(topicPUT.getDueDate());
+                existingTopic.setDueDate(DateUtils.toInstant(ta));
             } catch (DateTimeParseException e) {
                 throw new IllegalArgumentException("Invalid due_date format, expected ISO-8601");
             }

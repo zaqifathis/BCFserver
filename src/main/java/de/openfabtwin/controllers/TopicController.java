@@ -25,6 +25,8 @@ public class TopicController implements TopicsApi {
     @Override
     public ResponseEntity<TopicGET> createTopic(String version, String projectId, TopicPOST topicPOST) {
         props.validateVersion(version);
+        //TODO: validate user has permission to project
+
         TopicEntity created = topicService.create(projectId, topicPOST);
         return ResponseEntity.status(201).body(topicMapper.toDto(projectId, created));
     }
@@ -32,6 +34,8 @@ public class TopicController implements TopicsApi {
     @Override
     public ResponseEntity<Void> deleteTopic(String version, String projectId, String topicId) {
         props.validateVersion(version);
+        //TODO: validate user has permission to project
+
         topicService.delete(topicId, projectId);
         return ResponseEntity.ok(null);
     }
@@ -39,6 +43,8 @@ public class TopicController implements TopicsApi {
     @Override
     public ResponseEntity<TopicGET> getTopicById(String version, String projectId, String topicId) {
         props.validateVersion(version);
+        //TODO: validate user has permission to project
+
         TopicEntity topic = topicService.getById(topicId, projectId);
         return ResponseEntity.ok(topicMapper.toDto(projectId, topic));
     }
@@ -46,12 +52,19 @@ public class TopicController implements TopicsApi {
     @Override
     public ResponseEntity<List<TopicGET>> getTopics(String version, String projectId, String $filter, String $orderby, String $top, String $skip) {
         props.validateVersion(version);
-        return ResponseEntity.ok(null);
+        //TODO: validate user has permission to project
+        List<TopicGET> topics = topicService.getAll(projectId, $filter, $orderby, $top, $skip)
+                .stream()
+                .map(topic -> topicMapper.toDto(projectId, topic))
+                .toList();
+        return ResponseEntity.ok(topics);
     }
 
     @Override
     public ResponseEntity<TopicGET> updateTopic(String version, String projectId, String topicId, TopicPUT topicPUT) {
         props.validateVersion(version);
+        //TODO: validate user has permission to project
+
         TopicEntity updated = topicService.update(topicId, projectId, topicPUT);
         return ResponseEntity.ok(topicMapper.toDto(projectId, updated));
     }

@@ -25,15 +25,18 @@ public class ProjectService {
     private final ExtensionRepository extensionRepository;
 
     public List<ProjectEntity> getAllProjects() {
+        // TODO:check project access
         return projectRepository.findAll();
     }
 
     public ProjectEntity getProject(String guid) {
+        // TODO:check project access
         return projectRepository.findByGuid(guid)
                 .orElseThrow(() -> new EntityNotFoundException("Project not found"));
     }
 
     public ProjectEntity update(String guid, ProjectPUT dto) {
+        // TODO:check project access
         ProjectEntity project = projectRepository.findByGuid(guid)
                 .orElseThrow(() -> new EntityNotFoundException("Project not found"));
 
@@ -42,6 +45,8 @@ public class ProjectService {
     }
 
     public ExtensionEntity getProjectExtension(String guid) {
+        // TODO:check project access
+
         return extensionRepository.findByProject_Guid(guid)
                 .orElseThrow(() -> new EntityNotFoundException("Extension not found"));
     }

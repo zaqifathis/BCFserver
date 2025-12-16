@@ -11,12 +11,14 @@ import de.openfabtwin.repositories.ExtensionRepository;
 import de.openfabtwin.repositories.ProjectRepository;
 import de.openfabtwin.repositories.TopicRepository;
 import de.openfabtwin.utils.DateUtils;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
@@ -33,7 +35,9 @@ public class TopicService {
     private final ExtensionRepository extensionRepository;
     private final ProjectRepository projectRepository;
     private final TopicMapper topicMapper;
+    private final EntityManager entityManager;
 
+    @Transactional
     public TopicEntity create(String projectId, TopicPOST topicPOST) {
         ExtensionEntity extension = extensionRepository.findByProject_Guid(projectId)
                 .orElseThrow(() -> new IllegalArgumentException("Extension not found for project: " + projectId));
@@ -64,6 +68,9 @@ public class TopicService {
             BimSnippetEntity snippetEntity = topicMapper.mapBimSnippetEntity(topicPOST.getBimSnippet(), topic);
             topic.setBimSnippet(snippetEntity);
         }
+        topicRepository.save(topic);
+        entityManager.flush();
+        topic.setServerAssignedId("TOPIC_" + topic.getId());
         return topicRepository.save(topic);
     }
 

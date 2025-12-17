@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +27,7 @@ import java.time.temporal.TemporalAccessor;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -99,7 +101,12 @@ public class TopicService {
         Sort sort = parseOrderBy(orderby);
         Pageable pageable = PageRequest.of(page, limit, sort);
 
-        Page<TopicEntity> topics = topicRepository.findAllByProject_Guid(projectId, pageable);
+        Specification<TopicEntity> spec = (root, query, cb) -> cb.equal(root.get("project").get("guid"), projectId);
+        if(filter != null && !filter.isBlank()) {
+            spec = spec.and(fromFilter(filter));
+        }
+
+        Page<TopicEntity> topics = topicRepository.findAll(spec, pageable);
         return topics.getContent();
     }
 
@@ -197,12 +204,103 @@ public class TopicService {
         return targets;
     }
 
-    private static final Map<String, String> ORDERBY_FIELD_MAPPING = Map.of(
-            "creation_date", "creationDate",
-            "modified_date", "modifiedDate",
-            "server_assigned_id", "serverAssignedId",
-            "index", "index"
+    private static final Map<String, String> TOPIC_FIELD_MAPPING = Map.ofEntries(
+            Map.entry("creation_author", "creationAuthor"),
+            Map.entry("modified_author", "modifiedAuthor"),
+            Map.entry("assigned_to", "assignedTo"),
+            Map.entry("stage", "stage"),
+            Map.entry("topic_status", "topicStatus"),
+            Map.entry("topic_type", "topicType"),
+            Map.entry("priority", "priority"),
+            Map.entry("creation_date", "creationDate"),
+            Map.entry("modified_date", "modifiedDate")
     );
+
+    private static Specification<TopicEntity> fromFilter(String filter) {
+        if (filter == null || filter.isBlank()) {
+            return Specification.unrestricted();
+        }
+
+        if(filter.contains("labels/any")) {
+            return parselabelsAnyFilter(filter);
+        }
+
+        String[] expressions = filter.split("\\s+and\\s+");
+        Specification<TopicEntity> spec = Specification.unrestricted();
+        for (String expr : expressions) {
+            spec = spec.and(parseSingleExpression(expr));
+        }
+        return spec;
+    }
+
+    private static Specification<TopicEntity> parselabelsAnyFilter(String filter) {
+        String[] expressions = filter.split("\\s+or\\s+");
+        Specification<TopicEntity> spec = Specification.unrestricted();
+        for (String expr : expressions) {
+            spec = spec.or(parseSingleLabelAny(expr));
+        }
+        return spec;
+    }
+
+    private static Specification<TopicEntity> parseSingleLabelAny(String expr) {
+        Pattern pattern = Pattern.compile(
+                "labels/any\\(\\s*\\w+\\s*:\\s*\\w+\\s+eq\\s+'([^']+)'\\s*\\)"
+        );
+        var matcher = pattern.matcher(expr.trim());
+        if (matcher.matches()) {
+            String labelValue = matcher.group(1);
+            return (root, query, cb) -> cb.isMember(labelValue, root.get("labels"));
+        } else {
+            throw new IllegalArgumentException("Invalid $filter format for labels/any: " + expr);
+        }
+    }
+
+    private static Specification<TopicEntity> parseSingleExpression(String filter) {
+        String[] parts = filter.trim().split("\\s+", 3);
+        if (parts.length != 3) {
+            throw new IllegalArgumentException("Invalid $filter format: " + filter);
+        }
+
+        String apiField = parts[0];
+        String operator = parts[1];
+        String rawValue = parts[2].replaceAll("^'|'$", "");
+
+        String entityField = TOPIC_FIELD_MAPPING.get(apiField);
+        if (entityField == null) {
+            throw new IllegalArgumentException("Invalid $filter field according to BCF spec: " + apiField);
+        }
+
+        if(apiField.endsWith("_date")) {
+            return dateFilter(entityField, operator, rawValue);
+        }
+        return stringFilter(entityField, operator, rawValue);
+    }
+
+    private static Specification<TopicEntity> dateFilter(String field, String operator, String value) {
+        Instant instantValue;
+        try {
+            TemporalAccessor ta = DateUtils.parseBcfDateTime(value);
+            instantValue = DateUtils.toInstant(ta);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Invalid date format in $filter: " + value);
+        }
+
+        return switch (operator) {
+            case "eq" -> (root, query, cb) -> cb.equal(root.get(field), instantValue);
+            case "gt" -> (root, query, cb) -> cb.greaterThan(root.get(field), instantValue);
+            case "lt" -> (root, query, cb) -> cb.lessThan(root.get(field), instantValue);
+            case "ge" -> (root, query, cb) -> cb.greaterThanOrEqualTo(root.get(field), instantValue);
+            case "le" -> (root, query, cb) -> cb.lessThanOrEqualTo(root.get(field), instantValue);
+            default -> throw new IllegalArgumentException("Unsupported operator for date field: " + operator);
+        };
+    }
+
+    private static Specification<TopicEntity> stringFilter(String field, String operator, String value) {
+        if (!operator.equalsIgnoreCase("eq")) {
+            throw new IllegalArgumentException("Unsupported operator for string field: " + operator);
+        }
+        return (root, query, cb) -> cb.equal(root.get(field), value);
+    }
 
     private Sort parseOrderBy(String orderby) {
         if (orderby == null || orderby.isBlank()) {
@@ -210,7 +308,7 @@ public class TopicService {
         }
         String[] parts = orderby.trim().split("\\s+");
         String apiField = parts[0];
-        String entityField = ORDERBY_FIELD_MAPPING.get(apiField);
+        String entityField = TOPIC_FIELD_MAPPING.get(apiField);
 
         if (entityField == null) {
             throw new IllegalArgumentException(

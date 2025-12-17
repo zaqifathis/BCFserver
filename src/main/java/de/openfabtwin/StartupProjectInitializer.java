@@ -2,8 +2,10 @@ package de.openfabtwin;
 
 import de.openfabtwin.entities.ExtensionEntity;
 import de.openfabtwin.entities.ProjectEntity;
+import de.openfabtwin.entities.TopicEntity;
 import de.openfabtwin.generated.dto.ExtensionsGET.*;
 import de.openfabtwin.repositories.ProjectRepository;
+import de.openfabtwin.repositories.TopicRepository;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,9 +19,11 @@ import java.util.UUID;
 public class StartupProjectInitializer {
 
     private final ProjectRepository projectRepository;
+    private final TopicRepository topicRepository;
 
-    public StartupProjectInitializer(ProjectRepository projectRepository) {
+    public StartupProjectInitializer(ProjectRepository projectRepository, TopicRepository topicRepository) {
         this.projectRepository = projectRepository;
+        this.topicRepository = topicRepository;
     }
 
     @Bean
@@ -41,6 +45,26 @@ public class StartupProjectInitializer {
         ExtensionEntity ext = createDefaultExtension(project);
         project.setExtensions(ext);;
         projectRepository.save(project);
+
+        createTopics(project);
+    }
+
+    private void createTopics(ProjectEntity project) {
+        for(int i=0; i<3; i++) {
+            TopicEntity topic = new TopicEntity();
+            topic.setGuid(UUID.randomUUID().toString());
+            topic.setProject(project);
+            topic.setTitle("Sample Topic_" + (i + 1));
+            topic.setServerAssignedId("TOPIC-" + (i + 1));
+            topic.setCreationAuthor("admin@bcfserver");
+            topic.setCreationDate(Instant.now());
+            topic.setLabels(new ArrayList<>(Arrays.asList("Architecture", "Structure")));
+            topic.setTopicType("Issue");
+            topic.setTopicStatus(i < 2 ? "Open" : "In Progress");
+            topic.setAssignedTo("user@bcfserver");
+            topic.setPriority(i == 0 ? "High" : (i == 1 ? "Medium" : "Low"));
+            topicRepository.save(topic);
+        }
     }
 
     private ExtensionEntity createDefaultExtension(ProjectEntity project) {

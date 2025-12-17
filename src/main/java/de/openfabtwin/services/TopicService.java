@@ -221,14 +221,18 @@ public class TopicService {
             return Specification.unrestricted();
         }
 
-        if(filter.contains("labels/any")) {
-            return parselabelsAnyFilter(filter);
-        }
-
-        String[] expressions = filter.split("\\s+and\\s+");
+        String normalized = filter.trim().replaceAll("\\s+", " ");
+        String[] expressions = normalized.split("\\s+and\\s+");
         Specification<TopicEntity> spec = Specification.unrestricted();
+
         for (String expr : expressions) {
-            spec = spec.and(parseSingleExpression(expr));
+            Specification<TopicEntity> part;
+            if (expr.startsWith("labels/any")) {
+                part = (parselabelsAnyFilter(expr));
+            } else {
+                part = (parseSingleExpression(expr));
+            }
+            spec =spec.and(part);
         }
         return spec;
     }

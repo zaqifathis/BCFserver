@@ -3,6 +3,9 @@ package de.openfabtwin.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "bim_snippets")
 @Data
@@ -21,7 +24,6 @@ public class BimSnippetEntity {
     @Column(nullable = false)
     private Boolean isExternal;
 
-    @OneToOne
-    @JoinColumn(name = "topic_id", nullable = false)
-    private TopicEntity topic;
+    @OneToMany(mappedBy = "bimSnippet", fetch = FetchType.LAZY)
+    private Set<TopicEntity> topics = new HashSet<>();
 }

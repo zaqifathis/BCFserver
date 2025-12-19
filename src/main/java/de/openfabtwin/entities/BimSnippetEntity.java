@@ -26,4 +26,15 @@ public class BimSnippetEntity {
 
     @OneToMany(mappedBy = "bimSnippet", fetch = FetchType.LAZY)
     private Set<TopicEntity> topics = new HashSet<>();
+
+    public void addTopic(TopicEntity topic) {
+        topics.add(topic);
+        topic.setBimSnippet(this);
+    }
+
+    public void removeTopic(TopicEntity topic) {
+        topics.remove(topic);
+        topic.setBimSnippet(null);
+    }
+
 }

@@ -11,7 +11,9 @@ import de.openfabtwin.repositories.ExtensionRepository;
 import de.openfabtwin.repositories.ProjectRepository;
 import de.openfabtwin.repositories.TopicRepository;
 import de.openfabtwin.utils.DateUtils;
+import de.openfabtwin.utils.ODataFilterOrderParser;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -65,7 +67,7 @@ public class TopicService {
         topic.setDueDate(DateUtils.toInstant(ta));
         topic.setCreationAuthor("admin@bcfserver"); // TODO: set actual user
         topic.setCreationDate(Instant.now());
-        topic.setProject(projectRepository.findByGuid(projectId).orElseThrow(() -> new IllegalArgumentException("Project not found: " + projectId)));
+        topic.setProject(projectRepository.findByGuid(projectId).orElseThrow(() -> new EntityNotFoundException("Project not found: " + projectId)));
         if(topicPOST.getBimSnippet() != null) {
             BimSnippetEntity snippetEntity = topicMapper.mapBimSnippetEntity(topicPOST.getBimSnippet(), topic);
             topic.setBimSnippet(snippetEntity);
@@ -80,7 +82,7 @@ public class TopicService {
         TopicEntity topic = topicRepository.findByGuidAndProject_Guid(topicId, projectId)
                 .orElseThrow(() -> new IllegalArgumentException("Could not delete topic: " + topicId + " not found in project: " + projectId));
         ExtensionEntity extension = extensionRepository.findByProject_Guid(projectId)
-                .orElseThrow(() -> new IllegalArgumentException("Extension not found for project: " + projectId));
+                .orElseThrow(() -> new EntityNotFoundException("Extension not found for project: " + projectId));
 
         if(extension.getTopicActions().contains(ExtensionsGET.TopicActionsEnum.DELETE)) {
             throw new IllegalArgumentException("User does not have permission to delete topics");
@@ -90,22 +92,20 @@ public class TopicService {
 
     public TopicEntity getById(String topicId, String projectId) {
         return topicRepository.findByGuidAndProject_Guid(topicId, projectId)
-                .orElseThrow(() -> new IllegalArgumentException("Topic: " + topicId + " not found in project: " + projectId));
+                .orElseThrow(() -> new EntityNotFoundException("Topic: " + topicId + " not found in project: " + projectId));
     }
 
     public List<TopicEntity> getAll(String projectId, String filter, String orderby, String top, String skip) {
-
         int limit = (top != null) ? Integer.parseInt(top) : 100;
         int offset = (skip != null) ? Integer.parseInt(skip) : 0;
         int page = offset / limit;
-        Sort sort = parseOrderBy(orderby);
+        Sort sort = ODataFilterOrderParser.parseOrderBy(orderby,"creationDate", TOPIC_ORDER_MAPPING);
         Pageable pageable = PageRequest.of(page, limit, sort);
 
         Specification<TopicEntity> spec = (root, query, cb) -> cb.equal(root.get("project").get("guid"), projectId);
         if(filter != null && !filter.isBlank()) {
-            spec = spec.and(fromFilter(filter));
+            spec = spec.and(ODataFilterOrderParser.getFilter(filter, TOPIC_FILTER_MAPPING));
         }
-
         Page<TopicEntity> topics = topicRepository.findAll(spec, pageable);
         return topics.getContent();
     }
@@ -115,9 +115,9 @@ public class TopicService {
                 .orElseThrow(() -> new IllegalArgumentException("Could not update topic: " + topicId + " not found in project: " + projectId));
 
         ExtensionEntity extension = extensionRepository.findByProject_Guid(projectId)
-                .orElseThrow(() -> new IllegalArgumentException("Extension not found for project: " + projectId));
+                .orElseThrow(() -> new EntityNotFoundException("Extension not found for project: " + projectId));
         if (!extension.getTopicActions().contains(ExtensionsGET.TopicActionsEnum.UPDATE)) {
-            throw new IllegalArgumentException("User does not have permission to update topics");
+            throw new IllegalArgumentException("User does not have permission to update topic");
         }
 
         if (topicPUT.getTitle() == null) {
@@ -204,7 +204,7 @@ public class TopicService {
         return targets;
     }
 
-    private static final Map<String, String> TOPIC_FIELD_MAPPING = Map.ofEntries(
+    private static final Map<String, String> TOPIC_FILTER_MAPPING = Map.ofEntries(
             Map.entry("creation_author", "creationAuthor"),
             Map.entry("modified_author", "modifiedAuthor"),
             Map.entry("assigned_to", "assignedTo"),
@@ -216,114 +216,10 @@ public class TopicService {
             Map.entry("modified_date", "modifiedDate")
     );
 
-    private static Specification<TopicEntity> fromFilter(String filter) {
-        if (filter == null || filter.isBlank()) {
-            return Specification.unrestricted();
-        }
-
-        String normalized = filter.trim().replaceAll("\\s+", " ");
-        String[] expressions = normalized.split("\\s+and\\s+");
-        Specification<TopicEntity> spec = Specification.unrestricted();
-
-        for (String expr : expressions) {
-            Specification<TopicEntity> part;
-            if (expr.startsWith("labels/any")) {
-                part = (parselabelsAnyFilter(expr));
-            } else {
-                part = (parseSingleExpression(expr));
-            }
-            spec =spec.and(part);
-        }
-        return spec;
-    }
-
-    private static Specification<TopicEntity> parselabelsAnyFilter(String filter) {
-        String[] expressions = filter.split("\\s+or\\s+");
-        Specification<TopicEntity> spec = Specification.unrestricted();
-        for (String expr : expressions) {
-            spec = spec.or(parseSingleLabelAny(expr));
-        }
-        return spec;
-    }
-
-    private static Specification<TopicEntity> parseSingleLabelAny(String expr) {
-        Pattern pattern = Pattern.compile(
-                "labels/any\\(\\s*\\w+\\s*:\\s*\\w+\\s+eq\\s+'([^']+)'\\s*\\)"
-        );
-        var matcher = pattern.matcher(expr.trim());
-        if (matcher.matches()) {
-            String labelValue = matcher.group(1);
-            return (root, query, cb) -> cb.isMember(labelValue, root.get("labels"));
-        } else {
-            throw new IllegalArgumentException("Invalid $filter format for labels/any: " + expr);
-        }
-    }
-
-    private static Specification<TopicEntity> parseSingleExpression(String filter) {
-        String[] parts = filter.trim().split("\\s+", 3);
-        if (parts.length != 3) {
-            throw new IllegalArgumentException("Invalid $filter format: " + filter);
-        }
-
-        String apiField = parts[0];
-        String operator = parts[1];
-        String rawValue = parts[2].replaceAll("^'|'$", "");
-
-        String entityField = TOPIC_FIELD_MAPPING.get(apiField);
-        if (entityField == null) {
-            throw new IllegalArgumentException("Invalid $filter field according to BCF spec: " + apiField);
-        }
-
-        if(apiField.endsWith("_date")) {
-            return dateFilter(entityField, operator, rawValue);
-        }
-        return stringFilter(entityField, operator, rawValue);
-    }
-
-    private static Specification<TopicEntity> dateFilter(String field, String operator, String value) {
-        Instant instantValue;
-        try {
-            TemporalAccessor ta = DateUtils.parseBcfDateTime(value);
-            instantValue = DateUtils.toInstant(ta);
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("Invalid date format in $filter: " + value);
-        }
-
-        return switch (operator) {
-            case "eq" -> (root, query, cb) -> cb.equal(root.get(field), instantValue);
-            case "gt" -> (root, query, cb) -> cb.greaterThan(root.get(field), instantValue);
-            case "lt" -> (root, query, cb) -> cb.lessThan(root.get(field), instantValue);
-            case "ge" -> (root, query, cb) -> cb.greaterThanOrEqualTo(root.get(field), instantValue);
-            case "le" -> (root, query, cb) -> cb.lessThanOrEqualTo(root.get(field), instantValue);
-            default -> throw new IllegalArgumentException("Unsupported operator for date field: " + operator);
-        };
-    }
-
-    private static Specification<TopicEntity> stringFilter(String field, String operator, String value) {
-        if (!operator.equalsIgnoreCase("eq")) {
-            throw new IllegalArgumentException("Unsupported operator for string field: " + operator);
-        }
-        return (root, query, cb) -> cb.equal(root.get(field), value);
-    }
-
-    private Sort parseOrderBy(String orderby) {
-        if (orderby == null || orderby.isBlank()) {
-            return Sort.by(Sort.Direction.ASC, "creationDate");
-        }
-        String[] parts = orderby.trim().split("\\s+");
-        String apiField = parts[0];
-        String entityField = TOPIC_FIELD_MAPPING.get(apiField);
-
-        if (entityField == null) {
-            throw new IllegalArgumentException(
-                    "Invalid $orderby field according to BCF spec: " + apiField
-            );
-        }
-        Sort.Direction direction = Sort.Direction.ASC;
-        if (parts.length > 1 && parts[1].equalsIgnoreCase("desc")) {
-            direction = Sort.Direction.DESC;
-        }
-        return Sort.by(direction, entityField);
-    }
-
+    private static final Map<String, String> TOPIC_ORDER_MAPPING = Map.of(
+            "creation_date", "creationDate",
+            "modified_date", "modifiedDate",
+            "server_assigned_id", "serverAssignedId",
+            "index", "index"
+    );
 }

@@ -17,7 +17,7 @@ public class CommentEntity {
     @Column(nullable = false, unique = true)
     private String guid;
 
-    @Column(nullable = false)
+    @Column(name= "creation_date", nullable = false)
     private Instant date;
 
     @Column(nullable = false)

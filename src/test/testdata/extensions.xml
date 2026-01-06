@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Extensions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="extensions.xsd">
+    <TopicTypes>
+        <TopicType>Error</TopicType>
+        <TopicType>Warning</TopicType>
+        <TopicType>Info</TopicType>
+    </TopicTypes>
+    <TopicStatuses>
+        <TopicStatus>Open</TopicStatus>
+		<TopicStatus>InProgress</TopicStatus>
+        <TopicStatus>Closed</TopicStatus>
+    </TopicStatuses>
+    <Priorities>
+		<Priority>High</Priority>
+		<Priority>Medium</Priority>
+		<Priority>Low</Priority>
+	</Priorities>
+    <TopicLabels>
+        <TopicLabel>Architecture</TopicLabel>
+        <TopicLabel>Structure</TopicLabel>
+		<TopicLabel>Interior</TopicLabel>
+    </TopicLabels>
+    <Users>
+        <User>admin@localhost</User>
+        <User>user@localhost</User>
+    </Users>
+    <Stages>
+		<Stage>Design</Stage>
+		<Stage>Construction</Stage>
+		<Stage>Review</Stage>
+	</Stages>
+    <SnippetTypes/>
+</Extensions>

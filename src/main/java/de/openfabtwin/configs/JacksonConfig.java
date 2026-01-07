@@ -1,4 +1,4 @@
-package de.openfabtwin.utils;
+package de.openfabtwin.configs;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;

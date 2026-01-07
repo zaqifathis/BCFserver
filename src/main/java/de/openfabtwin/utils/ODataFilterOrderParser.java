@@ -1,6 +1,5 @@
 package de.openfabtwin.utils;
 
-import de.openfabtwin.entities.TopicEntity;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 

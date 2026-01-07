@@ -1,38 +1,54 @@
 package de.openfabtwin.mappers;
 
+import de.openfabtwin.ExtensionXmlParser;
 import de.openfabtwin.generated.dto.ExtensionsGET;
 import de.openfabtwin.generated.dto.ProjectGET;
-import de.openfabtwin.generated.dto.ProjectGETAuthorization;
 import de.openfabtwin.entities.ExtensionEntity;
 import de.openfabtwin.entities.ProjectEntity;
-import de.openfabtwin.services.ProjectService;
+import de.openfabtwin.generated.extensions.Extensions;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ProjectMapper {
 
+    private final ExtensionXmlParser extensionXmlParser;
+
+    public ProjectMapper(ExtensionXmlParser extensionXmlParser) {
+        this.extensionXmlParser = extensionXmlParser;
+    }
+
     public ProjectGET toDto(ProjectEntity entity) {
         var dto = new ProjectGET();
         dto.setProjectId(entity.getGuid());
         dto.setName(entity.getName());
-        ProjectGETAuthorization auth = new ProjectGETAuthorization();
-        auth.setProjectActions(ProjectService.getAuthorizedProjectActions("admin"));
-        dto.setAuthorization(auth);
         return dto;
     }
 
     public ExtensionsGET toExtensionDto(ExtensionEntity ext) {
+        Extensions xml = extensionXmlParser.parse(ext.getExtensionXml());
         var dto = new ExtensionsGET();
-        dto.setTopicType(ext.getTopicType());
-        dto.setTopicStatus(ext.getTopicStatus());
-        dto.setTopicLabel(ext.getTopicLabel());
-        dto.setSnippetType(ext.getSnippetType());
-        dto.setPriority(ext.getPriority());
-        dto.setUsers(ext.getUsers());
-        dto.setStage(ext.getStage());
-        dto.setProjectActions(ext.getProjectActions());
-        dto.setTopicActions(ext.getTopicActions());
-        dto.setCommentActions(ext.getCommentActions());
+
+        if(xml.getTopicTypes() != null) {
+            dto.setTopicType(xml.getTopicTypes().getTopicType());
+        }
+        if(xml.getTopicStatuses() != null) {
+            dto.setTopicStatus(xml.getTopicStatuses().getTopicStatus());
+        }
+        if(xml.getPriorities() != null) {
+            dto.setPriority(xml.getPriorities().getPriority());
+        }
+        if(xml.getTopicLabels() != null) {
+            dto.setTopicLabel(xml.getTopicLabels().getTopicLabel());
+        }
+        if(xml.getUsers() != null) {
+            dto.setUsers(xml.getUsers().getUser());
+        }
+        if(xml.getSnippetTypes() != null) {
+            dto.setSnippetType(xml.getSnippetTypes().getSnippetType());
+        }
+        if(xml.getStages() != null) {
+            dto.setStage(xml.getStages().getStage());
+        }
         return dto;
     }
 }

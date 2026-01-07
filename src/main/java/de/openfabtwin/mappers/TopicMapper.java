@@ -4,7 +4,6 @@ import de.openfabtwin.entities.BimSnippetEntity;
 import de.openfabtwin.entities.TopicEntity;
 import de.openfabtwin.generated.dto.BimSnippet;
 import de.openfabtwin.generated.dto.TopicGET;
-import de.openfabtwin.generated.dto.TopicGETAuthorization;
 import de.openfabtwin.repositories.ExtensionRepository;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Component;
@@ -18,9 +17,8 @@ public class TopicMapper {
         this.extensionRepository = extensionRepository;
     }
 
-    public TopicGET toDto(String projectId, TopicEntity created) {
+    public TopicGET toDto(TopicEntity created) {
         var dto = new TopicGET();
-
         dto.setGuid(created.getGuid());
         dto.setServerAssigendId(created.getServerAssignedId());
         dto.setTopicType(created.getTopicType());
@@ -39,23 +37,9 @@ public class TopicMapper {
         dto.setDescription(created.getDescription());
         dto.setBimSnippet(mapBimSnippetDto(created.getBimSnippet()));
         dto.setDueDate(created.getDueDate() != null ? created.getDueDate().toString() : null);
-        // TODO: user permissions for topic actions
-        dto.setAuthorization(getTopicAuthorization(projectId));
-
         return dto;
     }
 
-    private TopicGETAuthorization getTopicAuthorization(String projectId) {
-        var authorization = new TopicGETAuthorization();
-        var extension = extensionRepository.findByProject_Guid(projectId)
-                .orElseThrow(() -> new IllegalArgumentException("Extension project not found: " + projectId));
-
-        var topicActions = extension.getTopicActions().stream()
-                .map(actionEnum -> TopicGETAuthorization.TopicActionsEnum.fromValue(actionEnum.getValue()))
-                .toList();
-        authorization.setTopicActions(topicActions);
-        return authorization;
-    }
 
     public BimSnippetEntity mapBimSnippetEntity(@Valid BimSnippet bimSnippet, TopicEntity topic) {
         if(bimSnippet.getSnippetType() == null || bimSnippet.getIsExternal() == null ||

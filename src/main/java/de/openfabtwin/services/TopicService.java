@@ -1,11 +1,13 @@
 package de.openfabtwin.services;
 
+import de.openfabtwin.ExtensionXmlParser;
 import de.openfabtwin.entities.BimSnippetEntity;
 import de.openfabtwin.entities.ExtensionEntity;
 import de.openfabtwin.generated.dto.ExtensionsGET;
 import de.openfabtwin.generated.dto.TopicPOST;
 import de.openfabtwin.entities.TopicEntity;
 import de.openfabtwin.generated.dto.TopicPUT;
+import de.openfabtwin.generated.extensions.Extensions;
 import de.openfabtwin.mappers.TopicMapper;
 import de.openfabtwin.repositories.ExtensionRepository;
 import de.openfabtwin.repositories.ProjectRepository;
@@ -40,33 +42,36 @@ public class TopicService {
     private final ProjectRepository projectRepository;
     private final TopicMapper topicMapper;
     private final EntityManager entityManager;
+    private final ExtensionXmlParser extensionXmlParser;
 
     @Transactional
     public TopicEntity create(String projectId, TopicPOST topicPOST) {
-        ExtensionEntity extension = extensionRepository.findByProject_Guid(projectId)
-                .orElseThrow(() -> new IllegalArgumentException("Extension not found for project: " + projectId));
-        if (!extension.getProjectActions().contains(ExtensionsGET.ProjectActionsEnum.CREATE_TOPIC)) {
-            throw new IllegalArgumentException("User does not have permission to create topics");
-        }
         if(topicPOST.getTitle() == null || topicPOST.getTitle().isEmpty()) {
             throw new IllegalArgumentException("Title is required");
         }
+
+        ExtensionEntity extension = extensionRepository.findByProject_Guid(projectId)
+                .orElseThrow(() -> new IllegalArgumentException("Extension not found for project: " + projectId));
+        Extensions xmlExtensions = extensionXmlParser.parse(extension.getExtensionXml());
+
         var topic = new TopicEntity();
         topic.setGuid(UUID.randomUUID().toString());
-        topic.setTopicType(validateValue(topicPOST.getTopicType(), extension.getTopicType()));
-        topic.setTopicStatus(validateValue(topicPOST.getTopicStatus(), extension.getTopicStatus()));
-        topic.setReferenceLinks(topicPOST.getReferenceLinks());
         topic.setTitle(topicPOST.getTitle());
-        topic.setPriority(validateValue(topicPOST.getPriority(), extension.getPriority()));
+        topic.setReferenceLinks(topicPOST.getReferenceLinks());
         topic.setIndex(topicPOST.getIndex());
-        topic.setLabels(validateList(topicPOST.getLabels(), extension.getTopicLabel()));
-        topic.setAssignedTo(validateValue(topicPOST.getAssignedTo(), extension.getUsers()));
-        topic.setStage(validateValue(topicPOST.getStage(), extension.getStage()));
         topic.setDescription(topicPOST.getDescription());
         TemporalAccessor ta = DateUtils.parseBcfDateTime(topicPOST.getDueDate());
         topic.setDueDate(DateUtils.toInstant(ta));
-        topic.setCreationAuthor("admin@bcfserver"); // TODO: set actual user
+        topic.setCreationAuthor("admin@localhost"); // TODO: set actual user
         topic.setCreationDate(Instant.now());
+
+        topic.setTopicType(validateValue(topicPOST.getTopicType(), xmlExtensions.getTopicTypes() != null ? xmlExtensions.getTopicTypes().getTopicType() : List.of()));
+        topic.setTopicStatus(validateValue(topicPOST.getTopicStatus(), xmlExtensions.getTopicStatuses() != null ? xmlExtensions.getTopicStatuses().getTopicStatus() : List.of()));
+        topic.setPriority(validateValue(topicPOST.getPriority(), xmlExtensions.getPriorities() != null ? xmlExtensions.getPriorities().getPriority() : List.of()));
+        topic.setLabels(validateList(topicPOST.getLabels(), xmlExtensions.getTopicLabels() != null ? xmlExtensions.getTopicLabels().getTopicLabel() : List.of()));
+        topic.setAssignedTo(validateValue(topicPOST.getAssignedTo(), xmlExtensions.getUsers() != null ? xmlExtensions.getUsers().getUser() : List.of()));
+        topic.setStage(validateValue(topicPOST.getStage(), xmlExtensions.getStages() != null ? xmlExtensions.getStages().getStage() : List.of()));
+
         topic.setProject(projectRepository.findByGuid(projectId).orElseThrow(() -> new EntityNotFoundException("Project not found: " + projectId)));
         if(topicPOST.getBimSnippet() != null) {
             BimSnippetEntity snippetEntity = topicMapper.mapBimSnippetEntity(topicPOST.getBimSnippet(), topic);
@@ -81,12 +86,6 @@ public class TopicService {
     public void delete(String topicId, String projectId) {
         TopicEntity topic = topicRepository.findByGuidAndProject_Guid(topicId, projectId)
                 .orElseThrow(() -> new IllegalArgumentException("Could not delete topic: " + topicId + " not found in project: " + projectId));
-        ExtensionEntity extension = extensionRepository.findByProject_Guid(projectId)
-                .orElseThrow(() -> new EntityNotFoundException("Extension not found for project: " + projectId));
-
-        if(extension.getTopicActions().contains(ExtensionsGET.TopicActionsEnum.DELETE)) {
-            throw new IllegalArgumentException("User does not have permission to delete topics");
-        }
         topicRepository.delete(topic);
     }
 
@@ -114,47 +113,46 @@ public class TopicService {
         TopicEntity existingTopic = topicRepository.findByGuidAndProject_Guid(topicId, projectId)
                 .orElseThrow(() -> new IllegalArgumentException("Could not update topic: " + topicId + " not found in project: " + projectId));
 
-        ExtensionEntity extension = extensionRepository.findByProject_Guid(projectId)
-                .orElseThrow(() -> new EntityNotFoundException("Extension not found for project: " + projectId));
-        if (!extension.getTopicActions().contains(ExtensionsGET.TopicActionsEnum.UPDATE)) {
-            throw new IllegalArgumentException("User does not have permission to update topic");
-        }
-
         if (topicPUT.getTitle() == null) {
             throw new IllegalArgumentException("Title is required");
         }
+
+        ExtensionEntity extension = extensionRepository.findByProject_Guid(projectId)
+                .orElseThrow(() -> new EntityNotFoundException("Extension not found for project: " + projectId));
+        Extensions xmlExtensions = extensionXmlParser.parse(extension.getExtensionXml());
+
         existingTopic.setTitle(topicPUT.getTitle());
         if(topicPUT.getTopicType() != null) {
-            existingTopic.setTopicType(validateValue(topicPUT.getTopicType(), extension.getTopicType()));
+            existingTopic.setTopicType(validateValue(topicPUT.getTopicType(), xmlExtensions.getTopicTypes() != null ? xmlExtensions.getTopicTypes().getTopicType() : List.of()));
         }
         if(topicPUT.getTopicStatus() != null) {
-            existingTopic.setTopicStatus(validateValue(topicPUT.getTopicStatus(), extension.getTopicStatus()));
+            existingTopic.setTopicStatus(validateValue(topicPUT.getTopicStatus(), xmlExtensions.getTopicStatuses() != null ? xmlExtensions.getTopicStatuses().getTopicStatus() : List.of()));
         }
-        if(extension.getTopicActions().contains(ExtensionsGET.TopicActionsEnum.UPDATE_DOCUMENT_REFERENCES) && topicPUT.getReferenceLinks() != null) {
+        if(topicPUT.getReferenceLinks() != null) {
             existingTopic.getReferenceLinks().clear();
             existingTopic.getReferenceLinks().addAll(topicPUT.getReferenceLinks());
         }
         if (topicPUT.getPriority() != null) {
-            existingTopic.setPriority(validateValue(topicPUT.getPriority(), extension.getPriority()));
+            existingTopic.setPriority(validateValue(topicPUT.getPriority(), xmlExtensions.getPriorities() != null ? xmlExtensions.getPriorities().getPriority() : List.of()));
         }
         if(topicPUT.getIndex() != null) {
             existingTopic.setIndex(topicPUT.getIndex());
         }
         if(topicPUT.getLabels() != null) {
-            List<String> labels = validateList(topicPUT.getLabels(), extension.getTopicLabel());
+            List<String> labels = validateList(topicPUT.getLabels(), xmlExtensions.getTopicLabels() != null ? xmlExtensions.getTopicLabels().getTopicLabel() : List.of());
             existingTopic.getLabels().clear();
             existingTopic.getLabels().addAll(labels);
         }
         if(topicPUT.getAssignedTo() != null) {
-            existingTopic.setAssignedTo(validateValue(topicPUT.getAssignedTo(), extension.getUsers()));
+            existingTopic.setAssignedTo(validateValue(topicPUT.getAssignedTo(), xmlExtensions.getUsers() != null ? xmlExtensions.getUsers().getUser() : List.of()));
         }
         if(topicPUT.getStage() != null) {
-            existingTopic.setStage(validateValue(topicPUT.getStage(), extension.getStage()));
+            existingTopic.setStage(validateValue(topicPUT.getStage(), xmlExtensions.getStages() != null ? xmlExtensions.getStages().getStage() : List.of()));
         }
         if(topicPUT.getDescription() != null) {
             existingTopic.setDescription(topicPUT.getDescription());
         }
-        if(extension.getTopicActions().contains(ExtensionsGET.TopicActionsEnum.UPDATE_BIM_SNIPPET) && topicPUT.getBimSnippet() != null) {
+        if(topicPUT.getBimSnippet() != null) {
             BimSnippetEntity snippet = existingTopic.getBimSnippet();
 
             if (snippet == null) {

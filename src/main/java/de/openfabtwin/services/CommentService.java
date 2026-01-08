@@ -1,13 +1,10 @@
 package de.openfabtwin.services;
 
 import de.openfabtwin.entities.CommentEntity;
-import de.openfabtwin.entities.ExtensionEntity;
 import de.openfabtwin.entities.TopicEntity;
 import de.openfabtwin.generated.dto.CommentPOST;
 import de.openfabtwin.generated.dto.CommentPUT;
-import de.openfabtwin.generated.dto.ExtensionsGET;
 import de.openfabtwin.repositories.CommentRepository;
-import de.openfabtwin.repositories.ExtensionRepository;
 import de.openfabtwin.repositories.TopicRepository;
 import de.openfabtwin.utils.ODataFilterOrderParser;
 import jakarta.persistence.EntityNotFoundException;
@@ -25,7 +22,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CommentService {
     private final CommentRepository commentRepository;
-    private final ExtensionRepository extensionRepository;
     private final TopicRepository topicRepository;
 
     public CommentEntity getById(String commentId, String topicId, String projectId) {
@@ -35,11 +31,6 @@ public class CommentService {
 
     public void delete(String commentId, String topicId, String projectId) {
         CommentEntity comment = getById(commentId, topicId, projectId);
-        ExtensionEntity extension = extensionRepository.findByProject_Guid(projectId)
-                .orElseThrow(() -> new EntityNotFoundException("Extension not found for project: " + projectId));
-        if (extension.getCommentActions().contains(ExtensionsGET.CommentActionsEnum.DELETE)) {
-            throw new IllegalArgumentException("User does not have permission to delete topics");
-        }
         commentRepository.delete(comment);
     }
 
@@ -54,11 +45,10 @@ public class CommentService {
         CommentEntity comment = new CommentEntity();
         comment.setGuid(UUID.randomUUID().toString());
         comment.setDate(Instant.now());
-        comment.setAuthor("admin@bcfserver"); //TODO: set actual user
+        comment.setAuthor("admin@localhost"); //TODO: set actual user
         comment.setTopic(topic);
         comment.setComment(commentPOST.getComment());
         comment.setViewpointGuid(commentPOST.getViewpointGuid());
-
         return commentRepository.save(comment);
     }
 
@@ -79,12 +69,6 @@ public class CommentService {
     public CommentEntity update(String commentId, String topicId, String projectId, CommentPUT commentPUT) {
         CommentEntity existingComment = commentRepository.findByGuidAndTopic_GuidAndTopic_Project_Guid(commentId, topicId, projectId)
                 .orElseThrow(() -> new EntityNotFoundException("Comment not found"));
-
-        ExtensionEntity extension = extensionRepository.findByProject_Guid(projectId)
-                .orElseThrow(() -> new EntityNotFoundException("Extension not found for project: " + projectId));
-        if (!extension.getCommentActions().contains(ExtensionsGET.CommentActionsEnum.UPDATE)) {
-            throw new IllegalArgumentException("User does not have permission to update comment");
-        }
 
         if(commentPUT.getComment() == null && commentPUT.getViewpointGuid() == null) {
             throw new IllegalArgumentException("Either comment text or viewpoint GUID must be provided");

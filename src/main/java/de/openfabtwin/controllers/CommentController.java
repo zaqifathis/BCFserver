@@ -33,6 +33,7 @@ public class CommentController implements CommentsApi {
     @Override
     public ResponseEntity<CommentGET> createComment(String version, String projectId, String topicId, CommentPOST commentPOST) {
         props.validateVersion(version);
+        //TODO: validate user has permission to project
         UserRole role = securityContextService.getCurrentUserRole();
         authorizationService.can(role, Actions.Topic.CREATE_COMMENT);
         CommentEntity created = commentService.create(projectId, topicId, commentPOST);
@@ -44,6 +45,7 @@ public class CommentController implements CommentsApi {
     @Override
     public ResponseEntity<Void> deleteComment(String version, String projectId, String topicId, String commentId) {
         props.validateVersion(version);
+        //TODO: validate user has permission to project
         UserRole role = securityContextService.getCurrentUserRole();
         authorizationService.can(role, Actions.Comment.DELETE);
         commentService.delete(commentId, topicId, projectId);
@@ -53,6 +55,7 @@ public class CommentController implements CommentsApi {
     @Override
     public ResponseEntity<CommentGET> getCommentById(String version, String projectId, String topicId, String commentId) {
         props.validateVersion(version);
+        //TODO: validate user has permission to project
         UserRole role = securityContextService.getCurrentUserRole();
         CommentEntity comment = commentService.getById(commentId, topicId, projectId);
         CommentGET dto = commentMapper.toDto(comment, topicId);
@@ -63,6 +66,7 @@ public class CommentController implements CommentsApi {
     @Override
     public ResponseEntity<List<CommentGET>> getTopicComment(String version, String projectId, String topicId, String $filter, String $orderby) {
         props.validateVersion(version);
+        //TODO: validate user has permission to project
         UserRole role = securityContextService.getCurrentUserRole();
         List<CommentGET> comments = commentService.getAll(projectId, topicId, $filter, $orderby)
                 .stream()
@@ -78,6 +82,7 @@ public class CommentController implements CommentsApi {
     @Override
     public ResponseEntity<CommentGET> updateComment(String version, String projectId, String topicId, String commentId, CommentPUT commentPUT) {
         props.validateVersion(version);
+        //TODO: validate user has permission to project
         UserRole role = securityContextService.getCurrentUserRole();
         authorizationService.can(role, Actions.Comment.UPDATE);
         CommentEntity updated = commentService.update(commentId, topicId, projectId, commentPUT);

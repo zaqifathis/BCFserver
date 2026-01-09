@@ -5,6 +5,7 @@ import de.openfabtwin.entities.TopicEntity;
 import de.openfabtwin.generated.dto.CommentPOST;
 import de.openfabtwin.generated.dto.CommentPUT;
 import de.openfabtwin.repositories.CommentRepository;
+import de.openfabtwin.repositories.ProjectRepository;
 import de.openfabtwin.repositories.TopicRepository;
 import de.openfabtwin.utils.ODataFilterOrderParser;
 import jakarta.persistence.EntityNotFoundException;
@@ -23,8 +24,12 @@ import java.util.UUID;
 public class CommentService {
     private final CommentRepository commentRepository;
     private final TopicRepository topicRepository;
+    private final ProjectRepository projectRepository;
 
     public CommentEntity getById(String commentId, String topicId, String projectId) {
+        projectRepository.findByGuid(projectId).orElseThrow(() -> new EntityNotFoundException("Project not found: " + projectId));
+        topicRepository.findByGuidAndProject_Guid(topicId, projectId).orElseThrow(() -> new EntityNotFoundException("Topic not found" + topicId));
+
         return commentRepository.findByGuidAndTopic_GuidAndTopic_Project_Guid(commentId, topicId, projectId)
                 .orElseThrow(() -> new EntityNotFoundException("Comment not found"));
     }
@@ -35,6 +40,8 @@ public class CommentService {
     }
 
     public CommentEntity create(String projectId, String topicId, CommentPOST commentPOST) {
+        projectRepository.findByGuid(projectId).orElseThrow(() -> new EntityNotFoundException("Project not found: " + projectId));
+
         TopicEntity topic = topicRepository.findByGuidAndProject_Guid(topicId, projectId)
                 .orElseThrow(() -> new EntityNotFoundException("Topic not found"));
 
@@ -53,6 +60,9 @@ public class CommentService {
     }
 
     public List<CommentEntity> getAll(String projectId, String topicId, String filter, String orderby) {
+        projectRepository.findByGuid(projectId).orElseThrow(() -> new EntityNotFoundException("Project not found: " + projectId));
+        topicRepository.findByGuidAndProject_Guid(topicId, projectId).orElseThrow(() -> new EntityNotFoundException("Topic not found" + topicId));
+
         Sort sort = ODataFilterOrderParser.parseOrderBy(orderby, "date", COMMENT_ORDER_MAPPING);
         Specification<CommentEntity> spec = Specification.<CommentEntity>unrestricted().and(
                 (root, query, cb) -> cb.equal(root.get("topic").get("guid"), topicId)
@@ -67,6 +77,9 @@ public class CommentService {
     }
 
     public CommentEntity update(String commentId, String topicId, String projectId, CommentPUT commentPUT) {
+        projectRepository.findByGuid(projectId).orElseThrow(() -> new EntityNotFoundException("Project not found: " + projectId));
+        topicRepository.findByGuidAndProject_Guid(topicId, projectId).orElseThrow(() -> new EntityNotFoundException("Topic not found" + topicId));
+
         CommentEntity existingComment = commentRepository.findByGuidAndTopic_GuidAndTopic_Project_Guid(commentId, topicId, projectId)
                 .orElseThrow(() -> new EntityNotFoundException("Comment not found"));
 

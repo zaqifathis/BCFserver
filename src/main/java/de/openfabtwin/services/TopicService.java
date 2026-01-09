@@ -46,6 +46,8 @@ public class TopicService {
 
     @Transactional
     public TopicEntity create(String projectId, TopicPOST topicPOST) {
+        projectRepository.findByGuid(projectId).orElseThrow(() -> new EntityNotFoundException("Project not found: " + projectId));
+
         if(topicPOST.getTitle() == null || topicPOST.getTitle().isEmpty()) {
             throw new IllegalArgumentException("Title is required");
         }
@@ -72,7 +74,7 @@ public class TopicService {
         topic.setAssignedTo(validateValue(topicPOST.getAssignedTo(), xmlExtensions.getUsers() != null ? xmlExtensions.getUsers().getUser() : List.of()));
         topic.setStage(validateValue(topicPOST.getStage(), xmlExtensions.getStages() != null ? xmlExtensions.getStages().getStage() : List.of()));
 
-        topic.setProject(projectRepository.findByGuid(projectId).orElseThrow(() -> new EntityNotFoundException("Project not found: " + projectId)));
+        topic.setProject(projectRepository.findByGuid(projectId).get());
         if(topicPOST.getBimSnippet() != null) {
             BimSnippetEntity snippetEntity = topicMapper.mapBimSnippetEntity(topicPOST.getBimSnippet(), topic);
             topic.setBimSnippet(snippetEntity);
@@ -84,17 +86,23 @@ public class TopicService {
     }
 
     public void delete(String topicId, String projectId) {
+        projectRepository.findByGuid(projectId).orElseThrow(() -> new EntityNotFoundException("Project not found: " + projectId));
+
         TopicEntity topic = topicRepository.findByGuidAndProject_Guid(topicId, projectId)
                 .orElseThrow(() -> new IllegalArgumentException("Could not delete topic: " + topicId + " not found in project: " + projectId));
         topicRepository.delete(topic);
     }
 
     public TopicEntity getById(String topicId, String projectId) {
+        projectRepository.findByGuid(projectId).orElseThrow(() -> new EntityNotFoundException("Project not found: " + projectId));
+
         return topicRepository.findByGuidAndProject_Guid(topicId, projectId)
                 .orElseThrow(() -> new EntityNotFoundException("Topic: " + topicId + " not found in project: " + projectId));
     }
 
     public List<TopicEntity> getAll(String projectId, String filter, String orderby, String top, String skip) {
+        projectRepository.findByGuid(projectId).orElseThrow(() -> new EntityNotFoundException("Project not found: " + projectId));
+
         int limit = (top != null) ? Integer.parseInt(top) : 100;
         int offset = (skip != null) ? Integer.parseInt(skip) : 0;
         int page = offset / limit;
@@ -110,6 +118,8 @@ public class TopicService {
     }
 
     public TopicEntity update(String topicId, String projectId, TopicPUT topicPUT) {
+        projectRepository.findByGuid(projectId).orElseThrow(() -> new EntityNotFoundException("Project not found: " + projectId));
+
         TopicEntity existingTopic = topicRepository.findByGuidAndProject_Guid(topicId, projectId)
                 .orElseThrow(() -> new IllegalArgumentException("Could not update topic: " + topicId + " not found in project: " + projectId));
 

@@ -1,6 +1,7 @@
 package de.openfabtwin;
 
 
+import de.openfabtwin.auth.UserRole;
 import de.openfabtwin.entities.ExtensionEntity;
 import de.openfabtwin.entities.ProjectEntity;
 import de.openfabtwin.entities.TopicEntity;
@@ -18,6 +19,7 @@ import java.nio.file.Path;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -39,7 +41,7 @@ public class DataLoader implements ApplicationRunner {
             ProjectEntity project = new ProjectEntity();
             project.setGuid(UUID.randomUUID().toString());
             project.setName(projectName);
-            project.setAuthor("admin@localhost"); // TODO: remove field, possibly keep log?
+            project.setAuthor(UserRole.ADMIN.getDefaultAuthor()); // TODO: remove field, possibly keep log?
             project.setCreatedAt(Instant.now()); // TODO: remove field, possibly keep log?
             ExtensionEntity ext = createDefaultExtension(project);
             project.setExtensions(ext);
@@ -47,24 +49,28 @@ public class DataLoader implements ApplicationRunner {
             projectRepository.save(project);
 
             // Create sample topics for each project
-            String[] topicTitles = {"Topic A", "Topic B", "Topic C"};
-            for (String topicTitle : topicTitles) {
-                TopicEntity topic = new TopicEntity();
-                topic.setGuid(UUID.randomUUID().toString());
-                topic.setProject(project);
-                topic.setTitle(topicTitle);
-                topic.setServerAssignedId(topicTitle.replace(" ", "-").toUpperCase());
-                topic.setCreationAuthor("admin@localhost");
-                topic.setCreationDate(Instant.now());
-                topic.setLabels(new ArrayList<>(Arrays.asList("Architecture", "Structure")));
-                topic.setTopicType("Issue");
-                topic.setTopicStatus("Open");
-                topic.setAssignedTo("user@bcfserver");
-                topic.setPriority("High");
-                topicRepository.save(topic);
-            }
+            createTopics(project);
         }
         System.out.println("🚀 Startup project initialization completed");
+    }
+
+    private void createTopics(ProjectEntity project) {
+        String[] topicTitles = {"Topic A", "Topic B", "Topic C"};
+        for (int i = 0; i < 3; i++) {
+            TopicEntity topic = new TopicEntity();
+            topic.setGuid(UUID.randomUUID().toString());
+            topic.setProject(project);
+            topic.setTitle(topicTitles[i]);
+            topic.setServerAssignedId(topicTitles[i].replace(" ", "-").toUpperCase());
+            topic.setCreationAuthor(UserRole.ADMIN.getDefaultAuthor());
+            topic.setCreationDate(Instant.now());
+            topic.setLabels(i > 1 ? new ArrayList<>(List.of("Interior")) : new ArrayList<>(List.of("Architecture", "Structure")));
+            topic.setTopicType("Issue");
+            topic.setTopicStatus(i > 1 ? "InProgress" : "Open");
+            topic.setAssignedTo(UserRole.USER.getDefaultAuthor());
+            topic.setPriority("High");
+            topicRepository.save(topic);
+        }
     }
 
     private ExtensionEntity createDefaultExtension(ProjectEntity project) {

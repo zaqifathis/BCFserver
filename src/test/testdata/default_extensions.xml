@@ -4,6 +4,7 @@
         <TopicType>Error</TopicType>
         <TopicType>Warning</TopicType>
         <TopicType>Info</TopicType>
+        <TopicType>Issue</TopicType>
     </TopicTypes>
     <TopicStatuses>
         <TopicStatus>Open</TopicStatus>

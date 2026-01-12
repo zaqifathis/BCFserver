@@ -8,10 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "topics",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"guid", "project_id"})
-        })
+@Table(name = "topics")
 @Data
 public class TopicEntity {
 
@@ -88,4 +85,7 @@ public class TopicEntity {
 
     @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ViewPointEntity> viewpoints = new ArrayList<>();
+
+    @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TopicFileReferenceEntity> fileReferences = new ArrayList<>();
 }

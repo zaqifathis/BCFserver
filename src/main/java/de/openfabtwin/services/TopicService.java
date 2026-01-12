@@ -3,19 +3,15 @@ package de.openfabtwin.services;
 import de.openfabtwin.ExtensionXmlParser;
 import de.openfabtwin.entities.BimSnippetEntity;
 import de.openfabtwin.entities.ExtensionEntity;
-import de.openfabtwin.generated.dto.ExtensionsGET;
 import de.openfabtwin.generated.dto.TopicPOST;
 import de.openfabtwin.entities.TopicEntity;
 import de.openfabtwin.generated.dto.TopicPUT;
 import de.openfabtwin.generated.extensions.Extensions;
 import de.openfabtwin.mappers.TopicMapper;
-import de.openfabtwin.repositories.ExtensionRepository;
-import de.openfabtwin.repositories.ProjectRepository;
 import de.openfabtwin.repositories.TopicRepository;
 import de.openfabtwin.utils.DateUtils;
 import de.openfabtwin.utils.ODataFilterOrderParser;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,32 +27,25 @@ import java.time.temporal.TemporalAccessor;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
 public class TopicService {
 
     private final TopicRepository topicRepository;
-    private final ExtensionRepository extensionRepository;
-    private final ProjectRepository projectRepository;
     private final TopicMapper topicMapper;
     private final EntityManager entityManager;
     private final ExtensionXmlParser extensionXmlParser;
+    private final EntityResolver entityResolver;
 
     @Transactional
     public TopicEntity create(String projectId, TopicPOST topicPOST) {
-        projectRepository.findByGuid(projectId).orElseThrow(() -> new EntityNotFoundException("Project not found: " + projectId));
-
         if(topicPOST.getTitle() == null || topicPOST.getTitle().isEmpty()) {
             throw new IllegalArgumentException("Title is required");
         }
 
-        ExtensionEntity extension = extensionRepository.findByProject_Guid(projectId)
-                .orElseThrow(() -> new IllegalArgumentException("Extension not found for project: " + projectId));
-        Extensions xmlExtensions = extensionXmlParser.parse(extension.getExtensionXml());
-
         var topic = new TopicEntity();
+        topic.setProject(entityResolver.resolveProject(projectId));
         topic.setGuid(UUID.randomUUID().toString());
         topic.setTitle(topicPOST.getTitle());
         topic.setReferenceLinks(topicPOST.getReferenceLinks());
@@ -67,6 +56,8 @@ public class TopicService {
         topic.setCreationAuthor("admin@localhost"); // TODO: set actual user
         topic.setCreationDate(Instant.now());
 
+        ExtensionEntity extension = entityResolver.resolveProjectExtension(projectId);
+        Extensions xmlExtensions = extensionXmlParser.parse(extension.getExtensionXml());
         topic.setTopicType(validateValue(topicPOST.getTopicType(), xmlExtensions.getTopicTypes() != null ? xmlExtensions.getTopicTypes().getTopicType() : List.of()));
         topic.setTopicStatus(validateValue(topicPOST.getTopicStatus(), xmlExtensions.getTopicStatuses() != null ? xmlExtensions.getTopicStatuses().getTopicStatus() : List.of()));
         topic.setPriority(validateValue(topicPOST.getPriority(), xmlExtensions.getPriorities() != null ? xmlExtensions.getPriorities().getPriority() : List.of()));
@@ -74,7 +65,6 @@ public class TopicService {
         topic.setAssignedTo(validateValue(topicPOST.getAssignedTo(), xmlExtensions.getUsers() != null ? xmlExtensions.getUsers().getUser() : List.of()));
         topic.setStage(validateValue(topicPOST.getStage(), xmlExtensions.getStages() != null ? xmlExtensions.getStages().getStage() : List.of()));
 
-        topic.setProject(projectRepository.findByGuid(projectId).get());
         if(topicPOST.getBimSnippet() != null) {
             BimSnippetEntity snippetEntity = topicMapper.mapBimSnippetEntity(topicPOST.getBimSnippet(), topic);
             topic.setBimSnippet(snippetEntity);
@@ -86,23 +76,16 @@ public class TopicService {
     }
 
     public void delete(String topicId, String projectId) {
-        projectRepository.findByGuid(projectId).orElseThrow(() -> new EntityNotFoundException("Project not found: " + projectId));
-
-        TopicEntity topic = topicRepository.findByGuidAndProject_Guid(topicId, projectId)
-                .orElseThrow(() -> new IllegalArgumentException("Could not delete topic: " + topicId + " not found in project: " + projectId));
+        TopicEntity topic = entityResolver.resolveTopic(projectId, topicId);
         topicRepository.delete(topic);
     }
 
     public TopicEntity getById(String topicId, String projectId) {
-        projectRepository.findByGuid(projectId).orElseThrow(() -> new EntityNotFoundException("Project not found: " + projectId));
-
-        return topicRepository.findByGuidAndProject_Guid(topicId, projectId)
-                .orElseThrow(() -> new EntityNotFoundException("Topic: " + topicId + " not found in project: " + projectId));
+        return entityResolver.resolveTopic(projectId, topicId);
     }
 
     public List<TopicEntity> getAll(String projectId, String filter, String orderby, String top, String skip) {
-        projectRepository.findByGuid(projectId).orElseThrow(() -> new EntityNotFoundException("Project not found: " + projectId));
-
+        entityResolver.resolveProject(projectId);
         int limit = (top != null) ? Integer.parseInt(top) : 100;
         int offset = (skip != null) ? Integer.parseInt(skip) : 0;
         int page = offset / limit;
@@ -118,17 +101,12 @@ public class TopicService {
     }
 
     public TopicEntity update(String topicId, String projectId, TopicPUT topicPUT) {
-        projectRepository.findByGuid(projectId).orElseThrow(() -> new EntityNotFoundException("Project not found: " + projectId));
-
-        TopicEntity existingTopic = topicRepository.findByGuidAndProject_Guid(topicId, projectId)
-                .orElseThrow(() -> new IllegalArgumentException("Could not update topic: " + topicId + " not found in project: " + projectId));
-
-        if (topicPUT.getTitle() == null) {
+        TopicEntity existingTopic = entityResolver.resolveTopic(projectId, topicId);
+        if (topicPUT.getTitle() == null || topicPUT.getTitle().isBlank()) {
             throw new IllegalArgumentException("Title is required");
         }
 
-        ExtensionEntity extension = extensionRepository.findByProject_Guid(projectId)
-                .orElseThrow(() -> new EntityNotFoundException("Extension not found for project: " + projectId));
+        ExtensionEntity extension = entityResolver.resolveProjectExtension(projectId);
         Extensions xmlExtensions = extensionXmlParser.parse(extension.getExtensionXml());
 
         existingTopic.setTitle(topicPUT.getTitle());

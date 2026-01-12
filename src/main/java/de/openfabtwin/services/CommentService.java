@@ -5,10 +5,7 @@ import de.openfabtwin.entities.TopicEntity;
 import de.openfabtwin.generated.dto.CommentPOST;
 import de.openfabtwin.generated.dto.CommentPUT;
 import de.openfabtwin.repositories.CommentRepository;
-import de.openfabtwin.repositories.ProjectRepository;
-import de.openfabtwin.repositories.TopicRepository;
 import de.openfabtwin.utils.ODataFilterOrderParser;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
@@ -23,28 +20,18 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CommentService {
     private final CommentRepository commentRepository;
-    private final TopicRepository topicRepository;
-    private final ProjectRepository projectRepository;
+    private final EntityResolver entityResolver;
 
     public CommentEntity getById(String commentId, String topicId, String projectId) {
-        projectRepository.findByGuid(projectId).orElseThrow(() -> new EntityNotFoundException("Project not found: " + projectId));
-        topicRepository.findByGuidAndProject_Guid(topicId, projectId).orElseThrow(() -> new EntityNotFoundException("Topic not found" + topicId));
-
-        return commentRepository.findByGuidAndTopic_GuidAndTopic_Project_Guid(commentId, topicId, projectId)
-                .orElseThrow(() -> new EntityNotFoundException("Comment not found"));
+        return entityResolver.resolveComment(projectId, topicId, commentId);
     }
 
     public void delete(String commentId, String topicId, String projectId) {
-        CommentEntity comment = getById(commentId, topicId, projectId);
+        CommentEntity comment = entityResolver.resolveComment(projectId, topicId, commentId);
         commentRepository.delete(comment);
     }
 
     public CommentEntity create(String projectId, String topicId, CommentPOST commentPOST) {
-        projectRepository.findByGuid(projectId).orElseThrow(() -> new EntityNotFoundException("Project not found: " + projectId));
-
-        TopicEntity topic = topicRepository.findByGuidAndProject_Guid(topicId, projectId)
-                .orElseThrow(() -> new EntityNotFoundException("Topic not found"));
-
         if (commentPOST.getComment() == null && commentPOST.getViewpointGuid() == null) {
             throw new IllegalArgumentException("Either comment text or viewpoint GUID must be provided");
         }
@@ -53,6 +40,7 @@ public class CommentService {
         comment.setGuid(UUID.randomUUID().toString());
         comment.setDate(Instant.now());
         comment.setAuthor("admin@localhost"); //TODO: set actual user
+        TopicEntity topic = entityResolver.resolveTopic(projectId, topicId);
         comment.setTopic(topic);
         comment.setComment(commentPOST.getComment());
         comment.setViewpointGuid(commentPOST.getViewpointGuid());
@@ -60,9 +48,7 @@ public class CommentService {
     }
 
     public List<CommentEntity> getAll(String projectId, String topicId, String filter, String orderby) {
-        projectRepository.findByGuid(projectId).orElseThrow(() -> new EntityNotFoundException("Project not found: " + projectId));
-        topicRepository.findByGuidAndProject_Guid(topicId, projectId).orElseThrow(() -> new EntityNotFoundException("Topic not found" + topicId));
-
+        entityResolver.resolveTopic(projectId, topicId);
         Sort sort = ODataFilterOrderParser.parseOrderBy(orderby, "date", COMMENT_ORDER_MAPPING);
         Specification<CommentEntity> spec = Specification.<CommentEntity>unrestricted().and(
                 (root, query, cb) -> cb.equal(root.get("topic").get("guid"), topicId)
@@ -77,12 +63,7 @@ public class CommentService {
     }
 
     public CommentEntity update(String commentId, String topicId, String projectId, CommentPUT commentPUT) {
-        projectRepository.findByGuid(projectId).orElseThrow(() -> new EntityNotFoundException("Project not found: " + projectId));
-        topicRepository.findByGuidAndProject_Guid(topicId, projectId).orElseThrow(() -> new EntityNotFoundException("Topic not found" + topicId));
-
-        CommentEntity existingComment = commentRepository.findByGuidAndTopic_GuidAndTopic_Project_Guid(commentId, topicId, projectId)
-                .orElseThrow(() -> new EntityNotFoundException("Comment not found"));
-
+        CommentEntity existingComment = entityResolver.resolveComment(projectId, topicId, commentId);
         if(commentPUT.getComment() == null && commentPUT.getViewpointGuid() == null) {
             throw new IllegalArgumentException("Either comment text or viewpoint GUID must be provided");
         }

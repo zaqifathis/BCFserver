@@ -9,5 +9,4 @@ import java.util.Optional;
 public interface TopicRepository extends JpaRepository<TopicEntity, Long>, JpaSpecificationExecutor<TopicEntity> {
 
     Optional<TopicEntity> findByGuidAndProject_Guid(String topicGuid, String projectGuid);
-
 }

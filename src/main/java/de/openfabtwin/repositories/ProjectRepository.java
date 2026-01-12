@@ -8,6 +8,4 @@ import java.util.Optional;
 public interface ProjectRepository extends JpaRepository<ProjectEntity, Long> {
 
     Optional<ProjectEntity> findByGuid(String guid);
-
-    boolean existsByGuid(String guid);
 }

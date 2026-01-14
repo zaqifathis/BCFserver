@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
-import java.time.temporal.TemporalAccessor;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -51,8 +50,7 @@ public class TopicService {
         topic.setReferenceLinks(topicPOST.getReferenceLinks());
         topic.setIndex(topicPOST.getIndex());
         topic.setDescription(topicPOST.getDescription());
-        TemporalAccessor ta = DateUtils.parseBcfDateTime(topicPOST.getDueDate());
-        topic.setDueDate(DateUtils.toInstant(ta));
+        topic.setDueDate(DateUtils.toInstant(topicPOST.getDueDate()));
         topic.setCreationAuthor("admin@localhost"); // TODO: set actual user
         topic.setCreationDate(Instant.now());
 
@@ -157,8 +155,7 @@ public class TopicService {
         }
         if(topicPUT.getDueDate() != null) {
             try {
-                TemporalAccessor ta = DateUtils.parseBcfDateTime(topicPUT.getDueDate());
-                existingTopic.setDueDate(DateUtils.toInstant(ta));
+                existingTopic.setDueDate(DateUtils.toInstant(topicPUT.getDueDate()));
             } catch (DateTimeParseException e) {
                 throw new IllegalArgumentException("Invalid due_date format, expected ISO-8601");
             }

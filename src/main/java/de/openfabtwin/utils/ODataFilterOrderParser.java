@@ -103,8 +103,7 @@ public class ODataFilterOrderParser {
     private static <T> Specification<T> dateFilter(String field, String operator, String value) {
         Instant instantValue;
         try {
-            TemporalAccessor ta = DateUtils.parseBcfDateTime(value);
-            instantValue = DateUtils.toInstant(ta);
+            instantValue = DateUtils.toInstant(value);
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("Invalid date format in $filter: " + value);
         }

@@ -6,6 +6,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
+import java.util.Locale;
 
 public class DateUtils {
 
@@ -14,7 +15,7 @@ public class DateUtils {
 
     private DateUtils() {}
 
-    public static TemporalAccessor parseBcfDateTime(String value) {
+    private static TemporalAccessor parseBcfDateTime(String value) {
         if (value == null) return null;
         if (hasTimezone(value)) {
             return OffsetDateTime.parse(value, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
@@ -22,7 +23,9 @@ public class DateUtils {
         return LocalDateTime.parse(value, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
 
-    public static Instant toInstant(TemporalAccessor ta) {
+    public static Instant toInstant(String value) {
+        TemporalAccessor ta = parseBcfDateTime(value);
+
         if (ta == null) return null;
         if (ta instanceof OffsetDateTime odt) {
             return odt.toInstant();
@@ -41,6 +44,12 @@ public class DateUtils {
 
     public static String toString(Instant instant) {
         return DateTimeFormatter.ISO_INSTANT.format(instant);
+    }
+
+    public static String toReadableDate(String date) {
+        Instant instant = toInstant(date);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d yyyy", Locale.ENGLISH).withZone(ZoneOffset.UTC);
+        return formatter.format(instant);
     }
 
 }

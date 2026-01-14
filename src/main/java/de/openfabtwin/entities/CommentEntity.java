@@ -31,6 +31,8 @@ public class CommentEntity {
     private Instant modifiedDate;
     private String modifiedAuthor;
 
+    private String replyToCommentGuid;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "topic_id", nullable = false)
     private TopicEntity topic;

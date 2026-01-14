@@ -17,7 +17,7 @@ public class CommentMapper {
         dto.setViewpointGuid(comment.getViewpointGuid());
         dto.setModifiedDate(comment.getModifiedDate() != null ? comment.getModifiedDate().toString() : null);
         dto.setModifiedAuthor(comment.getModifiedAuthor() != null ? comment.getModifiedAuthor() : null);
-        // TODO: reply to commentGuid
+        dto.setReplyToCommentGuid(comment.getReplyToCommentGuid() != null ? comment.getReplyToCommentGuid() : null);
 
         return dto;
     }

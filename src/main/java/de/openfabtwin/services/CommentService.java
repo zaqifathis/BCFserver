@@ -42,8 +42,9 @@ public class CommentService {
         comment.setAuthor("admin@localhost"); //TODO: set actual user
         TopicEntity topic = entityResolver.resolveTopic(projectId, topicId);
         comment.setTopic(topic);
-        comment.setComment(commentPOST.getComment());
-        comment.setViewpointGuid(commentPOST.getViewpointGuid());
+        if(commentPOST.getComment() != null) comment.setComment(commentPOST.getComment());
+        if(commentPOST.getViewpointGuid() != null) comment.setViewpointGuid(commentPOST.getViewpointGuid());
+        if (commentPOST.getReplyToCommentGuid() != null) comment.setReplyToCommentGuid(commentPOST.getReplyToCommentGuid());
         return commentRepository.save(comment);
     }
 

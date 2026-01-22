@@ -20,7 +20,7 @@ import jakarta.annotation.Generated;
 public class SnapshotGET {
 
   /**
-   * Gets or Sets snapshotType
+   * Gets or Sets imageType
    */
   public enum SnapshotTypeEnum {
     JPG("jpg"),
@@ -62,8 +62,8 @@ public class SnapshotGET {
   }
 
   /**
-   * Get snapshotType
-   * @return snapshotType
+   * Get imageType
+   * @return imageType
    */
   
   @Schema(name = "snapshot_type", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
@@ -97,7 +97,7 @@ public class SnapshotGET {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class SnapshotGET {\n");
-    sb.append("    snapshotType: ").append(toIndentedString(snapshotType)).append("\n");
+    sb.append("    imageType: ").append(toIndentedString(snapshotType)).append("\n");
     sb.append("}");
     return sb.toString();
   }

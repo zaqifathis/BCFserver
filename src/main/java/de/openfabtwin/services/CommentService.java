@@ -2,6 +2,7 @@ package de.openfabtwin.services;
 
 import de.openfabtwin.entities.CommentEntity;
 import de.openfabtwin.entities.TopicEntity;
+import de.openfabtwin.entities.ViewpointEntity;
 import de.openfabtwin.generated.dto.CommentPOST;
 import de.openfabtwin.generated.dto.CommentPUT;
 import de.openfabtwin.repositories.CommentRepository;
@@ -42,9 +43,11 @@ public class CommentService {
         comment.setAuthor("admin@localhost"); //TODO: set actual user
         TopicEntity topic = entityResolver.resolveTopic(projectId, topicId);
         comment.setTopic(topic);
-        if(commentPOST.getComment() != null) comment.setComment(commentPOST.getComment());
-        if(commentPOST.getViewpointGuid() != null) comment.setViewpointGuid(commentPOST.getViewpointGuid());
-        if (commentPOST.getReplyToCommentGuid() != null) comment.setReplyToCommentGuid(commentPOST.getReplyToCommentGuid());
+        comment.setComment(commentPOST.getComment());
+        if (commentPOST.getViewpointGuid() != null) {
+            ViewpointEntity vp = entityResolver.resolveViewpoint(projectId, topicId, commentPOST.getViewpointGuid());
+            comment.setViewpoint(vp);
+        }
         return commentRepository.save(comment);
     }
 
@@ -73,7 +76,8 @@ public class CommentService {
             existingComment.setComment(commentPUT.getComment());
         }
         if(commentPUT.getViewpointGuid() != null) {
-            existingComment.setViewpointGuid(commentPUT.getViewpointGuid());
+            ViewpointEntity vp = entityResolver.resolveViewpoint(projectId, topicId, commentPUT.getViewpointGuid());
+            existingComment.setViewpoint(vp);
         }
         existingComment.setModifiedDate(Instant.now());
         existingComment.setModifiedAuthor("admin@bcfserver"); //TODO: set actual user

@@ -1,4 +1,4 @@
-package de.openfabtwin.utils;
+package de.openfabtwin.exceptions;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -27,6 +27,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Error> handleEntityNotFound(EntityNotFoundException ex) {
         return new ResponseEntity<>(new Error(ex.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    // 409 Conflict
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<Error> handleConflict(ConflictException ex) {
+        return new ResponseEntity<>(new Error(ex.getMessage()), HttpStatus.CONFLICT);
     }
 
     // 500 Internal Server Error

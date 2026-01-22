@@ -24,16 +24,20 @@ public class DateUtils {
     }
 
     public static Instant toInstant(String value) {
-        TemporalAccessor ta = parseBcfDateTime(value);
+        try {
+            TemporalAccessor ta = parseBcfDateTime(value);
+            if (ta == null) return null;
+            if (ta instanceof OffsetDateTime odt) {
+                return odt.toInstant();
+            }
+            if (ta instanceof LocalDateTime ldt) {
+                return ldt.toInstant(ZoneOffset.UTC);
+            }
+            throw new IllegalArgumentException("Unsupported type");
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid date format: " + value, e);
+        }
 
-        if (ta == null) return null;
-        if (ta instanceof OffsetDateTime odt) {
-            return odt.toInstant();
-        }
-        if (ta instanceof LocalDateTime ldt) {
-            return ldt.toInstant(ZoneOffset.UTC);
-        }
-        throw new IllegalArgumentException("Unsupported type");
     }
 
 

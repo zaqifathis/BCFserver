@@ -84,7 +84,7 @@ public class TopicEntity {
     private List<CommentEntity> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<ViewPointEntity> viewpoints = new ArrayList<>();
+    private List<ViewpointEntity> viewpoints = new ArrayList<>();
 
     @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TopicFileReferenceEntity> fileReferences = new ArrayList<>();

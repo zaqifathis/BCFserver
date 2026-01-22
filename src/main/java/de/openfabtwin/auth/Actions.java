@@ -24,4 +24,8 @@ public final class Actions {
         UPDATE,
         DELETE
     }
+
+    public enum Viewpoint {
+        DELETE
+    }
 }

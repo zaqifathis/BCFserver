@@ -2,10 +2,7 @@ package de.openfabtwin.services;
 
 import de.openfabtwin.auth.UserRole;
 import de.openfabtwin.auth.Actions.*;
-import de.openfabtwin.generated.dto.CommentGETAuthorization;
-import de.openfabtwin.generated.dto.ExtensionsGET;
-import de.openfabtwin.generated.dto.ProjectGETAuthorization;
-import de.openfabtwin.generated.dto.TopicGETAuthorization;
+import de.openfabtwin.generated.dto.*;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -49,6 +46,10 @@ public class AuthorizationService {
         return action == Comment.UPDATE;
     }
 
+    public boolean can(UserRole role, Viewpoint action) {
+        return role == UserRole.ADMIN;
+    }
+
     public List<ProjectGETAuthorization.ProjectActionsEnum> getAuthorizedProjectActions(UserRole role) {
         return Arrays.stream(ProjectGETAuthorization.ProjectActionsEnum.values())
                 .filter(action -> can(role, Project.valueOf(action.name())))
@@ -82,6 +83,12 @@ public class AuthorizationService {
     public List<ExtensionsGET.CommentActionsEnum> getExtensionCommentActions(UserRole role) {
         return Arrays.stream(ExtensionsGET.CommentActionsEnum.values())
                 .filter(action -> can(role, Comment.valueOf(action.name())))
+                .toList();
+    }
+
+    public List<ViewpointGETAuthorization.ViewpointActionsEnum> getViewpointActions(UserRole role) {
+        return Arrays.stream(ViewpointGETAuthorization.ViewpointActionsEnum.values())
+                .filter(action -> can(role, Viewpoint.valueOf(action.name())))
                 .toList();
     }
 }

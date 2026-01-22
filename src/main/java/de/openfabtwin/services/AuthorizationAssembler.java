@@ -1,10 +1,7 @@
 package de.openfabtwin.services;
 
 import de.openfabtwin.auth.UserRole;
-import de.openfabtwin.generated.dto.CommentGETAuthorization;
-import de.openfabtwin.generated.dto.ExtensionsGET;
-import de.openfabtwin.generated.dto.ProjectGETAuthorization;
-import de.openfabtwin.generated.dto.TopicGETAuthorization;
+import de.openfabtwin.generated.dto.*;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -38,6 +35,12 @@ public class AuthorizationAssembler {
     public CommentGETAuthorization commentAuthorization(UserRole role) {
         CommentGETAuthorization auth = new CommentGETAuthorization();
         auth.setCommentActions(authorizationService.getAuthorizedCommentActions(role));
+        return auth;
+    }
+
+    public ViewpointGETAuthorization viewpointAuthorization(UserRole role) {
+        ViewpointGETAuthorization auth = new ViewpointGETAuthorization();
+        auth.setViewpointActions(authorizationService.getViewpointActions(role));
         return auth;
     }
 }

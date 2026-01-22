@@ -22,12 +22,6 @@ public class ProjectEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private String author;
-
-    @Column(nullable = false)
-    private Instant createdAt;
-
     @OneToOne(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private ExtensionEntity extensions;
 

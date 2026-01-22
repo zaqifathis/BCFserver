@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface CommentRepository extends JpaRepository<CommentEntity, Long>, JpaSpecificationExecutor<CommentEntity> {
 
     Optional<CommentEntity> findByGuidAndTopic_GuidAndTopic_Project_Guid(String commentId, String topicId, String projectId);
+
+    boolean existsByViewpoint_Guid(String viewpointGuid);
 }

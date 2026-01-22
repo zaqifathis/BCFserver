@@ -26,7 +26,9 @@ public class CommentEntity {
     @Column(columnDefinition = "TEXT")
     private String comment;
 
-    private String viewpointGuid;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "viewpoint_id", nullable = true)
+    private ViewpointEntity viewpoint;
 
     private Instant modifiedDate;
     private String modifiedAuthor;

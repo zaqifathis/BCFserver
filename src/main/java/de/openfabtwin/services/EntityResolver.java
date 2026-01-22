@@ -1,13 +1,7 @@
 package de.openfabtwin.services;
 
-import de.openfabtwin.entities.CommentEntity;
-import de.openfabtwin.entities.ExtensionEntity;
-import de.openfabtwin.entities.ProjectEntity;
-import de.openfabtwin.entities.TopicEntity;
-import de.openfabtwin.repositories.CommentRepository;
-import de.openfabtwin.repositories.ExtensionRepository;
-import de.openfabtwin.repositories.ProjectRepository;
-import de.openfabtwin.repositories.TopicRepository;
+import de.openfabtwin.entities.*;
+import de.openfabtwin.repositories.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +14,8 @@ public class EntityResolver {
     private final TopicRepository topicRepository;
     private final CommentRepository commentRepository;
     private final ExtensionRepository extensionRepository;
+    private final ViewpointRepository viewpointRepository;
+    private final BitmapRepository bitmapRepository;
 
     public ProjectEntity resolveProject(String projectId) {
         return projectRepository.findByGuid(projectId)
@@ -44,6 +40,17 @@ public class EntityResolver {
         resolveProject(projectId);
         return extensionRepository.findByProject_Guid(projectId)
                 .orElseThrow(() -> new EntityNotFoundException("Extension not found for project " + projectId));
+    }
+
+    public ViewpointEntity resolveViewpoint(String projectId, String topicId, String viewpointId) {
+        resolveTopic(projectId, topicId);
+        return viewpointRepository.findByGuidAndTopic_Guid(viewpointId, topicId)
+                .orElseThrow(() -> new EntityNotFoundException("Viewpoint not found: " + viewpointId + " in topic " + topicId));
+    }
+
+    public BitmapEntity resolveBitmap(String viewpointId, String bitmapId) {
+        return bitmapRepository.findByGuidAndViewpoint_Guid(bitmapId, viewpointId)
+                .orElseThrow(() -> new EntityNotFoundException("Bitmap not found: " + bitmapId + " in viewpoint " + viewpointId));
     }
 
 }

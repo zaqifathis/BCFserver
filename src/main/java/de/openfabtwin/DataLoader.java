@@ -41,8 +41,6 @@ public class DataLoader implements ApplicationRunner {
             ProjectEntity project = new ProjectEntity();
             project.setGuid(UUID.randomUUID().toString());
             project.setName(projectName);
-            project.setAuthor(UserRole.ADMIN.getDefaultAuthor()); // TODO: remove field, possibly keep log?
-            project.setCreatedAt(Instant.now()); // TODO: remove field, possibly keep log?
             ExtensionEntity ext = createDefaultExtension(project);
             project.setExtensions(ext);
 

@@ -1,8 +1,10 @@
 package de.openfabtwin.mappers;
 
 import de.openfabtwin.entities.BimSnippetEntity;
+import de.openfabtwin.entities.DocumentReferenceEntity;
 import de.openfabtwin.entities.TopicEntity;
 import de.openfabtwin.generated.dto.BimSnippet;
+import de.openfabtwin.generated.dto.DocumentReferenceGET;
 import de.openfabtwin.generated.dto.RelatedTopicGET;
 import de.openfabtwin.generated.dto.TopicGET;
 import de.openfabtwin.repositories.ExtensionRepository;
@@ -90,6 +92,18 @@ public class TopicMapper {
     public RelatedTopicGET toRelatedTopicDto(String s) {
         RelatedTopicGET dto = new RelatedTopicGET();
         dto.setRelatedTopicGuid(s);
+        return dto;
+    }
+
+    public DocumentReferenceGET toDocumentReferenceDto(DocumentReferenceEntity created) {
+        DocumentReferenceGET dto = new DocumentReferenceGET();
+        dto.setGuid(created.getGuid());
+        if(created.getDocumentGuid() != null) {
+            dto.setDocumentGuid(created.getDocumentGuid());
+        } else {
+            dto.setUrl(created.getUrl());
+        }
+        dto.setDescription(created.getDescription());
         return dto;
     }
 }

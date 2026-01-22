@@ -15,6 +15,7 @@ public class EntityResolver {
     private final CommentRepository commentRepository;
     private final ExtensionRepository extensionRepository;
     private final ViewpointRepository viewpointRepository;
+    private final DocumentReferenceRepository documentReferenceRepository;
     private final BitmapRepository bitmapRepository;
 
     public ProjectEntity resolveProject(String projectId) {
@@ -51,6 +52,11 @@ public class EntityResolver {
     public BitmapEntity resolveBitmap(String viewpointId, String bitmapId) {
         return bitmapRepository.findByGuidAndViewpoint_Guid(bitmapId, viewpointId)
                 .orElseThrow(() -> new EntityNotFoundException("Bitmap not found: " + bitmapId + " in viewpoint " + viewpointId));
+    }
+
+    public DocumentReferenceEntity resolveDocumentReference(String docRefId, String TopicId) {
+        return documentReferenceRepository.findByGuidAndTopic_Guid(docRefId, TopicId)
+                .orElseThrow(() -> new EntityNotFoundException("Document Reference not found: " + docRefId + " in topic " + TopicId));
     }
 
 }

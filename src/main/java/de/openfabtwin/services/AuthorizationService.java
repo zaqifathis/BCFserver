@@ -30,6 +30,12 @@ public class AuthorizationService {
         }
     }
 
+    public void assertCan(UserRole role, Viewpoint action) {
+        if (!can(role, action)) {
+            throw new AccessDeniedException("User role " + role + " cannot perform action " + action);
+        }
+    }
+
     public boolean can(UserRole role, Project action) {
         if (role == UserRole.ADMIN) return true;
         return action != Project.UPDATE;

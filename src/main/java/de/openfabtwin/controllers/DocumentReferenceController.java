@@ -14,6 +14,7 @@ import de.openfabtwin.services.TopicService;
 import de.openfabtwin.utils.BcfProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public class DocumentReferenceController implements DocumentReferencesApi {
     public ResponseEntity<DocumentReferenceGET> createDocumentReference(String version, String projectId, String topicId, DocumentReferencePOST documentReferencePOST) {
         props.validateVersion(version);
         UserRole role = securityContextService.getCurrentUserRole();
-        authorizationService.can(role, Actions.Topic.UPDATE_DOCUMENT_REFERENCES);
+        authorizationService.assertCan(role, Actions.Topic.UPDATE_DOCUMENT_REFERENCES);
         DocumentReferenceEntity created = topicService.createDocumentReference(topicId, projectId, documentReferencePOST);
         DocumentReferenceGET dto = topicMapper.toDocumentReferenceDto(created);
         return ResponseEntity.status(201).body(dto);
@@ -52,7 +53,7 @@ public class DocumentReferenceController implements DocumentReferencesApi {
     public ResponseEntity<DocumentReferenceGET> updateDocumentReference(String version, String projectId, String topicId, String documentReferenceId, DocumentReferencePUT documentReferencePUT) {
         props.validateVersion(version);
         UserRole role = securityContextService.getCurrentUserRole();
-        authorizationService.can(role, Actions.Topic.UPDATE_DOCUMENT_REFERENCES);
+        authorizationService.assertCan(role, Actions.Topic.UPDATE_DOCUMENT_REFERENCES);
         DocumentReferenceEntity updated = topicService.updateDocumentReference(topicId, projectId, documentReferenceId, documentReferencePUT);
         DocumentReferenceGET dto = topicMapper.toDocumentReferenceDto(updated);
         return ResponseEntity.ok(dto);

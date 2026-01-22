@@ -58,7 +58,8 @@ public class TopicMapper {
         entity.setIsExternal(Boolean.parseBoolean(bimSnippet.getIsExternal()));
         entity.setReference(bimSnippet.getReference());
         entity.setReferenceSchema(bimSnippet.getReferenceSchema());
-        entity.addTopic(topic);
+        entity.getTopics().add(topic);
+        topic.setBimSnippet(entity);
         return entity;
     }
 

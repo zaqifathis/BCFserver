@@ -37,7 +37,7 @@ public class ViewpointController implements ViewpointsApi {
     public ResponseEntity<ViewpointGET> createViewpoints(String version, String projectId, String topicId, ViewpointPOST viewpointPOST) {
         props.validateVersion(version);
         UserRole role = securityContextService.getCurrentUserRole();
-        authorizationService.can(role, Actions.Topic.CREATE_VIEWPOINT);
+        authorizationService.assertCan(role, Actions.Topic.CREATE_VIEWPOINT);
         ViewpointEntity create = viewpointService.create(projectId, topicId, viewpointPOST);
         ViewpointGET dto = viewpointMapper.toDto(create);
         dto.setAuthorization(authorizationAssembler.viewpointAuthorization(role));
@@ -48,7 +48,7 @@ public class ViewpointController implements ViewpointsApi {
     public ResponseEntity<Void> deleteViewpointById(String version, String projectId, String topicId, String viewpointId) {
         props.validateVersion(version);
         UserRole role = securityContextService.getCurrentUserRole();
-        authorizationService.can(role, Actions.Viewpoint.DELETE);
+        authorizationService.assertCan(role, Actions.Viewpoint.DELETE);
         viewpointService.deleteById(projectId, topicId, viewpointId);
         return ResponseEntity.ok(null);
     }

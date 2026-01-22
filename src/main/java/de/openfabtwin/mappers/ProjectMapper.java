@@ -1,6 +1,8 @@
 package de.openfabtwin.mappers;
 
 import de.openfabtwin.ExtensionXmlParser;
+import de.openfabtwin.entities.DocumentEntity;
+import de.openfabtwin.generated.dto.DocumentGET;
 import de.openfabtwin.generated.dto.ExtensionsGET;
 import de.openfabtwin.generated.dto.ProjectGET;
 import de.openfabtwin.entities.ExtensionEntity;
@@ -49,6 +51,13 @@ public class ProjectMapper {
         if(xml.getStages() != null) {
             dto.setStage(xml.getStages().getStage());
         }
+        return dto;
+    }
+
+    public DocumentGET toDocumentDto(DocumentEntity documentEntity) {
+        DocumentGET dto = new DocumentGET();
+        dto.setGuid(documentEntity.getGuid());
+        dto.setFilename(documentEntity.getFilename());
         return dto;
     }
 }

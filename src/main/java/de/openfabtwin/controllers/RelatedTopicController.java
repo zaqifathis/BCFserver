@@ -41,7 +41,7 @@ public class RelatedTopicController implements RelatedTopicsApi {
     public ResponseEntity<List<RelatedTopicGET>> updateRelatedTopics(String version, String projectId, String topicId, List<@Valid RelatedTopicPUT> relatedTopicPUT) {
         props.validateVersion(version);
         UserRole role = securityContextService.getCurrentUserRole();
-        authorizationService.can(role, Actions.Topic.UPDATE_RELATED_TOPICS);
+        authorizationService.assertCan(role, Actions.Topic.UPDATE_RELATED_TOPICS);
         List<RelatedTopicGET> updated = topicService.updateRelatedTopics(topicId, projectId, relatedTopicPUT)
                 .stream()
                 .map(topicMapper::toRelatedTopicDto)

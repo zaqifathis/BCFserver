@@ -143,7 +143,7 @@ public class TopicService {
 
             if (snippet == null) {
                 snippet = new BimSnippetEntity();
-                snippet.addTopic(existingTopic);
+                snippet.getTopics().add(existingTopic);
                 snippet.setSnippetType(topicPUT.getBimSnippet().getSnippetType());
                 snippet.setIsExternal(Boolean.parseBoolean(topicPUT.getBimSnippet().getIsExternal()));
                 snippet.setReference(topicPUT.getBimSnippet().getReference());

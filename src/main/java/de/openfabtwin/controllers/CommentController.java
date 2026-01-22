@@ -15,6 +15,7 @@ import de.openfabtwin.services.SecurityContextService;
 import de.openfabtwin.utils.BcfProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -35,7 +36,7 @@ public class CommentController implements CommentsApi {
         props.validateVersion(version);
         //TODO: validate user has permission to project
         UserRole role = securityContextService.getCurrentUserRole();
-        authorizationService.can(role, Actions.Topic.CREATE_COMMENT);
+        authorizationService.assertCan(role, Actions.Topic.CREATE_COMMENT);
         CommentEntity created = commentService.create(projectId, topicId, commentPOST);
         CommentGET dto = commentMapper.toDto(created, topicId);
         dto.setAuthorization(authorizationAssembler.commentAuthorization(role));
@@ -47,7 +48,7 @@ public class CommentController implements CommentsApi {
         props.validateVersion(version);
         //TODO: validate user has permission to project
         UserRole role = securityContextService.getCurrentUserRole();
-        authorizationService.can(role, Actions.Comment.DELETE);
+        authorizationService.assertCan(role, Actions.Comment.DELETE);
         commentService.delete(commentId, topicId, projectId);
         return ResponseEntity.ok(null);
     }
@@ -84,7 +85,7 @@ public class CommentController implements CommentsApi {
         props.validateVersion(version);
         //TODO: validate user has permission to project
         UserRole role = securityContextService.getCurrentUserRole();
-        authorizationService.can(role, Actions.Comment.UPDATE);
+        authorizationService.assertCan(role, Actions.Comment.UPDATE);
         CommentEntity updated = commentService.update(commentId, topicId, projectId, commentPUT);
         CommentGET dto = commentMapper.toDto(updated, topicId);
         dto.setAuthorization(authorizationAssembler.commentAuthorization(role));

@@ -3,6 +3,7 @@ package de.openfabtwin.services;
 import de.openfabtwin.ExtensionXmlParser;
 import de.openfabtwin.entities.BimSnippetEntity;
 import de.openfabtwin.entities.ExtensionEntity;
+import de.openfabtwin.generated.dto.RelatedTopicPUT;
 import de.openfabtwin.generated.dto.TopicPOST;
 import de.openfabtwin.entities.TopicEntity;
 import de.openfabtwin.generated.dto.TopicPUT;
@@ -12,6 +13,7 @@ import de.openfabtwin.repositories.TopicRepository;
 import de.openfabtwin.utils.DateUtils;
 import de.openfabtwin.utils.ODataFilterOrderParser;
 import jakarta.persistence.EntityManager;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -163,6 +166,25 @@ public class TopicService {
         return topicRepository.save(existingTopic);
     }
 
+    public List<String> getRelatedTopicGuids(String topicId, String projectId) {
+        TopicEntity topic = entityResolver.resolveTopic(projectId, topicId);
+        return topic.getRelatedTopics();
+    }
+
+    public List<String> updateRelatedTopics(String topicId, String projectId, List<RelatedTopicPUT> relatedTopicPUT) {
+        TopicEntity topic = entityResolver.resolveTopic(projectId, topicId);
+        topic.getRelatedTopics().clear();
+        for (RelatedTopicPUT relatedTopic : relatedTopicPUT) {
+            TopicEntity related = entityResolver.resolveTopic(projectId, relatedTopic.getRelatedTopicGuid());
+            if (related.getId().equals(topic.getId())) {
+                throw new IllegalArgumentException("A topic cannot be related to itself");
+            }
+            topic.getRelatedTopics().add(related.getGuid());
+        }
+        topicRepository.save(topic);
+        return topic.getRelatedTopics();
+    }
+
     //----------------- HELPER METHODS -----------------
 
     private <T> T validateValue(T target, List<T> validValues) {
@@ -205,4 +227,7 @@ public class TopicService {
             "server_assigned_id", "serverAssignedId",
             "index", "index"
     );
+
+
+
 }

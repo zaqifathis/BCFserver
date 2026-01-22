@@ -3,6 +3,7 @@ package de.openfabtwin.mappers;
 import de.openfabtwin.entities.BimSnippetEntity;
 import de.openfabtwin.entities.TopicEntity;
 import de.openfabtwin.generated.dto.BimSnippet;
+import de.openfabtwin.generated.dto.RelatedTopicGET;
 import de.openfabtwin.generated.dto.TopicGET;
 import de.openfabtwin.repositories.ExtensionRepository;
 import jakarta.validation.Valid;
@@ -84,5 +85,11 @@ public class TopicMapper {
         snippet.setIsExternal(Boolean.parseBoolean(bimSnippet.getIsExternal()));
         snippet.setReference(bimSnippet.getReference());
         snippet.setReferenceSchema(bimSnippet.getReferenceSchema());
+    }
+
+    public RelatedTopicGET toRelatedTopicDto(String s) {
+        RelatedTopicGET dto = new RelatedTopicGET();
+        dto.setRelatedTopicGuid(s);
+        return dto;
     }
 }

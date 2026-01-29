@@ -3,13 +3,17 @@ package de.openfabtwin.mappers;
 import de.openfabtwin.entities.BimSnippetEntity;
 import de.openfabtwin.entities.DocumentReferenceEntity;
 import de.openfabtwin.entities.TopicEntity;
-import de.openfabtwin.generated.dto.BimSnippet;
-import de.openfabtwin.generated.dto.DocumentReferenceGET;
-import de.openfabtwin.generated.dto.RelatedTopicGET;
-import de.openfabtwin.generated.dto.TopicGET;
+import de.openfabtwin.entities.TopicEventEntity;
+import de.openfabtwin.generated.dto.*;
 import de.openfabtwin.repositories.ExtensionRepository;
+import de.openfabtwin.utils.DateUtils;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Component;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 public class TopicMapper {
@@ -44,7 +48,7 @@ public class TopicMapper {
     }
 
 
-    public BimSnippetEntity mapBimSnippetEntity(@Valid BimSnippet bimSnippet, TopicEntity topic) {
+    public BimSnippetEntity mapBimSnippetEntity(BimSnippet bimSnippet, TopicEntity topic) {
         if(bimSnippet.getSnippetType() == null || bimSnippet.getIsExternal() == null ||
                 bimSnippet.getReference() == null || bimSnippet.getReferenceSchema() == null) {
             throw new IllegalArgumentException("All BimSnippet fields are required");
@@ -75,7 +79,7 @@ public class TopicMapper {
         return dto;
     }
 
-    public void updateBimSnippetEntity(@Valid BimSnippet bimSnippet, BimSnippetEntity snippet) {
+    public void updateBimSnippetEntity(BimSnippet bimSnippet, BimSnippetEntity snippet) {
         if(bimSnippet.getSnippetType() == null || bimSnippet.getIsExternal() == null ||
            bimSnippet.getReference() == null || bimSnippet.getReferenceSchema() == null) {
             throw new IllegalArgumentException("All BimSnippet fields are required");
@@ -99,12 +103,52 @@ public class TopicMapper {
     public DocumentReferenceGET toDocumentReferenceDto(DocumentReferenceEntity created) {
         DocumentReferenceGET dto = new DocumentReferenceGET();
         dto.setGuid(created.getGuid());
-        if(created.getDocumentGuid() != null) {
-            dto.setDocumentGuid(created.getDocumentGuid());
-        } else {
-            dto.setUrl(created.getUrl());
-        }
+        dto.setDocumentGuid(created.getDocumentGuid());
+        dto.setUrl(created.getUrl());
         dto.setDescription(created.getDescription());
         return dto;
+    }
+
+    public List<TopicEventGET> toGroupedEventDto(List<TopicEventEntity> events) {
+        Map<TopicEventGroupKey, List<TopicEventEntity>> grouped =
+                events.stream()
+                        .collect(Collectors.groupingBy(
+                                e -> new TopicEventGroupKey(
+                                        e.getTopicGuid(),
+                                        e.getAuthor(),
+                                        e.getEventDate()
+                                )
+                        ));
+
+        return grouped.entrySet().stream()
+                .map(entry -> toEventDto(entry.getKey(), entry.getValue()))
+                .sorted(Comparator.comparing(TopicEventGET::getDate))
+                .toList();
+    }
+
+
+    private TopicEventGET toEventDto(
+            TopicEventGroupKey key,
+            List<TopicEventEntity> group
+    ) {
+        TopicEventGET dto = new TopicEventGET();
+        dto.setTopicGuid(key.topicGuid());
+        dto.setAuthor(key.author());
+        dto.setDate(DateUtils.toString(key.eventDate()));
+
+        List<EventAction> actions = group.stream()
+                .map(this::toAction)
+                .toList();
+
+        dto.setActions(actions);
+        return dto;
+    }
+
+    private EventAction toAction(TopicEventEntity event) {
+        EventAction action = new EventAction();
+        action.setType(event.getEventType().name());
+        action.setValue(event.getEventValue());
+
+        return action;
     }
 }

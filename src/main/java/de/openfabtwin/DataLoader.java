@@ -2,10 +2,10 @@ package de.openfabtwin;
 
 
 import de.openfabtwin.auth.UserRole;
-import de.openfabtwin.entities.ExtensionEntity;
-import de.openfabtwin.entities.ProjectEntity;
-import de.openfabtwin.entities.TopicEntity;
+import de.openfabtwin.entities.*;
+import de.openfabtwin.repositories.CommentRepository;
 import de.openfabtwin.repositories.ProjectRepository;
+import de.openfabtwin.repositories.TopicEventRepository;
 import de.openfabtwin.repositories.TopicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -18,7 +18,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,11 +27,16 @@ public class DataLoader implements ApplicationRunner {
 
     private final ProjectRepository projectRepository;
     private final TopicRepository topicRepository;
+    private final CommentRepository commentRepository;
+    private final TopicEventRepository topicEventRepository;
+
 
     @Autowired
-    public DataLoader(ProjectRepository projectRepository, TopicRepository topicRepository) {
+    public DataLoader(ProjectRepository projectRepository, TopicRepository topicRepository, CommentRepository commentRepository, TopicEventRepository topicEventRepository) {
         this.projectRepository = projectRepository;
         this.topicRepository = topicRepository;
+        this.commentRepository = commentRepository;
+        this.topicEventRepository = topicEventRepository;
     }
 
     public void run(ApplicationArguments args) {
@@ -54,22 +58,60 @@ public class DataLoader implements ApplicationRunner {
 
     private void createTopics(ProjectEntity project) {
         String[] topicTitles = {"Topic A", "Topic B", "Topic C"};
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < topicTitles.length; i++) {
             TopicEntity topic = new TopicEntity();
             topic.setGuid(UUID.randomUUID().toString());
             topic.setProject(project);
             topic.setTitle(topicTitles[i]);
             topic.setServerAssignedId(topicTitles[i].replace(" ", "-").toUpperCase());
             topic.setCreationAuthor(UserRole.ADMIN.getDefaultAuthor());
-            topic.setCreationDate(Instant.now());
+            Instant createTopicEventTime = Instant.now();
+            topic.setCreationDate(createTopicEventTime);
             topic.setLabels(i > 1 ? new ArrayList<>(List.of("Interior")) : new ArrayList<>(List.of("Architecture", "Structure")));
             topic.setTopicType("Issue");
             topic.setTopicStatus(i > 1 ? "InProgress" : "Open");
             topic.setAssignedTo(UserRole.USER.getDefaultAuthor());
             topic.setPriority("High");
             topicRepository.save(topic);
+
+            //topic Events
+            TopicEventEntity topicEvent = new TopicEventEntity();
+            topicEvent.setTopicGuid(topic.getGuid());
+            topicEvent.setProjectGuid(project.getGuid());
+            topicEvent.setAuthor(UserRole.ADMIN.getDefaultAuthor());
+            topicEvent.setEventType(TopicEventType.topic_created);
+            topicEvent.setEventValue(null);
+            topicEvent.setEventDate(createTopicEventTime);
+            topicEventRepository.save(topicEvent);
+
+            // Create comments
+            createComments(topic);
+
+            //createViewPoints
+//            createViewPoints(topic);
         }
     }
+
+//    private void createViewPoints(TopicEntity topic) {
+//
+//    }
+
+    private void createComments(TopicEntity topic) {
+        String[] comments = {"test-comment-1", "test-comment-2", "test-comment-3"};
+
+        for (String comment : comments) {
+            CommentEntity cm = new CommentEntity();
+            cm.setGuid(UUID.randomUUID().toString());
+            cm.setTopic(topic);
+            cm.setAuthor(UserRole.USER.getDefaultAuthor());
+            cm.setDate(Instant.now());
+            cm.setComment(comment);
+            commentRepository.save(cm);
+            topic.getComments().add(cm);
+        }
+    }
+
+
 
     private ExtensionEntity createDefaultExtension(ProjectEntity project) {
         ExtensionEntity ext = new ExtensionEntity();

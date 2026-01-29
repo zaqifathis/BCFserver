@@ -1,6 +1,8 @@
 package de.openfabtwin.generated.dto;
 
 import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import org.springframework.lang.Nullable;
@@ -15,6 +17,7 @@ import jakarta.annotation.Generated;
  */
 
 @JsonTypeName("event_action")
+@JsonInclude(JsonInclude.Include.ALWAYS)
 @Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2025-12-05T09:23:37.160769500+01:00[Europe/Berlin]", comments = "Generator version: 7.17.0")
 public class EventAction {
 

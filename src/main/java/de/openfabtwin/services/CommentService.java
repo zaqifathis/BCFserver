@@ -26,6 +26,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final EntityResolver entityResolver;
     private final CommentEventRepository commentEventRepository;
+    private final SecurityContextService securityContextService;
 
     public CommentEntity getById(String commentId, String topicId, String projectId) {
         return entityResolver.resolveComment(projectId, topicId, commentId);
@@ -47,7 +48,7 @@ public class CommentService {
         CommentEntity comment = new CommentEntity();
         comment.setGuid(UUID.randomUUID().toString());
         comment.setDate(createEventTime);
-        comment.setAuthor("admin@localhost"); //TODO: set actual user
+        comment.setAuthor(securityContextService.getCurrentUserEmail());
         comment.setTopic(topic);
         if (commentPOST.getComment() != null) {
             comment.setComment(commentPOST.getComment());
@@ -89,7 +90,7 @@ public class CommentService {
 
         Instant updateTime = Instant.now();
         existingComment.setModifiedDate(updateTime);
-        String updatedAuthor = "admin@bcfserver"; //TODO: set actual user
+        String updatedAuthor = securityContextService.getCurrentUserEmail();
         existingComment.setModifiedAuthor(updatedAuthor);
 
         if(commentPUT.getComment() != null) {

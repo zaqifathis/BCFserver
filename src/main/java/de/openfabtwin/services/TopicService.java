@@ -34,6 +34,7 @@ public class TopicService {
     private final EntityManager entityManager;
     private final ExtensionXmlParser extensionXmlParser;
     private final EntityResolver entityResolver;
+    private final SecurityContextService securityContextService;
 
     @Transactional
     public TopicEntity create(String projectId, TopicPOST topicPOST) {
@@ -49,7 +50,7 @@ public class TopicService {
         topic.setIndex(topicPOST.getIndex());
         topic.setDescription(topicPOST.getDescription());
         topic.setDueDate(DateUtils.toInstant(topicPOST.getDueDate()));
-        topic.setCreationAuthor("admin@localhost"); // TODO: set actual user
+        topic.setCreationAuthor(securityContextService.getCurrentUserEmail());
 
         Instant createEventTime = Instant.now();
         topic.setCreationDate(createEventTime);
@@ -176,7 +177,7 @@ public class TopicService {
 
         Instant updateEvent = Instant.now();
         existingTopic.setModifiedDate(updateEvent);
-        existingTopic.setModifiedAuthor("admin@localhost"); // TODO: set actual user
+        existingTopic.setModifiedAuthor(securityContextService.getCurrentUserEmail());
 
         // Update TopicEventEntity
         if(!Objects.equals(beforeTitle, existingTopic.getTitle())) {

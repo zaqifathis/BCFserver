@@ -15,9 +15,8 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/foundation/**", "/h2-console/**").permitAll()
                         .requestMatchers("/bcf/**").authenticated()
-                        // Allow internal H2 console if in test mode
-                        .requestMatchers("/h2-console/**").permitAll()
                         .anyRequest().permitAll()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));

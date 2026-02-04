@@ -64,13 +64,13 @@ public class DataLoader implements ApplicationRunner {
             topic.setProject(project);
             topic.setTitle(topicTitles[i]);
             topic.setServerAssignedId(topicTitles[i].replace(" ", "-").toUpperCase());
-            topic.setCreationAuthor(UserRole.ADMIN.getDefaultAuthor());
+            topic.setCreationAuthor("admin@localhost");
             Instant createTopicEventTime = Instant.now();
             topic.setCreationDate(createTopicEventTime);
             topic.setLabels(i > 1 ? new ArrayList<>(List.of("Interior")) : new ArrayList<>(List.of("Architecture", "Structure")));
             topic.setTopicType("Issue");
             topic.setTopicStatus(i > 1 ? "InProgress" : "Open");
-            topic.setAssignedTo(UserRole.USER.getDefaultAuthor());
+            topic.setAssignedTo("user@localhost");
             topic.setPriority("High");
             topicRepository.save(topic);
 
@@ -78,7 +78,7 @@ public class DataLoader implements ApplicationRunner {
             TopicEventEntity topicEvent = new TopicEventEntity();
             topicEvent.setTopicGuid(topic.getGuid());
             topicEvent.setProjectGuid(project.getGuid());
-            topicEvent.setAuthor(UserRole.ADMIN.getDefaultAuthor());
+            topicEvent.setAuthor("admin@localhost");
             topicEvent.setEventType(TopicEventType.topic_created);
             topicEvent.setEventValue(null);
             topicEvent.setEventDate(createTopicEventTime);
@@ -87,14 +87,9 @@ public class DataLoader implements ApplicationRunner {
             // Create comments
             createComments(topic);
 
-            //createViewPoints
-//            createViewPoints(topic);
         }
     }
 
-//    private void createViewPoints(TopicEntity topic) {
-//
-//    }
 
     private void createComments(TopicEntity topic) {
         String[] comments = {"test-comment-1", "test-comment-2", "test-comment-3"};
@@ -103,7 +98,7 @@ public class DataLoader implements ApplicationRunner {
             CommentEntity cm = new CommentEntity();
             cm.setGuid(UUID.randomUUID().toString());
             cm.setTopic(topic);
-            cm.setAuthor(UserRole.USER.getDefaultAuthor());
+            cm.setAuthor("user@localhost");
             cm.setDate(Instant.now());
             cm.setComment(comment);
             commentRepository.save(cm);

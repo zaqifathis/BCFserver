@@ -9,6 +9,9 @@ target/
 # Security / Credentials
 .env
 
+# Keycloak
+/keycloak_data/
+
 ### STS ###
 .apt_generated
 .classpath

@@ -10,7 +10,7 @@ target/
 .env
 
 # Keycloak
-/keycloak_data/
+keycloak_data/
 
 ### STS ###
 .apt_generated

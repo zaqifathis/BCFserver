@@ -1,6 +1,5 @@
 package de.openfabtwin.services;
 
-import de.openfabtwin.ExtensionXmlParser;
 import de.openfabtwin.entities.*;
 import de.openfabtwin.exceptions.ConflictException;
 import de.openfabtwin.generated.dto.*;
@@ -32,7 +31,6 @@ public class TopicService {
     private final TopicEventRepository topicEventRepository;
     private final TopicMapper topicMapper;
     private final EntityManager entityManager;
-    private final ExtensionXmlParser extensionXmlParser;
     private final EntityResolver entityResolver;
     private final SecurityContextService securityContextService;
 
@@ -55,14 +53,12 @@ public class TopicService {
         Instant createEventTime = Instant.now();
         topic.setCreationDate(createEventTime);
 
-        ExtensionEntity extension = entityResolver.resolveProjectExtension(projectId);
-        Extensions xmlExtensions = extensionXmlParser.parse(extension.getExtensionXml());
-        topic.setTopicType(validateValue(topicPOST.getTopicType(), xmlExtensions.getTopicTypes() != null ? xmlExtensions.getTopicTypes().getTopicType() : List.of()));
-        topic.setTopicStatus(validateValue(topicPOST.getTopicStatus(), xmlExtensions.getTopicStatuses() != null ? xmlExtensions.getTopicStatuses().getTopicStatus() : List.of()));
-        topic.setPriority(validateValue(topicPOST.getPriority(), xmlExtensions.getPriorities() != null ? xmlExtensions.getPriorities().getPriority() : List.of()));
-        topic.setLabels(validateList(topicPOST.getLabels(), xmlExtensions.getTopicLabels() != null ? xmlExtensions.getTopicLabels().getTopicLabel() : List.of()));
-        topic.setAssignedTo(validateValue(topicPOST.getAssignedTo(), xmlExtensions.getUsers() != null ? xmlExtensions.getUsers().getUser() : List.of()));
-        topic.setStage(validateValue(topicPOST.getStage(), xmlExtensions.getStages() != null ? xmlExtensions.getStages().getStage() : List.of()));
+        topic.setTopicType(topicPOST.getTopicType());
+        topic.setTopicStatus(topicPOST.getTopicStatus());
+        topic.setPriority(topicPOST.getPriority());
+        topic.setLabels(topicPOST.getLabels());
+        topic.setAssignedTo(topicPOST.getAssignedTo());
+        topic.setStage(topicPOST.getStage());
 
         if(topicPOST.getBimSnippet() != null) {
             BimSnippetEntity snippetEntity = topicMapper.mapBimSnippetEntity(topicPOST.getBimSnippet(), topic);
@@ -118,36 +114,32 @@ public class TopicService {
         String beforeStage = existingTopic.getStage();
 
 
-        ExtensionEntity extension = entityResolver.resolveProjectExtension(projectId);
-        Extensions xmlExtensions = extensionXmlParser.parse(extension.getExtensionXml());
-
         existingTopic.setTitle(topicPUT.getTitle());
         if(topicPUT.getTopicType() != null) {
-            existingTopic.setTopicType(validateValue(topicPUT.getTopicType(), xmlExtensions.getTopicTypes() != null ? xmlExtensions.getTopicTypes().getTopicType() : List.of()));
+            existingTopic.setTopicType(topicPUT.getTopicType());
         }
         if(topicPUT.getTopicStatus() != null) {
-            existingTopic.setTopicStatus(validateValue(topicPUT.getTopicStatus(), xmlExtensions.getTopicStatuses() != null ? xmlExtensions.getTopicStatuses().getTopicStatus() : List.of()));
+            existingTopic.setTopicStatus(topicPUT.getTopicStatus());
         }
         if(topicPUT.getReferenceLinks() != null) {
             existingTopic.getReferenceLinks().clear();
             existingTopic.getReferenceLinks().addAll(topicPUT.getReferenceLinks());
         }
         if (topicPUT.getPriority() != null) {
-            existingTopic.setPriority(validateValue(topicPUT.getPriority(), xmlExtensions.getPriorities() != null ? xmlExtensions.getPriorities().getPriority() : List.of()));
+            existingTopic.setPriority(topicPUT.getPriority());
         }
         if(topicPUT.getIndex() != null) {
             existingTopic.setIndex(topicPUT.getIndex());
         }
         if(topicPUT.getLabels() != null) {
-            List<String> labels = validateList(topicPUT.getLabels(), xmlExtensions.getTopicLabels() != null ? xmlExtensions.getTopicLabels().getTopicLabel() : List.of());
             existingTopic.getLabels().clear();
-            existingTopic.getLabels().addAll(labels);
+            existingTopic.getLabels().addAll(topicPUT.getLabels());
         }
         if(topicPUT.getAssignedTo() != null) {
-            existingTopic.setAssignedTo(validateValue(topicPUT.getAssignedTo(), xmlExtensions.getUsers() != null ? xmlExtensions.getUsers().getUser() : List.of()));
+            existingTopic.setAssignedTo(topicPUT.getAssignedTo());
         }
         if(topicPUT.getStage() != null) {
-            existingTopic.setStage(validateValue(topicPUT.getStage(), xmlExtensions.getStages() != null ? xmlExtensions.getStages().getStage() : List.of()));
+            existingTopic.setStage(topicPUT.getStage());
         }
         if(topicPUT.getDescription() != null) {
             existingTopic.setDescription(topicPUT.getDescription());
@@ -274,28 +266,6 @@ public class TopicService {
         event.setEventDate(eventTime);
 
         topicEventRepository.save(event);
-    }
-
-    private <T> T validateValue(T target, List<T> validValues) {
-        if (target == null) {
-            return null;
-        }
-        if (!validValues.contains(target) && !validValues.isEmpty()) {
-            throw new IllegalArgumentException("Invalid value: " + target);
-        }
-        return target;
-    }
-
-    private <T> List<T> validateList(List<T> targets, List<T> validList) {
-        if(targets == null) {
-            return List.of();
-        }
-        for (T target : targets) {
-            if (!validList.contains(target) && !validList.isEmpty()) {
-                throw new IllegalArgumentException("Invalid values: " + target);
-            }
-        }
-        return targets;
     }
 
     private static final Map<String, String> TOPIC_FILTER_MAPPING = Map.ofEntries(

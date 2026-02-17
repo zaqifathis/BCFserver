@@ -36,25 +36,29 @@ public class AuthorizationService {
         }
     }
 
+    // ----------------------------------------------
+
     public boolean can(UserRole role, Project action) {
-        if (role == UserRole.ADMIN) return true;
+        if (role == UserRole.WRITE) return true;
         return action != Project.UPDATE;
     }
 
     public boolean can(UserRole role, Topic action) {
-        if (role == UserRole.ADMIN) return true;
+        if (role == UserRole.WRITE) return true;
         return action == Topic.CREATE_COMMENT ||
                action == Topic.CREATE_VIEWPOINT;
     }
 
     public boolean can(UserRole role, Comment action) {
-        if (role == UserRole.ADMIN) return true;
+        if (role == UserRole.WRITE) return true;
         return action == Comment.UPDATE;
     }
 
     public boolean can(UserRole role, Viewpoint action) {
-        return role == UserRole.ADMIN;
+        return role == UserRole.WRITE;
     }
+
+    // ----------------------------------------------
 
     public List<ProjectGETAuthorization.ProjectActionsEnum> getAuthorizedProjectActions(UserRole role) {
         return Arrays.stream(ProjectGETAuthorization.ProjectActionsEnum.values())

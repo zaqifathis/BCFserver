@@ -16,7 +16,4 @@ public class ExtensionEntity {
     @JoinColumn(name = "project_id", nullable = false, unique = true)
     private ProjectEntity project;
 
-    @Lob
-    @Column(name = "extension_xml", nullable = false)
-    private String extensionXml;
 }

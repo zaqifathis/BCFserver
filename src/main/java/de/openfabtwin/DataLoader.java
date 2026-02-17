@@ -45,7 +45,8 @@ public class DataLoader implements ApplicationRunner {
             ProjectEntity project = new ProjectEntity();
             project.setGuid(UUID.randomUUID().toString());
             project.setName(projectName);
-            ExtensionEntity ext = createDefaultExtension(project);
+            ExtensionEntity ext = new ExtensionEntity();
+            ext.setProject(project);
             project.setExtensions(ext);
 
             projectRepository.save(project);
@@ -103,20 +104,6 @@ public class DataLoader implements ApplicationRunner {
             cm.setComment(comment);
             commentRepository.save(cm);
             topic.getComments().add(cm);
-        }
-    }
-
-
-
-    private ExtensionEntity createDefaultExtension(ProjectEntity project) {
-        ExtensionEntity ext = new ExtensionEntity();
-        ext.setProject(project);
-        try {
-            String xml = Files.readString(Path.of("src/test/testdata/default_extensions.xml"));
-            ext.setExtensionXml(xml);
-            return ext;
-        } catch (IOException e) {
-            throw new IllegalStateException("Failed to initialize default project extensions", e);
         }
     }
 }

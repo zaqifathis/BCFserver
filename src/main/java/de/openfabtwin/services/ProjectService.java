@@ -24,8 +24,9 @@ public class ProjectService {
     private final DocumentRepository documentRepository;
     private final EntityResolver entityResolver;
 
-    public List<ProjectEntity> getAllProjects() {
-        return projectRepository.findAll();
+    public List<ProjectEntity> getAllProjects(List<String> guids) {
+        if (guids.isEmpty()) return List.of();
+        return projectRepository.findAllByGuidIn(guids);
     }
 
     public ProjectEntity getProject(String guid) {

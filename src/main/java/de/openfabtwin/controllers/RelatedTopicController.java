@@ -13,6 +13,7 @@ import de.openfabtwin.utils.BcfProperties;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -30,6 +31,10 @@ public class RelatedTopicController implements RelatedTopicsApi {
     @Override
     public ResponseEntity<List<RelatedTopicGET>> getRelatedTopics(String version, String projectId, String topicId) {
         props.validateVersion(version);
+        boolean hasAccess = securityContextService.hasProjectAccess(projectId);
+        if (!hasAccess) {
+            throw new AccessDeniedException("User does not have access to project");
+        }
         List<RelatedTopicGET> relatedTopics = topicService.getRelatedTopicGuids(topicId, projectId)
                 .stream()
                 .map(topicMapper::toRelatedTopicDto)
@@ -40,6 +45,10 @@ public class RelatedTopicController implements RelatedTopicsApi {
     @Override
     public ResponseEntity<List<RelatedTopicGET>> updateRelatedTopics(String version, String projectId, String topicId, List<@Valid RelatedTopicPUT> relatedTopicPUT) {
         props.validateVersion(version);
+        boolean hasAccess = securityContextService.hasProjectAccess(projectId);
+        if (!hasAccess) {
+            throw new AccessDeniedException("User does not have access to project");
+        }
         UserRole role = securityContextService.getCurrentUserRole();
         authorizationService.assertCan(role, Actions.Topic.UPDATE_RELATED_TOPICS);
         List<RelatedTopicGET> updated = topicService.updateRelatedTopics(topicId, projectId, relatedTopicPUT)

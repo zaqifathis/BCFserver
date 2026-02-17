@@ -32,6 +32,10 @@ public class DocumentReferenceController implements DocumentReferencesApi {
     @Override
     public ResponseEntity<DocumentReferenceGET> createDocumentReference(String version, String projectId, String topicId, DocumentReferencePOST documentReferencePOST) {
         props.validateVersion(version);
+        boolean hasAccess = securityContextService.hasProjectAccess(projectId);
+        if (!hasAccess) {
+            throw new AccessDeniedException("User does not have access to project");
+        }
         UserRole role = securityContextService.getCurrentUserRole();
         authorizationService.assertCan(role, Actions.Topic.UPDATE_DOCUMENT_REFERENCES);
         DocumentReferenceEntity created = topicService.createDocumentReference(topicId, projectId, documentReferencePOST);
@@ -42,6 +46,10 @@ public class DocumentReferenceController implements DocumentReferencesApi {
     @Override
     public ResponseEntity<List<DocumentReferenceGET>> getDocumentReferences(String version, String projectId, String topicId) {
         props.validateVersion(version);
+        boolean hasAccess = securityContextService.hasProjectAccess(projectId);
+        if (!hasAccess) {
+            throw new AccessDeniedException("User does not have access to project");
+        }
         List<DocumentReferenceEntity> documentReferences = topicService.getDocumentReferences(topicId, projectId);
         List<DocumentReferenceGET> dtos = documentReferences.stream()
                 .map(topicMapper::toDocumentReferenceDto)
@@ -52,6 +60,10 @@ public class DocumentReferenceController implements DocumentReferencesApi {
     @Override
     public ResponseEntity<DocumentReferenceGET> updateDocumentReference(String version, String projectId, String topicId, String documentReferenceId, DocumentReferencePUT documentReferencePUT) {
         props.validateVersion(version);
+        boolean hasAccess = securityContextService.hasProjectAccess(projectId);
+        if (!hasAccess) {
+            throw new AccessDeniedException("User does not have access to project");
+        }
         UserRole role = securityContextService.getCurrentUserRole();
         authorizationService.assertCan(role, Actions.Topic.UPDATE_DOCUMENT_REFERENCES);
         DocumentReferenceEntity updated = topicService.updateDocumentReference(topicId, projectId, documentReferenceId, documentReferencePUT);

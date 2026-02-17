@@ -15,6 +15,7 @@ import de.openfabtwin.mappers.TopicMapper;
 import de.openfabtwin.services.TopicService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -33,7 +34,10 @@ public class TopicController implements TopicsApi {
     @Override
     public ResponseEntity<TopicGET> createTopic(String version, String projectId, TopicPOST topicPOST) {
         props.validateVersion(version);
-        //TODO: validate user has permission to project
+        boolean hasAccess = securityContextService.hasProjectAccess(projectId);
+        if (!hasAccess) {
+            throw new AccessDeniedException("User does not have access to project");
+        }
         UserRole role = securityContextService.getCurrentUserRole();
         authorizationService.assertCan(role, Actions.Project.CREATE_TOPIC);
         TopicEntity created = topicService.create(projectId, topicPOST);
@@ -45,7 +49,10 @@ public class TopicController implements TopicsApi {
     @Override
     public ResponseEntity<Void> deleteTopic(String version, String projectId, String topicId) {
         props.validateVersion(version);
-        //TODO: validate user has permission to project
+        boolean hasAccess = securityContextService.hasProjectAccess(projectId);
+        if (!hasAccess) {
+            throw new AccessDeniedException("User does not have access to project");
+        }
         UserRole role = securityContextService.getCurrentUserRole();
         authorizationService.assertCan(role, Actions.Topic.DELETE);
         topicService.delete(topicId, projectId);
@@ -55,7 +62,10 @@ public class TopicController implements TopicsApi {
     @Override
     public ResponseEntity<TopicGET> getTopicById(String version, String projectId, String topicId) {
         props.validateVersion(version);
-        //TODO: validate user has permission to project
+        boolean hasAccess = securityContextService.hasProjectAccess(projectId);
+        if (!hasAccess) {
+            throw new AccessDeniedException("User does not have access to project");
+        }
         UserRole role = securityContextService.getCurrentUserRole();
         TopicEntity topic = topicService.getById(topicId, projectId);
         TopicGET dto = topicMapper.toDto(topic);
@@ -66,7 +76,10 @@ public class TopicController implements TopicsApi {
     @Override
     public ResponseEntity<List<TopicGET>> getTopics(String version, String projectId, String $filter, String $orderby, String $top, String $skip) {
         props.validateVersion(version);
-        //TODO: validate user has permission to project
+        boolean hasAccess = securityContextService.hasProjectAccess(projectId);
+        if (!hasAccess) {
+            throw new AccessDeniedException("User does not have access to project");
+        }
         UserRole role = securityContextService.getCurrentUserRole();
         List<TopicGET> topics = topicService.getAll(projectId, $filter, $orderby, $top, $skip)
                 .stream()
@@ -82,7 +95,10 @@ public class TopicController implements TopicsApi {
     @Override
     public ResponseEntity<TopicGET> updateTopic(String version, String projectId, String topicId, TopicPUT topicPUT) {
         props.validateVersion(version);
-        //TODO: validate user has permission to project
+        boolean hasAccess = securityContextService.hasProjectAccess(projectId);
+        if (!hasAccess) {
+            throw new AccessDeniedException("User does not have access to project");
+        }
         UserRole role = securityContextService.getCurrentUserRole();
         authorizationService.assertCan(role, Actions.Topic.UPDATE);
         TopicEntity updated = topicService.update(topicId, projectId, topicPUT);

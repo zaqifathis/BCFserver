@@ -8,10 +8,12 @@ import de.openfabtwin.generated.dto.TopicEventGET;
 import de.openfabtwin.mappers.CommentMapper;
 import de.openfabtwin.mappers.TopicMapper;
 import de.openfabtwin.services.CommentService;
+import de.openfabtwin.services.SecurityContextService;
 import de.openfabtwin.services.TopicService;
 import de.openfabtwin.utils.BcfProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -25,10 +27,15 @@ public class EventController implements EventsApi {
     private final TopicMapper topicMapper;
     private final CommentService commentService;
     private final CommentMapper commentMapper;
+    private final SecurityContextService securityContextService;
 
     @Override
     public ResponseEntity<List<CommentEventGET>> getCommentEvent(String version, String projectId, String topicId, String commentId, String $top, String $skip, String $filter, String $orderby) {
         props.validateVersion(version);
+        boolean hasAccess = securityContextService.hasProjectAccess(projectId);
+        if (!hasAccess) {
+            throw new AccessDeniedException("User does not have access to project");
+        }
         List<CommentEventEntity> entity = commentService.getCommentEventsByCommentId(projectId, topicId, commentId, $top, $skip, $filter, $orderby);
         List<CommentEventGET> events = commentMapper.toGroupedEventDto(entity);
         return ResponseEntity.ok(events);
@@ -37,6 +44,10 @@ public class EventController implements EventsApi {
     @Override
     public ResponseEntity<List<CommentEventGET>> getCommentEvents(String version, String projectId, String $top, String $skip, String $filter, String $orderby) {
         props.validateVersion(version);
+        boolean hasAccess = securityContextService.hasProjectAccess(projectId);
+        if (!hasAccess) {
+            throw new AccessDeniedException("User does not have access to project");
+        }
         List<CommentEventEntity> entity = commentService.getCommentEvents(projectId, $top, $skip, $filter, $orderby);
         List<CommentEventGET> events = commentMapper.toGroupedEventDto(entity);
         return ResponseEntity.ok(events);
@@ -45,6 +56,10 @@ public class EventController implements EventsApi {
     @Override
     public ResponseEntity<List<TopicEventGET>> getEvents(String version, String projectId, String $top, String $skip, String $filter, String $orderby) {
         props.validateVersion(version);
+        boolean hasAccess = securityContextService.hasProjectAccess(projectId);
+        if (!hasAccess) {
+            throw new AccessDeniedException("User does not have access to project");
+        }
         List<TopicEventEntity> entity = topicService.getTopicEvents(projectId, $top, $skip, $filter, $orderby);
         List<TopicEventGET> events = topicMapper.toGroupedEventDto(entity);
         return ResponseEntity.ok(events);
@@ -53,6 +68,10 @@ public class EventController implements EventsApi {
     @Override
     public ResponseEntity<List<TopicEventGET>> getTopicEvents(String version, String projectId, String topicId, String $top, String $skip, String $filter, String $orderby) {
         props.validateVersion(version);
+        boolean hasAccess = securityContextService.hasProjectAccess(projectId);
+        if (!hasAccess) {
+            throw new AccessDeniedException("User does not have access to project");
+        }
         List<TopicEventEntity> entity = topicService.getTopicEventsByTopicId(projectId, topicId, $top, $skip, $filter, $orderby);
         List<TopicEventGET> events = topicMapper.toGroupedEventDto(entity);
         return ResponseEntity.ok(events);

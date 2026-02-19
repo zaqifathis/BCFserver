@@ -37,7 +37,7 @@ public class TopicEntity {
 
     private String priority;
 
-    @Column(name = "index")
+    @Column(name = "topic_index")
     private Integer index;
 
     @Column(nullable = false)

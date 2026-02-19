@@ -34,6 +34,15 @@ public class SecurityContextService {
         return UserRole.READ;
     }
 
+    public String getCurrentUserName() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof Jwt jwt) {
+            String name = jwt.getClaim("name");
+            return (name != null) ? name : jwt.getClaim("email");
+        }
+        return "Anonymous User";
+    }
+
     public String getCurrentUserEmail() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof Jwt jwt) {

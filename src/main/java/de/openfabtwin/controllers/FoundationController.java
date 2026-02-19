@@ -2,11 +2,13 @@ package de.openfabtwin.controllers;
 
 import de.openfabtwin.configs.OidcDiscoveryService;
 import de.openfabtwin.generated.foundation.AuthGET;
+import de.openfabtwin.generated.foundation.UserGET;
 import de.openfabtwin.generated.foundation.VersionsGET;
 import de.openfabtwin.generated.foundation.VersionsGETVersionsInner;
 import de.openfabtwin.mappers.FoundationMapper;
+import de.openfabtwin.services.SecurityContextService;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,34 +18,50 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@Data
+@RequiredArgsConstructor
 public class FoundationController {
 
     @Value("${bcf.schema.version}")
     private String bcfVersion;
 
+    @Value("${foundation.version}")
+    private String foundationVersion;
+
     private final OidcDiscoveryService oidcDiscoveryService;
+    private final SecurityContextService securityContextService;
 
     @GetMapping("/foundation/versions")
     public VersionsGET getVersions(HttpServletRequest request) {
 
+        // Foundation API
+        String foundationBaseUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/foundation/{version}")
+                .buildAndExpand(foundationVersion)
+                .toUriString();
+        VersionsGETVersionsInner foundationEntry = new VersionsGETVersionsInner();
+        foundationEntry.setApiId("foundation");
+        foundationEntry.setDetailedVersion("https://github.com/buildingSMART/foundation-API/tree/release_1_1");
+        foundationEntry.setVersionId(foundationVersion);
+        foundationEntry.setApiBaseUrl(foundationBaseUrl);
+
+        //BCF API
+
         String bcfApiUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/bcf/{version}")
+                .path("/bcfEntry/{version}")
                 .buildAndExpand(bcfVersion)
                 .toUriString();
-
-        VersionsGETVersionsInner bcf30 = new VersionsGETVersionsInner();
-        bcf30.setApiId("bcf");
-        bcf30.setVersionId(bcfVersion);
-        bcf30.setDetailedVersion("https://github.com/buildingSMART/BCF-API/tree/release_3_0");
-        bcf30.setApiBaseUrl(bcfApiUrl);
+        VersionsGETVersionsInner bcfEntry = new VersionsGETVersionsInner();
+        bcfEntry.setApiId("bcfEntry");
+        bcfEntry.setVersionId(bcfVersion);
+        bcfEntry.setDetailedVersion("https://github.com/buildingSMART/BCF-API/tree/release_3_0");
+        bcfEntry.setApiBaseUrl(bcfApiUrl);
 
         VersionsGET response = new VersionsGET();
-        response.setVersions(List.of(bcf30));
+        response.setVersions(List.of(foundationEntry, bcfEntry));
         return response;
     }
 
-    @GetMapping("/foundation/1.0/auth")
+    @GetMapping("/foundation/${foundation.version}/auth")
     public AuthGET getAuthMethods() {
 
         Map<String, Object> config = oidcDiscoveryService.getOpenIdConfiguration();
@@ -57,5 +75,13 @@ public class FoundationController {
         auth.setHttpBasicSupported(false);
 
         return auth;
+    }
+
+    @GetMapping("/foundation/${foundation.version}/current-user")
+    public UserGET getUser() {
+        UserGET user = new UserGET();
+        user.setId(securityContextService.getCurrentUserEmail());
+        user.setName(securityContextService.getCurrentUserName());
+        return user;
     }
 }

@@ -10,10 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -24,14 +21,10 @@ public class SecurityContextService {
 
     public UserRole getCurrentUserRole() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
-
         if (authentication != null && authentication.getPrincipal() instanceof Jwt jwt) {
-            Map<String, Object> realmAccess = jwt.getClaim("realm_access");
-            if (realmAccess != null && realmAccess.containsKey("roles")) {
-                Collection<String> roles = (Collection<String>) realmAccess.get("roles");
-                if (roles.contains("WRITE")) {
-                    return UserRole.WRITE;
-                }
+            List<String> roles = identityProviderService.extractRoles(jwt);
+            if (roles.contains("WRITE")) {
+                return UserRole.WRITE;
             }
         }
         return UserRole.READ;
@@ -40,8 +33,7 @@ public class SecurityContextService {
     public String getCurrentUserName() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof Jwt jwt) {
-            String name = jwt.getClaim("name");
-            return (name != null) ? name : jwt.getClaim("email");
+            return identityProviderService.extractUsername(jwt);
         }
         return "Anonymous User";
     }
@@ -49,9 +41,9 @@ public class SecurityContextService {
     public String getCurrentUserEmail() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof Jwt jwt) {
-            return jwt.getClaim("email");
+            return identityProviderService.extractEmail(jwt);
         }
-        return "anonymous@localhost";
+        return "anonymous";
     }
 
     public List<String> getUserProjectGuids() {
@@ -74,8 +66,9 @@ public class SecurityContextService {
     public List<String> getUsersOnProject(String projectId) {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof Jwt jwt) {
-            List<String> userProjectGuids = jwt.getClaim("groups");
-            if (userProjectGuids != null && userProjectGuids.contains(projectId)) {
+
+            List<String> userProjectIds = syncAndGetProjectGuids(jwt);
+            if (userProjectIds.contains(projectId)) {
                 return identityProviderService.getGroupMembers(projectId);
             }
         }
@@ -83,22 +76,19 @@ public class SecurityContextService {
     }
 
     private List<String> syncAndGetProjectGuids(Jwt jwt) {
-        List<String> userProjectGuids = jwt.getClaim("groups");
-        if (userProjectGuids == null) return List.of();
-        for (String guid : userProjectGuids) {
-            if (!projectRepository.existsByGuid(guid)) {
+        List<String> projectUuids = identityProviderService.extractProjectIds(jwt);
+
+        for (String uuid : projectUuids) {
+            if (!projectRepository.existsByGuid(uuid)) {
                 ProjectEntity newProject = new ProjectEntity();
-                newProject.setGuid(guid);
-                newProject.setName("Project_" + guid);
-
-                ExtensionEntity newExtension = new ExtensionEntity();
-
-                newExtension.setProject(newProject);
-                newProject.setExtensions(newExtension);
-
+                newProject.setGuid(uuid);
+                newProject.setName("Project " + uuid);
+                ExtensionEntity ext = new ExtensionEntity();
+                ext.setProject(newProject);
+                newProject.setExtensions(ext);
                 projectRepository.save(newProject);
             }
         }
-        return userProjectGuids;
+        return projectUuids;
     }
 }

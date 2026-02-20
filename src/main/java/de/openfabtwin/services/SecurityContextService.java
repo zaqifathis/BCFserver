@@ -4,11 +4,13 @@ import de.openfabtwin.auth.UserRole;
 import de.openfabtwin.entities.ExtensionEntity;
 import de.openfabtwin.entities.ProjectEntity;
 import de.openfabtwin.repositories.ProjectRepository;
+import de.openfabtwin.services.security.IdentityProviderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +20,7 @@ import java.util.Map;
 public class SecurityContextService {
 
     private final ProjectRepository projectRepository;
+    private final IdentityProviderService identityProviderService;
 
     public UserRole getCurrentUserRole() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -68,6 +71,17 @@ public class SecurityContextService {
         return false;
     }
 
+    public List<String> getUsersOnProject(String projectId) {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof Jwt jwt) {
+            List<String> userProjectGuids = jwt.getClaim("groups");
+            if (userProjectGuids != null && userProjectGuids.contains(projectId)) {
+                return identityProviderService.getGroupMembers(projectId);
+            }
+        }
+        return List.of();
+    }
+
     private List<String> syncAndGetProjectGuids(Jwt jwt) {
         List<String> userProjectGuids = jwt.getClaim("groups");
         if (userProjectGuids == null) return List.of();
@@ -78,6 +92,7 @@ public class SecurityContextService {
                 newProject.setName("Project_" + guid);
 
                 ExtensionEntity newExtension = new ExtensionEntity();
+
                 newExtension.setProject(newProject);
                 newProject.setExtensions(newExtension);
 

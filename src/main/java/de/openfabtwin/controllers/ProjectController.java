@@ -68,8 +68,7 @@ public class ProjectController implements ProjectApi {
             throw new AccessDeniedException("User does not have access to project");
         }
         UserRole role = securityContextService.getCurrentUserRole();
-        var ext = projectService.getProjectExtension(projectId);
-        ExtensionsGET dto = projectMapper.toExtensionDto(ext);
+        ExtensionsGET dto = projectMapper.toExtensionDto(projectId);
         dto = authorizationAssembler.applyAuthorization(dto, role);
         return ResponseEntity.ok(dto);
     }

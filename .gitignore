@@ -1,13 +1,20 @@
 HELP.md
 
-/data/
 target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+# Database and Data
+/data/
+
 # Security / Credentials
 .env
+.env.properties
+
+# Build artifacts
+*.jar
+*.tar
 
 # Keycloak
 keycloak_data/

@@ -78,6 +78,7 @@ public class SecurityContextService {
     private List<String> syncAndGetProjectGuids(Jwt jwt) {
         List<String> projectUuids = identityProviderService.extractProjectIds(jwt);
 
+        // Add/ Sync new projects
         for (String uuid : projectUuids) {
             if (!projectRepository.existsByGuid(uuid)) {
                 ProjectEntity newProject = new ProjectEntity();
@@ -89,6 +90,17 @@ public class SecurityContextService {
                 projectRepository.save(newProject);
             }
         }
+
+        // Handle deletions
+        List<String> localGuids = projectRepository.findAllGuids();
+        List<String> guidsToDelete = localGuids.stream()
+                .filter(localGuid -> !projectUuids.contains(localGuid))
+                .toList();
+
+        if (!guidsToDelete.isEmpty()) {
+            projectRepository.deleteAllByGuidIn(guidsToDelete);
+        }
+
         return projectUuids;
     }
 }

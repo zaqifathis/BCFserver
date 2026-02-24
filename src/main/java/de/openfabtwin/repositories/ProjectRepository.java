@@ -13,4 +13,8 @@ public interface ProjectRepository extends JpaRepository<ProjectEntity, Long> {
     boolean existsByGuid(String guid);
 
     List<ProjectEntity> findAllByGuidIn(List<String> guids);
+
+    List<String> findAllGuids();
+
+    void deleteAllByGuidIn(List<String> guids);
 }

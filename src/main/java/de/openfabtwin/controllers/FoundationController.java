@@ -47,11 +47,11 @@ public class FoundationController {
         //BCF API
 
         String bcfApiUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/bcfEntry/{version}")
+                .path("/bcf/{version}")
                 .buildAndExpand(bcfVersion)
                 .toUriString();
         VersionsGETVersionsInner bcfEntry = new VersionsGETVersionsInner();
-        bcfEntry.setApiId("bcfEntry");
+        bcfEntry.setApiId("bcf");
         bcfEntry.setVersionId(bcfVersion);
         bcfEntry.setDetailedVersion("https://github.com/buildingSMART/BCF-API/tree/release_3_0");
         bcfEntry.setApiBaseUrl(bcfApiUrl);

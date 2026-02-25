@@ -19,6 +19,7 @@ public class SecurityConfig {
                         .requestMatchers("/bcf/**").authenticated()
                         .anyRequest().permitAll()
                 )
+                .oauth2Login(Customizer.withDefaults())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
 
         return http.build();

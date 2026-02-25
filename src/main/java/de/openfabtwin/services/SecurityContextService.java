@@ -6,11 +6,16 @@ import de.openfabtwin.entities.ProjectEntity;
 import de.openfabtwin.repositories.ProjectRepository;
 import de.openfabtwin.services.security.IdentityProviderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
@@ -20,8 +25,8 @@ public class SecurityContextService {
     private final IdentityProviderService identityProviderService;
 
     public UserRole getCurrentUserRole() {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof Jwt jwt) {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.getPrincipal() instanceof Jwt jwt) {
             List<String> roles = identityProviderService.extractRoles(jwt);
             if (roles.contains("WRITE")) {
                 return UserRole.WRITE;
@@ -31,76 +36,77 @@ public class SecurityContextService {
     }
 
     public String getCurrentUserName() {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof Jwt jwt) {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.getPrincipal() instanceof Jwt jwt) {
             return identityProviderService.extractUsername(jwt);
         }
         return "Anonymous User";
     }
 
     public String getCurrentUserEmail() {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof Jwt jwt) {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.getPrincipal() instanceof Jwt jwt) {
             return identityProviderService.extractEmail(jwt);
         }
         return "anonymous";
     }
 
     public List<String> getUserProjectGuids() {
-        var auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null && auth.getPrincipal() instanceof Jwt jwt) {
-            return syncAndGetProjectGuids(jwt);
-        }
-        return List.of();
+        syncProjects();
+        return getProjectIdsFromPrincipal();
     }
 
     public boolean hasProjectAccess(String projectId) {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof Jwt jwt) {
-            List<String> userProjectGuids = syncAndGetProjectGuids(jwt);
-            return userProjectGuids.contains(projectId);
-        }
-        return false;
+        return getUserProjectGuids().contains(projectId);
     }
 
     public List<String> getUsersOnProject(String projectId) {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof Jwt jwt) {
-
-            List<String> userProjectIds = syncAndGetProjectGuids(jwt);
-            if (userProjectIds.contains(projectId)) {
-                return identityProviderService.getGroupMembers(projectId);
-            }
+        List<String> userProjectIds = getUserProjectGuids();
+        if (userProjectIds.contains(projectId)) {
+            return identityProviderService.getGroupMembers(projectId);
         }
-        return List.of();
+        return Collections.emptyList();
     }
 
-    private List<String> syncAndGetProjectGuids(Jwt jwt) {
-        List<String> projectUuids = identityProviderService.extractProjectIds(jwt);
-
-        // Add/ Sync new projects
-        for (String uuid : projectUuids) {
-            if (!projectRepository.existsByGuid(uuid)) {
-                ProjectEntity newProject = new ProjectEntity();
-                newProject.setGuid(uuid);
-                newProject.setName("Project " + uuid);
-                ExtensionEntity ext = new ExtensionEntity();
-                ext.setProject(newProject);
-                newProject.setExtensions(ext);
-                projectRepository.save(newProject);
-            }
+    private List<String> getProjectIdsFromPrincipal() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || auth.getPrincipal() == null) {
+            return Collections.emptyList();
         }
+        if (auth.getPrincipal() instanceof Jwt jwt) {
+            return identityProviderService.extractProjectIds(jwt);
+        } else if (auth.getPrincipal() instanceof OAuth2User oauth2User) {
+            return oauth2User.getAttribute("groups");
+        }
+        return Collections.emptyList();
+    }
 
-        // Handle deletions
-        List<String> localGuids = projectRepository.findAllGuids();
-        List<String> guidsToDelete = localGuids.stream()
-                .filter(localGuid -> !projectUuids.contains(localGuid))
+    private void syncProjects() {
+        List<String> keycloakGuids = identityProviderService.getAllGroupNames();
+        if (keycloakGuids.isEmpty()) return;
+
+        Set<String> localGuidsSet = new HashSet<>(projectRepository.findAllGuids());
+        List<ProjectEntity> toAdd = keycloakGuids.stream()
+                .filter(id -> !localGuidsSet.contains(id))
+                .map(id -> {
+                    ProjectEntity p = new ProjectEntity();
+                    p.setGuid(id);
+                    p.setName("Project " + id);
+                    ExtensionEntity ext = new ExtensionEntity();
+                    ext.setProject(p);
+                    p.setExtensions(ext);
+                    return p;
+                }).toList();
+
+        if (!toAdd.isEmpty()) projectRepository.saveAll(toAdd);
+
+        Set<String> keycloakGuidsSet = new HashSet<>(keycloakGuids);
+        List<String> toDelete = localGuidsSet.stream()
+                .filter(id -> !keycloakGuidsSet.contains(id))
                 .toList();
 
-        if (!guidsToDelete.isEmpty()) {
-            projectRepository.deleteAllByGuidIn(guidsToDelete);
+        if (!toDelete.isEmpty()) {
+            projectRepository.deleteByGuidIn(toDelete);
         }
-
-        return projectUuids;
     }
 }

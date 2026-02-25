@@ -45,6 +45,16 @@ public class KeycloakProviderService implements IdentityProviderService {
     }
 
     @Override
+    public List<String> getAllGroupNames() {
+        return keycloak.realm(realm)
+                .groups()
+                .groups() // This fetches the List<GroupRepresentation>
+                .stream()
+                .map(GroupRepresentation::getName)
+                .toList();
+    }
+
+    @Override
     public List<String> extractProjectIds(Jwt jwt) {
         List<String> groupUuids = jwt.getClaim("groups");
         return (groupUuids != null) ? groupUuids : List.of();

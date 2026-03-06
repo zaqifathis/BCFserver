@@ -1,21 +1,20 @@
 package de.openfabtwin.services.security;
 
-import de.openfabtwin.auth.UserRole;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Service
 @ConditionalOnProperty(name = "auth.provider", havingValue = "keycloak")
+@Profile("!test")
 public class KeycloakProviderService implements IdentityProviderService {
 
     private final Keycloak keycloak;

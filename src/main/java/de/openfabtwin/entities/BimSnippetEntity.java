@@ -18,6 +18,11 @@ public class BimSnippetEntity {
     @Column(nullable = false)
     private String snippetType;
 
+    @Column(columnDefinition = "VARBINARY")
+    private byte[] snippetData;
+
+    private String filename;
+
     private String reference;
     private String referenceSchema;
 

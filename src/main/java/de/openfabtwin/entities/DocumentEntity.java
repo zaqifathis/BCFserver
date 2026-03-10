@@ -3,6 +3,9 @@ package de.openfabtwin.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "documents")
 @Data
@@ -24,4 +27,7 @@ public class DocumentEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", nullable = false)
     private ProjectEntity project;
+
+    @OneToMany(mappedBy = "document", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<DocumentReferenceEntity> references = new ArrayList<>();
 }

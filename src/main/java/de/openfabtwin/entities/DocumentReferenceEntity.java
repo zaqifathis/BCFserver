@@ -15,7 +15,9 @@ public class DocumentReferenceEntity {
     @Column(nullable = false, unique = true)
     private String guid;
 
-    private String documentGuid;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "document_id", nullable = true)
+    private DocumentEntity document;
 
     private String url;
 

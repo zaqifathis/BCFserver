@@ -183,7 +183,7 @@ public class BcfXmlImportService {
         // Document References
         if (t.getDocumentReferences() != null && t.getDocumentReferences().getDocumentReference() != null) {
             for (DocumentReference dr : t.getDocumentReferences().getDocumentReference()) {
-                DocumentReferenceEntity docRef = buildDocumentReference(dr, entity);
+                DocumentReferenceEntity docRef = buildDocumentReference(dr, entity, project);
                 entity.getDocumentReferences().add(docRef);
             }
         }
@@ -371,13 +371,16 @@ public class BcfXmlImportService {
 
     //----------------- DocumentReference -----------------+
 
-    private DocumentReferenceEntity buildDocumentReference(DocumentReference dr, TopicEntity topic) {
+    private DocumentReferenceEntity buildDocumentReference(DocumentReference dr, TopicEntity topic, ProjectEntity project) {
         DocumentReferenceEntity entity = new DocumentReferenceEntity();
         entity.setTopic(topic);
         entity.setGuid(dr.getGuid());
         entity.setDescription(dr.getDescription());
         if (dr.getDocumentGuid() != null) {
-            entity.setDocumentGuid(dr.getDocumentGuid());
+            project.getDocuments().stream()
+                    .filter(d -> dr.getDocumentGuid().equals(d.getGuid()))
+                    .findFirst()
+                    .ifPresent(entity::setDocument);
         } else {
             entity.setUrl(dr.getUrl());
         }

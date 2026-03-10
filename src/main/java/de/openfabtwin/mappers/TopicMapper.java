@@ -103,7 +103,7 @@ public class TopicMapper {
     public DocumentReferenceGET toDocumentReferenceDto(DocumentReferenceEntity created) {
         DocumentReferenceGET dto = new DocumentReferenceGET();
         dto.setGuid(created.getGuid());
-        dto.setDocumentGuid(created.getDocumentGuid());
+        dto.setDocumentGuid(created.getDocument().getGuid());
         dto.setUrl(created.getUrl());
         dto.setDescription(created.getDescription());
         return dto;

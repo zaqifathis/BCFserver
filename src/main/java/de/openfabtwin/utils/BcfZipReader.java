@@ -118,7 +118,7 @@ public class BcfZipReader {
                     String folder   = parts[0];
                     String filename = parts[1];
 
-                    if (folder.equals("Documents")) {
+                    if (folder.equalsIgnoreCase("documents")) {
                         documentFiles.put(filename, zis.readAllBytes());
                     } else {
                         topicFiles

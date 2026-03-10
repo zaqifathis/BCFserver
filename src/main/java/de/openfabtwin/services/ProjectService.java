@@ -78,6 +78,6 @@ public class ProjectService {
     }
 
     public DocumentEntity getDocument(String projectId, String documentId) {
-        return entityResolver.resolveDocument(projectId, documentId);
+        return entityResolver.resolveDocument(documentId, projectId);
     }
 }

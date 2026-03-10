@@ -3,7 +3,6 @@ package de.openfabtwin.services;
 import de.openfabtwin.entities.*;
 import de.openfabtwin.exceptions.ConflictException;
 import de.openfabtwin.generated.dto.*;
-import de.openfabtwin.generated.extensions.Extensions;
 import de.openfabtwin.mappers.TopicMapper;
 import de.openfabtwin.repositories.TopicEventRepository;
 import de.openfabtwin.repositories.TopicRepository;
@@ -328,10 +327,12 @@ public class TopicService {
         if (entityResolver.resolveDocumentReference(guid, topicId) != null) {
             throw new ConflictException("Document Reference with GUID already exists in topic");
         }
+        docRef.setGuid(guid);
         docRef.setTopic(topic);
 
         if (documentReferencePOST.getDocumentGuid() != null) {
-            docRef.setDocumentGuid(documentReferencePOST.getDocumentGuid());
+            DocumentEntity doc = entityResolver.resolveDocument(documentReferencePOST.getDocumentGuid(), projectId);
+            docRef.setDocument(doc);
         } else {
             docRef.setUrl(documentReferencePOST.getUrl());
         }
@@ -356,10 +357,11 @@ public class TopicService {
             throw new IllegalArgumentException("Either document_guid or url must be set");
         }
 
-        docRef.setDocumentGuid(null);
+        docRef.setDocument(null);
         docRef.setUrl(null);
         if (documentReferencePUT.getDocumentGuid() != null) {
-            docRef.setDocumentGuid(documentReferencePUT.getDocumentGuid());
+            DocumentEntity doc = entityResolver.resolveDocument(documentReferencePUT.getDocumentGuid(), projectId);
+            docRef.setDocument(doc);
         } else {
             docRef.setUrl(documentReferencePUT.getUrl());
         }

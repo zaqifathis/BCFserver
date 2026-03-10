@@ -18,7 +18,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/foundation/**", "/h2-console/**").permitAll()
-                        .requestMatchers("/bcf/**").authenticated()
+                        .requestMatchers("/bcf/**", "/import").authenticated()
                         .anyRequest().permitAll()
                 )
                 .oauth2Login(Customizer.withDefaults())

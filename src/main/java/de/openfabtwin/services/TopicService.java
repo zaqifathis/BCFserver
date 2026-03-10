@@ -44,7 +44,7 @@ public class TopicService {
         topic.setGuid(UUID.randomUUID().toString());
         topic.setTitle(topicPOST.getTitle());
         topic.setReferenceLinks(topicPOST.getReferenceLinks());
-        topic.setIndex(topicPOST.getIndex());
+        topic.setIndex(topicPOST.getIndex()); //deprecated and will be removed
         topic.setDescription(topicPOST.getDescription());
         topic.setDueDate(DateUtils.toInstant(topicPOST.getDueDate()));
         topic.setCreationAuthor(securityContextService.getCurrentUserEmail());
@@ -52,12 +52,13 @@ public class TopicService {
         Instant createEventTime = Instant.now();
         topic.setCreationDate(createEventTime);
 
-        topic.setTopicType(topicPOST.getTopicType());
-        topic.setTopicStatus(topicPOST.getTopicStatus());
-        topic.setPriority(topicPOST.getPriority());
-        topic.setLabels(topicPOST.getLabels());
-        topic.setAssignedTo(topicPOST.getAssignedTo());
-        topic.setStage(topicPOST.getStage());
+        ExtensionEntity ext = entityResolver.resolveProjectExtension(projectId);
+        topic.setTopicType(validateValue(topicPOST.getTopicType(), ext.getTopicTypes()));
+        topic.setTopicStatus(validateValue(topicPOST.getTopicStatus(), ext.getTopicStatuses()));
+        topic.setPriority(validateValue(topicPOST.getPriority(), ext.getPriorities()));
+        topic.setLabels(validateList(topicPOST.getLabels(), ext.getTopicLabels()));
+        topic.setAssignedTo(validateValue(topicPOST.getAssignedTo(), ext.getUsers()));
+        topic.setStage(validateValue(topicPOST.getStage(), ext.getStages()));
 
         if(topicPOST.getBimSnippet() != null) {
             BimSnippetEntity snippetEntity = topicMapper.mapBimSnippetEntity(topicPOST.getBimSnippet(), topic);
@@ -112,33 +113,35 @@ public class TopicService {
         List<String> beforeLabels = existingTopic.getLabels() == null ? List.of() : List.copyOf(existingTopic.getLabels());
         String beforeStage = existingTopic.getStage();
 
+        ExtensionEntity ext = entityResolver.resolveProjectExtension(projectId);
 
         existingTopic.setTitle(topicPUT.getTitle());
         if(topicPUT.getTopicType() != null) {
-            existingTopic.setTopicType(topicPUT.getTopicType());
+            existingTopic.setTopicType(validateValue(topicPUT.getTopicType(), ext.getTopicTypes()));
         }
         if(topicPUT.getTopicStatus() != null) {
-            existingTopic.setTopicStatus(topicPUT.getTopicStatus());
+            existingTopic.setTopicStatus(validateValue(topicPUT.getTopicStatus(), ext.getTopicStatuses()));
         }
         if(topicPUT.getReferenceLinks() != null) {
             existingTopic.getReferenceLinks().clear();
             existingTopic.getReferenceLinks().addAll(topicPUT.getReferenceLinks());
         }
         if (topicPUT.getPriority() != null) {
-            existingTopic.setPriority(topicPUT.getPriority());
+            existingTopic.setPriority(validateValue(topicPUT.getPriority(), ext.getPriorities()));
         }
         if(topicPUT.getIndex() != null) {
             existingTopic.setIndex(topicPUT.getIndex());
         }
         if(topicPUT.getLabels() != null) {
+            validateList(topicPUT.getLabels(), ext.getTopicLabels());
             existingTopic.getLabels().clear();
             existingTopic.getLabels().addAll(topicPUT.getLabels());
         }
         if(topicPUT.getAssignedTo() != null) {
-            existingTopic.setAssignedTo(topicPUT.getAssignedTo());
+            existingTopic.setAssignedTo(validateValue(topicPUT.getAssignedTo(), ext.getUsers()));
         }
         if(topicPUT.getStage() != null) {
-            existingTopic.setStage(topicPUT.getStage());
+            existingTopic.setStage(validateValue(topicPUT.getStage(), ext.getStages()));
         }
         if(topicPUT.getDescription() != null) {
             existingTopic.setDescription(topicPUT.getDescription());
@@ -248,6 +251,24 @@ public class TopicService {
     }
 
     //----------------- HELPER METHODS -----------------
+
+    private <T> T validateValue(T target, List<T> validValues) {
+        if (target == null) return null;
+        if (!validValues.contains(target) && !validValues.isEmpty()) {
+            throw new IllegalArgumentException("Invalid value: " + target);
+        }
+        return target;
+    }
+
+    private <T> List<T> validateList(List<T> targets, List<T> validList) {
+        if(targets == null) return List.of();
+        for (T target : targets) {
+            if (!validList.contains(target) && !validList.isEmpty()) {
+                throw new IllegalArgumentException("Invalid values: " + target);
+            }
+        }
+        return targets;
+    }
 
     private void createTopicEvent(
             TopicEntity topic,

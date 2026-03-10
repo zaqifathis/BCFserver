@@ -7,7 +7,6 @@ import de.openfabtwin.generated.project.Project;
 import de.openfabtwin.generated.project.ProjectInfo;
 import de.openfabtwin.generated.version.Version;
 import de.openfabtwin.generated.visinfo.VisualizationInfo;
-import de.openfabtwin.services.ViewpointService.ImageType;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
@@ -22,8 +21,11 @@ import javax.xml.validation.Validator;
 import java.io.*;
 import java.util.*;
 import java.util.zip.*;
+import java.util.logging.Logger;
 
 public class BcfZipReader {
+
+    private static final Logger log = Logger.getLogger(BcfZipReader.class.getName());
 
     public static final String SUPPORTED_VERSION = "3.0";
 
@@ -46,7 +48,7 @@ public class BcfZipReader {
             SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 
             sf.setResourceResolver((type, namespaceURI, publicId, systemId, baseURI) -> {
-                String filename = systemId.replaceAll(".*/", ""); // strip path, keep filename
+                String filename = systemId.replaceAll(".*/", "");
                 InputStream is = BcfZipReader.class.getResourceAsStream("/schemas/" + filename);
                 if (is == null) return null;
                 return new ClasspathLSInput(is, systemId, publicId, baseURI);
@@ -163,7 +165,11 @@ public class BcfZipReader {
         Extensions extensions = null;
         byte[] extensionsBytes = rootFiles.get("extensions.xml");
         if (extensionsBytes != null) {
-            validate(extensionsBytes, EXTENSIONS_SCHEMA, "extensions.xml");
+            try {
+                validate(extensionsBytes, EXTENSIONS_SCHEMA, "extensions.xml");
+            } catch (IOException e) {
+                log.warning("extensions.xml failed schema validation (non-standard order), parsing anyway: " + e.getMessage());
+            }
             extensions = unmarshalExtensions(extensionsBytes);
         }
 
@@ -332,19 +338,19 @@ public class BcfZipReader {
 
         ClasspathLSInput(InputStream byteStream, String systemId, String publicId, String baseURI) {
             this.byteStream = byteStream;
-            this.systemId   = systemId;
-            this.publicId   = publicId;
-            this.baseURI    = baseURI;
+            this.systemId = systemId;
+            this.publicId = publicId;
+            this.baseURI = baseURI;
         }
 
-        public Reader  getCharacterStream()         { return null; }
-        public String  getStringData()              { return null; }
-        public String  getEncoding()                { return null; }
-        public boolean getCertifiedText()           { return false; }
-        public void setCharacterStream(Reader r)    {}
-        public void setByteStream(InputStream s)    {}
-        public void setStringData(String s)         {}
-        public void setEncoding(String s)           {}
-        public void setCertifiedText(boolean b)     {}
+        public Reader  getCharacterStream(){ return null;}
+        public String  getStringData(){ return null;}
+        public String  getEncoding(){ return null;}
+        public boolean getCertifiedText(){ return false;}
+        public void setCharacterStream(Reader r){}
+        public void setByteStream(InputStream s){}
+        public void setStringData(String s){}
+        public void setEncoding(String s){}
+        public void setCertifiedText(boolean b){}
     }
 }

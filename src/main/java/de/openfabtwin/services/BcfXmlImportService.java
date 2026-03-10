@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import de.openfabtwin.entities.*;
 import de.openfabtwin.generated.markup.*;
 import de.openfabtwin.generated.visinfo.*;
+import de.openfabtwin.repositories.ExtensionRepository;
 import de.openfabtwin.repositories.ProjectRepository;
 import de.openfabtwin.utils.BcfZipReader.*;
 import de.openfabtwin.utils.BcfZipReader;
@@ -45,7 +46,13 @@ public class BcfXmlImportService {
     public void importBcf(byte[] zipBytes) throws IOException {
         int projectCount = (int) projectRepository.count();
         BcfParseResult result = BcfZipReader.read(zipBytes, projectCount);
-        ProjectEntity project = buildProject(result);
+
+        String projectGuid = result.root().projectId();
+        ProjectEntity existing = projectRepository.findByGuid(projectGuid).orElse(null);
+
+        ProjectEntity project = existing != null
+                ? mergeProject(existing, result)
+                : buildProject(result);
         projectRepository.save(project);
     }
 
@@ -80,6 +87,50 @@ public class BcfXmlImportService {
         }
 
         return project;
+    }
+
+    private ProjectEntity mergeProject(ProjectEntity existingProject, BcfParseResult result) {
+        var root = result.root();
+
+        // always update existingProject name from the new file
+        existingProject.setName(root.projectName());
+
+        // extensions: replace entirely with new file's extensions
+        ExtensionEntity ext = existingProject.getExtensions();
+        if (root.extensions() != null) {
+            updateExtensions(ext, root.extensions());
+        } else {
+            clearExtensions(ext);
+        }
+
+        // documents: only add those whose guid is not stored
+        if (root.documentInfo() != null && root.documentInfo().getDocuments() != null) {
+            for (var doc : root.documentInfo().getDocuments().getDocument()) {
+                boolean alreadyExists = existingProject.getDocuments().stream()
+                        .anyMatch(d -> d.getGuid().equals(doc.getGuid()));
+                if (alreadyExists) continue;
+
+                byte[] data = result.documents().get(doc.getGuid());
+                DocumentEntity docEntity = new DocumentEntity();
+                docEntity.setProject(existingProject);
+                docEntity.setGuid(doc.getGuid());
+                docEntity.setFilename(doc.getFilename());
+                docEntity.setData(data);
+                existingProject.getDocuments().add(docEntity);
+            }
+        }
+
+        // topics: only add those whose guid is not stored
+        for (TopicFolder folder : result.topics()) {
+            boolean alreadyExists = existingProject.getTopics().stream()
+                    .anyMatch(t -> t.getGuid().equals(folder.guid()));
+            if (alreadyExists) continue;
+
+            TopicEntity topic = buildTopic(folder, existingProject);
+            existingProject.getTopics().add(topic);
+        }
+
+        return existingProject;
     }
 
     //----------------- EXTENSION -----------------+
@@ -118,6 +169,38 @@ public class BcfXmlImportService {
         ExtensionEntity ext = new ExtensionEntity();
         ext.setProject(project);
         return ext;
+    }
+
+    private void updateExtensions(ExtensionEntity ext, Extensions extensions) {
+        ext.setTopicTypes(extensions.getTopicTypes() != null && extensions.getTopicTypes().getTopicType() != null
+                ? new ArrayList<>(extensions.getTopicTypes().getTopicType()) : new ArrayList<>());
+        ext.setTopicStatuses(extensions.getTopicStatuses() != null && extensions.getTopicStatuses().getTopicStatus() != null
+                ? new ArrayList<>(extensions.getTopicStatuses().getTopicStatus()) : new ArrayList<>());
+        ext.setPriorities(extensions.getPriorities() != null && extensions.getPriorities().getPriority() != null
+                ? new ArrayList<>(extensions.getPriorities().getPriority()) : new ArrayList<>());
+        ext.setTopicLabels(extensions.getTopicLabels() != null && extensions.getTopicLabels().getTopicLabel() != null
+                ? new ArrayList<>(extensions.getTopicLabels().getTopicLabel()) : new ArrayList<>());
+        ext.setStages(extensions.getStages() != null && extensions.getStages().getStage() != null
+                ? new ArrayList<>(extensions.getStages().getStage()) : new ArrayList<>());
+        ext.setSnippetTypes(extensions.getSnippetTypes() != null && extensions.getSnippetTypes().getSnippetType() != null
+                ? new ArrayList<>(extensions.getSnippetTypes().getSnippetType()) : new ArrayList<>());
+
+        List<String> users = extensions.getUsers() != null && extensions.getUsers().getUser() != null
+                ? new ArrayList<>(extensions.getUsers().getUser()) : new ArrayList<>();
+        String currentUser = securityContextService.getCurrentUserEmail();
+        if (!users.contains(currentUser)) users.add(currentUser);
+        ext.setUsers(users);
+    }
+
+    private void clearExtensions(ExtensionEntity ext) {
+        ext.setTopicTypes(new ArrayList<>());
+        ext.setTopicStatuses(new ArrayList<>());
+        ext.setPriorities(new ArrayList<>());
+        ext.setTopicLabels(new ArrayList<>());
+        ext.setStages(new ArrayList<>());
+        ext.setSnippetTypes(new ArrayList<>());
+        String currentUser = securityContextService.getCurrentUserEmail();
+        ext.setUsers(new ArrayList<>(List.of(currentUser)));
     }
 
     //----------------- TOPIC -----------------+
@@ -401,5 +484,4 @@ public class BcfXmlImportService {
         var matcher = GUID_PATTERN.matcher(filename);
         return matcher.find() ? matcher.group(1) : UUID.randomUUID().toString();
     }
-
 }

@@ -1,21 +1,17 @@
 package de.openfabtwin.mappers;
 
 import de.openfabtwin.entities.DocumentEntity;
+import de.openfabtwin.entities.ExtensionEntity;
 import de.openfabtwin.generated.dto.DocumentGET;
 import de.openfabtwin.generated.dto.ExtensionsGET;
 import de.openfabtwin.generated.dto.ProjectGET;
 import de.openfabtwin.entities.ProjectEntity;
-import de.openfabtwin.services.SecurityContextService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class ProjectMapper {
-
-    private final SecurityContextService securityContextService;
 
     public ProjectGET toDto(ProjectEntity entity) {
         var dto = new ProjectGET();
@@ -24,15 +20,15 @@ public class ProjectMapper {
         return dto;
     }
 
-    public ExtensionsGET toExtensionDto(String projectId) {
+    public ExtensionsGET toExtensionDto(ExtensionEntity ext) {
         var dto = new ExtensionsGET();
-        dto.setTopicType(List.of());
-        dto.setTopicStatus(List.of());
-        dto.setTopicLabel(List.of());
-        dto.setSnippetType(List.of());
-        dto.setPriority(List.of());
-        dto.setStage(List.of());
-        dto.setUsers(securityContextService.getUsersOnProject(projectId));
+        dto.setTopicType(ext.getTopicTypes());
+        dto.setTopicLabel(ext.getTopicLabels());
+        dto.setTopicStatus(ext.getTopicStatuses());
+        dto.setSnippetType(ext.getSnippetTypes());
+        dto.setPriority(ext.getPriorities());
+        dto.setStage(ext.getStages());
+        dto.setUsers(ext.getUsers());
         return dto;
     }
 

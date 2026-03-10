@@ -26,40 +26,6 @@ public class KeycloakProviderService implements IdentityProviderService {
     }
 
     @Override
-    public List<String> getGroupMembers(String groupId) {
-
-        List<GroupRepresentation> groups = keycloak.realm(realm)
-                .groups()
-                .groups(groupId, 0, 1, true);
-
-        if (groups == null || groups.isEmpty()) return List.of();
-
-        return keycloak.realm(realm)
-                .groups()
-                .group(groups.getFirst().getId())
-                .members()
-                .stream()
-                .map(UserRepresentation::getEmail)
-                .toList();
-    }
-
-    @Override
-    public List<String> getAllGroupNames() {
-        return keycloak.realm(realm)
-                .groups()
-                .groups() // This fetches the List<GroupRepresentation>
-                .stream()
-                .map(GroupRepresentation::getName)
-                .toList();
-    }
-
-    @Override
-    public List<String> extractProjectIds(Jwt jwt) {
-        List<String> groupUuids = jwt.getClaim("groups");
-        return (groupUuids != null) ? groupUuids : List.of();
-    }
-
-    @Override
     public List<String> extractRoles(Jwt jwt) {
         Map<String, Object> realmAccess = jwt.getClaim("realm_access");
         if (realmAccess != null && realmAccess.containsKey("roles")) {

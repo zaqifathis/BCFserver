@@ -7,12 +7,6 @@ import java.util.List;
 
 public interface IdentityProviderService {
 
-    List<String> getGroupMembers(String groupId);
-
-    List<String> getAllGroupNames();
-
-    List<String> extractProjectIds(Jwt jwt);
-
     List<String> extractRoles(Jwt jwt);
 
     String extractUsername(Jwt jwt);

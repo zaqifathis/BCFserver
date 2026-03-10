@@ -39,8 +39,8 @@ public class ProjectService {
         return projectRepository.save(project);
     }
 
-    public ExtensionEntity getProjectExtension(String guid) {
-        return entityResolver.resolveProjectExtension(guid);
+    public ExtensionEntity getProjectExtension(String projectId) {
+        return entityResolver.resolveProjectExtension(projectId);
     }
 
     public List<DocumentEntity> getDocuments(String projectId) {

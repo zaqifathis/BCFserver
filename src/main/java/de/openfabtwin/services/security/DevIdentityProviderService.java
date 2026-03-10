@@ -16,24 +16,8 @@ public class DevIdentityProviderService implements IdentityProviderService {
     private final ProjectRepository projectRepository;
 
     @Override
-    public List<String> getGroupMembers(String groupId) {
-        return List.of("dev@localhost");
-    }
-
-    @Override
-    public List<String> getAllGroupNames() {
-        // return all existing project GUIDs so SecurityContextService doesn't wipe them
-        return projectRepository.findAllGuids();
-    }
-
-    @Override
-    public List<String> extractProjectIds(Jwt jwt) {
-        return projectRepository.findAllGuids();
-    }
-
-    @Override
     public List<String> extractRoles(Jwt jwt) {
-        return List.of("WRITE");  // always WRITE role in dev
+        return List.of("WRITE");
     }
 
     @Override

@@ -1,5 +1,6 @@
 package de.openfabtwin.utils;
 
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -40,6 +41,10 @@ public class DateUtils {
 
     }
 
+    public static Instant toInstant(XMLGregorianCalendar cal) {
+        if (cal == null) return null;
+        return cal.toGregorianCalendar().toInstant();
+    }
 
     private static boolean hasTimezone(String date) {
         return date.endsWith("Z")

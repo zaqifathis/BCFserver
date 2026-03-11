@@ -4,7 +4,6 @@ import de.openfabtwin.entities.*;
 import de.openfabtwin.exceptions.ConflictException;
 import de.openfabtwin.generated.dto.*;
 import de.openfabtwin.mappers.TopicMapper;
-import de.openfabtwin.repositories.TopicEventRepository;
 import de.openfabtwin.repositories.TopicRepository;
 import de.openfabtwin.utils.DateUtils;
 import de.openfabtwin.utils.ODataFilterOrderParser;
@@ -27,11 +26,11 @@ import java.util.*;
 public class TopicService {
 
     private final TopicRepository topicRepository;
-    private final TopicEventRepository topicEventRepository;
     private final TopicMapper topicMapper;
     private final EntityManager entityManager;
     private final EntityResolver entityResolver;
     private final SecurityContextService securityContextService;
+    private final EventService eventService;
 
     @Transactional
     public TopicEntity create(String projectId, TopicPOST topicPOST) {
@@ -68,7 +67,7 @@ public class TopicService {
         entityManager.flush();
         topic.setServerAssignedId("TOPIC_" + topic.getId());
 
-        createTopicEvent(topic, TopicEventType.topic_created, null, createEventTime, topic.getCreationAuthor());
+        eventService.createTopicEvent(topic, TopicEventType.topic_created, null, createEventTime, topic.getCreationAuthor());
         return topicRepository.save(topic);
     }
 
@@ -180,56 +179,56 @@ public class TopicService {
 
         // Update TopicEventEntity
         if(!Objects.equals(beforeTitle, existingTopic.getTitle())) {
-            createTopicEvent(existingTopic, TopicEventType.title_updated, existingTopic.getTitle(), updateEvent, existingTopic.getModifiedAuthor());
+            eventService.createTopicEvent(existingTopic, TopicEventType.title_updated, existingTopic.getTitle(), updateEvent, existingTopic.getModifiedAuthor());
         }
 
         if (!Objects.equals(beforeDescription, existingTopic.getDescription())) {
             if (existingTopic.getDescription() == null || existingTopic.getDescription().isBlank()) {
-                createTopicEvent(existingTopic, TopicEventType.description_removed, null, updateEvent, existingTopic.getModifiedAuthor());
+                eventService.createTopicEvent(existingTopic, TopicEventType.description_removed, null, updateEvent, existingTopic.getModifiedAuthor());
             } else {
-                createTopicEvent(existingTopic, TopicEventType.description_updated, existingTopic.getDescription(), updateEvent, existingTopic.getModifiedAuthor());
+                eventService.createTopicEvent(existingTopic, TopicEventType.description_updated, existingTopic.getDescription(), updateEvent, existingTopic.getModifiedAuthor());
             }
         }
 
         if (!Objects.equals(beforeStatus, existingTopic.getTopicStatus())) {
-            createTopicEvent(existingTopic, TopicEventType.status_updated, existingTopic.getTopicStatus(), updateEvent, existingTopic.getModifiedAuthor());
+            eventService.createTopicEvent(existingTopic, TopicEventType.status_updated, existingTopic.getTopicStatus(), updateEvent, existingTopic.getModifiedAuthor());
         }
 
         if (!Objects.equals(beforeType, existingTopic.getTopicType())) {
-            createTopicEvent(existingTopic, TopicEventType.type_updated, existingTopic.getTopicType(), updateEvent, existingTopic.getModifiedAuthor());
+            eventService.createTopicEvent(existingTopic, TopicEventType.type_updated, existingTopic.getTopicType(), updateEvent, existingTopic.getModifiedAuthor());
         }
 
         if (!Objects.equals(beforePriority, existingTopic.getPriority())) {
             if (existingTopic.getPriority() == null || existingTopic.getPriority().isBlank()) {
-                createTopicEvent(existingTopic, TopicEventType.priority_removed, null, updateEvent, existingTopic.getModifiedAuthor());
+                eventService.createTopicEvent(existingTopic, TopicEventType.priority_removed, null, updateEvent, existingTopic.getModifiedAuthor());
             } else {
-                createTopicEvent(existingTopic, TopicEventType.priority_updated, existingTopic.getPriority(), updateEvent, existingTopic.getModifiedAuthor());
+                eventService.createTopicEvent(existingTopic, TopicEventType.priority_updated, existingTopic.getPriority(), updateEvent, existingTopic.getModifiedAuthor());
             }
         }
 
         if (!Objects.equals(beforeDueDate, existingTopic.getDueDate())) {
             if (existingTopic.getDueDate() == null) {
-                createTopicEvent(existingTopic, TopicEventType.due_date_removed, null, updateEvent, existingTopic.getModifiedAuthor());
+                eventService.createTopicEvent(existingTopic, TopicEventType.due_date_removed, null, updateEvent, existingTopic.getModifiedAuthor());
             } else {
-                createTopicEvent(existingTopic, TopicEventType.due_date_updated, existingTopic.getDueDate().toString(), updateEvent, existingTopic.getModifiedAuthor());
+                eventService.createTopicEvent(existingTopic, TopicEventType.due_date_updated, existingTopic.getDueDate().toString(), updateEvent, existingTopic.getModifiedAuthor());
             }
         }
 
         if (!Objects.equals(beforeAssignedTo, existingTopic.getAssignedTo())) {
             if (existingTopic.getAssignedTo() == null || existingTopic.getAssignedTo().isBlank()) {
-                createTopicEvent(existingTopic, TopicEventType.assigned_to_removed, null, updateEvent, existingTopic.getModifiedAuthor());
+                eventService.createTopicEvent(existingTopic, TopicEventType.assigned_to_removed, null, updateEvent, existingTopic.getModifiedAuthor());
             } else {
-                createTopicEvent(existingTopic, TopicEventType.assigned_to_updated, existingTopic.getAssignedTo(), updateEvent, existingTopic.getModifiedAuthor());
+                eventService.createTopicEvent(existingTopic, TopicEventType.assigned_to_updated, existingTopic.getAssignedTo(), updateEvent, existingTopic.getModifiedAuthor());
             }
         }
 
         if (!Objects.equals(beforeStage, existingTopic.getStage())) {
             if (beforeStage == null && existingTopic.getStage() != null) {
-                createTopicEvent(existingTopic, TopicEventType.stage_added, existingTopic.getStage(), updateEvent, existingTopic.getModifiedAuthor());
+                eventService.createTopicEvent(existingTopic, TopicEventType.stage_added, existingTopic.getStage(), updateEvent, existingTopic.getModifiedAuthor());
             } else if (beforeStage != null && existingTopic.getStage() == null) {
-                createTopicEvent(existingTopic, TopicEventType.stage_removed, beforeStage, updateEvent, existingTopic.getModifiedAuthor());
+                eventService.createTopicEvent(existingTopic, TopicEventType.stage_removed, beforeStage, updateEvent, existingTopic.getModifiedAuthor());
             } else {
-                createTopicEvent(existingTopic, TopicEventType.stage_updated, existingTopic.getStage(), updateEvent, existingTopic.getModifiedAuthor());
+                eventService.createTopicEvent(existingTopic, TopicEventType.stage_updated, existingTopic.getStage(), updateEvent, existingTopic.getModifiedAuthor());
             }
         }
 
@@ -241,17 +240,16 @@ public class TopicService {
 
             for (String lbl : afterSet) {
                 if (!beforeSet.contains(lbl)) {
-                    createTopicEvent(existingTopic, TopicEventType.label_added, lbl, updateEvent, existingTopic.getModifiedAuthor());
+                    eventService.createTopicEvent(existingTopic, TopicEventType.label_added, lbl, updateEvent, existingTopic.getModifiedAuthor());
                 }
             }
 
             for (String lbl : beforeSet) {
                 if (!afterSet.contains(lbl)) {
-                    createTopicEvent(existingTopic, TopicEventType.label_removed, lbl, updateEvent, existingTopic.getModifiedAuthor());
+                    eventService.createTopicEvent(existingTopic, TopicEventType.label_removed, lbl, updateEvent, existingTopic.getModifiedAuthor());
                 }
             }
         }
-
         return topicRepository.save(existingTopic);
     }
 
@@ -273,24 +271,6 @@ public class TopicService {
             }
         }
         return targets;
-    }
-
-    private void createTopicEvent(
-            TopicEntity topic,
-            TopicEventType type,
-            String value,
-            Instant eventTime,
-            String author
-    ) {
-        TopicEventEntity event = new TopicEventEntity();
-        event.setProjectGuid(topic.getProject().getGuid());
-        event.setTopicGuid(topic.getGuid());
-        event.setAuthor(author);
-        event.setEventType(type);
-        event.setEventValue(value);
-        event.setEventDate(eventTime);
-
-        topicEventRepository.save(event);
     }
 
     private static final Map<String, String> TOPIC_FILTER_MAPPING = Map.ofEntries(
@@ -395,54 +375,4 @@ public class TopicService {
         return docRef;
     }
 
-
-    //----------------- EVENTS -----------------
-
-    public List<TopicEventEntity> getTopicEvents(String projectId, String $top, String $skip, String $filter, String $orderby) {
-        entityResolver.resolveProject(projectId);
-        int limit = ($top != null) ? Integer.parseInt($top) : 100;
-        int offset = ($skip != null) ? Integer.parseInt($skip) : 0;
-        Sort sort = ODataFilterOrderParser.parseOrderBy($orderby,"eventDate", Map.of("date", "eventDate"));
-        Pageable pageable = new OffsetBasedPageRequest(offset, limit, sort);
-
-        Specification<TopicEventEntity> spec = (root, query, cb) -> cb.equal(root.get("projectGuid"), projectId);
-        if($filter != null && !$filter.isBlank()) {
-            spec = spec.and(ODataFilterOrderParser.getFilter($filter, TOPIC_EVENT_FILTER_MAPPING, Map.of("type", TopicEventType.class)));
-        }
-        Page<TopicEventEntity> events = topicEventRepository.findAll(spec, pageable);
-        return events.getContent();
-    }
-
-    private static final Map<String, String> EVENT_FILTER_MAPPING = Map.of(
-            "author", "author",
-            "type", "eventType",
-            "date", "eventDate"
-    );
-
-    private static Map<String, String> withTopicGuid(Map<String, String> base) {
-        Map<String, String> map = new HashMap<>(base);
-        map.put("topic_guid", "topicGuid");
-        return Map.copyOf(map);
-    }
-
-    private static final Map<String, String> TOPIC_EVENT_FILTER_MAPPING =
-            withTopicGuid(EVENT_FILTER_MAPPING);
-
-
-    public List<TopicEventEntity> getTopicEventsByTopicId(String projectId, String topicId, String $top, String $skip, String $filter, String $orderby) {
-        entityResolver.resolveTopic(projectId, topicId);
-        int limit = ($top != null) ? Integer.parseInt($top) : 100;
-        int offset = ($skip != null) ? Integer.parseInt($skip) : 0;
-        Sort sort = ODataFilterOrderParser.parseOrderBy($orderby,"eventDate", Map.of("date", "eventDate"));
-        Pageable pageable = new OffsetBasedPageRequest(offset, limit, sort);
-
-        Specification<TopicEventEntity> spec = (root, query, cb) -> cb.and(
-                        cb.equal(root.get("projectGuid"), projectId),
-                        cb.equal(root.get("topicGuid"), topicId));
-        if($filter != null && !$filter.isBlank()) {
-            spec = spec.and(ODataFilterOrderParser.getFilter($filter, EVENT_FILTER_MAPPING, Map.of("type", TopicEventType.class)));
-        }
-        Page<TopicEventEntity> events = topicEventRepository.findAll(spec, pageable);
-        return events.getContent();
-    }
 }

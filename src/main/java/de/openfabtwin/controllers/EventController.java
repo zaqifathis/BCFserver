@@ -7,9 +7,8 @@ import de.openfabtwin.generated.dto.CommentEventGET;
 import de.openfabtwin.generated.dto.TopicEventGET;
 import de.openfabtwin.mappers.CommentMapper;
 import de.openfabtwin.mappers.TopicMapper;
-import de.openfabtwin.services.CommentService;
+import de.openfabtwin.services.EventService;
 import de.openfabtwin.services.SecurityContextService;
-import de.openfabtwin.services.TopicService;
 import de.openfabtwin.utils.BcfProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,10 +22,9 @@ import java.util.List;
 public class EventController implements EventsApi {
 
     private final BcfProperties props;
-    private final TopicService topicService;
     private final TopicMapper topicMapper;
-    private final CommentService commentService;
     private final CommentMapper commentMapper;
+    private final EventService eventService;
     private final SecurityContextService securityContextService;
 
     @Override
@@ -36,7 +34,7 @@ public class EventController implements EventsApi {
         if (!hasAccess) {
             throw new AccessDeniedException("User does not have access to project");
         }
-        List<CommentEventEntity> entity = commentService.getCommentEventsByCommentId(projectId, topicId, commentId, $top, $skip, $filter, $orderby);
+        List<CommentEventEntity> entity = eventService.getCommentEventsByCommentId(projectId, topicId, commentId, $top, $skip, $filter, $orderby);
         List<CommentEventGET> events = commentMapper.toGroupedEventDto(entity);
         return ResponseEntity.ok(events);
     }
@@ -48,7 +46,7 @@ public class EventController implements EventsApi {
         if (!hasAccess) {
             throw new AccessDeniedException("User does not have access to project");
         }
-        List<CommentEventEntity> entity = commentService.getCommentEvents(projectId, $top, $skip, $filter, $orderby);
+        List<CommentEventEntity> entity = eventService.getCommentEvents(projectId, $top, $skip, $filter, $orderby);
         List<CommentEventGET> events = commentMapper.toGroupedEventDto(entity);
         return ResponseEntity.ok(events);
     }
@@ -60,7 +58,7 @@ public class EventController implements EventsApi {
         if (!hasAccess) {
             throw new AccessDeniedException("User does not have access to project");
         }
-        List<TopicEventEntity> entity = topicService.getTopicEvents(projectId, $top, $skip, $filter, $orderby);
+        List<TopicEventEntity> entity = eventService.getTopicEvents(projectId, $top, $skip, $filter, $orderby);
         List<TopicEventGET> events = topicMapper.toGroupedEventDto(entity);
         return ResponseEntity.ok(events);
     }
@@ -72,7 +70,7 @@ public class EventController implements EventsApi {
         if (!hasAccess) {
             throw new AccessDeniedException("User does not have access to project");
         }
-        List<TopicEventEntity> entity = topicService.getTopicEventsByTopicId(projectId, topicId, $top, $skip, $filter, $orderby);
+        List<TopicEventEntity> entity = eventService.getTopicEventsByTopicId(projectId, topicId, $top, $skip, $filter, $orderby);
         List<TopicEventGET> events = topicMapper.toGroupedEventDto(entity);
         return ResponseEntity.ok(events);
     }

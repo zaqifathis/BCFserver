@@ -22,4 +22,7 @@ public class TopicFileReferenceEntity {
 
     private String ifcSpatialStructureElementGuid;
 
+    private boolean external = true;
+
+
 }

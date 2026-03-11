@@ -35,17 +35,18 @@ public class FileService {
         return topicFileReferenceRepository.findByTopic_Project_GuidAndTopic_Guid(projectId, topicId);
     }
 
-    public List<FileGET> updateTopicFiles(String projectId, String topicId, List<@Valid FilePUT> filePUT) {
+    public List<FileGET> updateTopicFiles(String projectId, String topicId, List<@Valid FilePUT> files) {
         TopicEntity topic = entityResolver.resolveTopic(projectId, topicId);
         topic.getFileReferences().clear();
 
-        for (FilePUT dto: filePUT) {
+        for (FilePUT dto: files) {
             FileEntity file = resolveOrCreateFileEntity(projectId, dto);
             TopicFileReferenceEntity reference = new TopicFileReferenceEntity();
             reference.setTopic(topic);
             reference.setFile(file);
             reference.setIfcProjectGuid(dto.getIfcProject() != null ? dto.getIfcProject() : "");
             reference.setIfcSpatialStructureElementGuid(dto.getIfcSpatialStructureElement() != null ? dto.getIfcSpatialStructureElement() : "");
+            reference.setExternal(true);
             topic.getFileReferences().add(reference);
         }
 
@@ -63,7 +64,6 @@ public class FileService {
                     newFile.setFilename(dto.getFilename());
                     newFile.setReference(dto.getReference());
                     newFile.setDate(dto.getDate());
-                    newFile.setExternal(true);
                     return fileRepository.save(newFile);
                 });
     }

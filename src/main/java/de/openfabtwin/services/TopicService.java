@@ -74,6 +74,11 @@ public class TopicService {
 
     public void delete(String topicId, String projectId) {
         TopicEntity topic = entityResolver.resolveTopic(projectId, topicId);
+        List<TopicEntity> referencingTopics = topicRepository.findAllByRelatedTopicsContaining(topic.getGuid());
+        for (TopicEntity referencing : referencingTopics) {
+            referencing.getRelatedTopics().remove(topic.getGuid());
+        }
+        topicRepository.saveAll(referencingTopics);
         topicRepository.delete(topic);
     }
 

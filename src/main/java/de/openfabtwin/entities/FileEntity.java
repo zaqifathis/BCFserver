@@ -26,8 +26,6 @@ public class FileEntity {
 
     private String date;
 
-    private boolean external = true;
-
     @OneToMany(mappedBy = "file", fetch = FetchType.LAZY)
     private List<TopicFileReferenceEntity> topicReferences = new ArrayList<>();
 

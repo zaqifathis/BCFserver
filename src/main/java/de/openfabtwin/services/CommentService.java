@@ -57,9 +57,9 @@ public class CommentService {
             comment.setReplyToCommentGuid(commentPOST.getReplyToCommentGuid());
         }
 
-        CommentEntity savedComment = commentRepository.save(comment);
-        eventService.createCommentEvent(savedComment, CommentEventType.comment_created, null, createEventTime, savedComment.getAuthor());
-        return savedComment;
+        commentRepository.save(comment);
+        eventService.generateCommentEvent(comment);
+        return comment;
     }
 
     public List<CommentEntity> getAll(String projectId, String topicId, String filter, String orderby) {
@@ -90,22 +90,19 @@ public class CommentService {
 
         if(commentPUT.getComment() != null) {
             existingComment.setComment(commentPUT.getComment());
-            eventService.createCommentEvent(existingComment, CommentEventType.comment_text_updated, commentPUT.getComment(), updateTime, updatedAuthor);
+            eventService.createEvent(existingComment, CommentEventType.comment_text_updated, commentPUT.getComment(), true);
         }
 
         ViewpointEntity beforeViewpoint = existingComment.getViewpoint();
-        if(commentPUT.getViewpointGuid() != null) {
+        if (commentPUT.getViewpointGuid() != null) {
             ViewpointEntity vp = entityResolver.resolveViewpoint(projectId, topicId, commentPUT.getViewpointGuid());
             existingComment.setViewpoint(vp);
             if (beforeViewpoint == null || !beforeViewpoint.getGuid().equals(vp.getGuid())) {
-                eventService.createCommentEvent(existingComment, CommentEventType.viewpoint_updated, commentPUT.getViewpointGuid(), updateTime, updatedAuthor);
+                eventService.createEvent(existingComment, CommentEventType.viewpoint_updated, vp.getGuid(), true);
             }
-        }
-        if (commentPUT.getViewpointGuid() == null) {
-            if (beforeViewpoint != null) {
-                existingComment.setViewpoint(null);
-                eventService.createCommentEvent(existingComment, CommentEventType.viewpoint_removed, null, updateTime, updatedAuthor);
-            }
+        } else if (beforeViewpoint != null) {
+            existingComment.setViewpoint(null);
+            eventService.createEvent(existingComment, CommentEventType.viewpoint_removed, null, true);
         }
         return commentRepository.save(existingComment);
     }

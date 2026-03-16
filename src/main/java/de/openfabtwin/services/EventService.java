@@ -75,24 +75,6 @@ public class EventService {
         return events.getContent();
     }
 
-    public void generateTopicEvent(
-            TopicEntity topic,
-            TopicEventType type,
-            String value,
-            Instant eventTime,
-            String author
-    ) {
-        TopicEventEntity event = new TopicEventEntity();
-        event.setProjectGuid(topic.getProject().getGuid());
-        event.setTopicGuid(topic.getGuid());
-        event.setAuthor(author);
-        event.setEventType(type);
-        event.setEventValue(value);
-        event.setEventDate(eventTime);
-
-        topicEventRepository.save(event);
-    }
-
     public void generateTopicEvent(TopicEntity topic) {
         createEvent(topic, TopicEventType.topic_created, null, false);
         createEvent(topic, TopicEventType.title_updated, topic.getTitle(), false);
@@ -110,6 +92,12 @@ public class EventService {
         }
     }
 
+    public void generateCommentEvent(CommentEntity comment) {
+        createEvent(comment, CommentEventType.comment_created, null, false);
+        if(comment.getComment() != null) createEvent(comment, CommentEventType.comment_text_updated, comment.getComment(), false);
+        if(comment.getViewpoint() != null) createEvent(comment, CommentEventType.viewpoint_updated, comment.getViewpoint().getGuid(), false);
+    }
+
     public void createEvent(TopicEntity topic, TopicEventType event, String value, boolean isUpdated) {
         TopicEventEntity entity = new TopicEventEntity();
         entity.setProjectGuid(topic.getProject().getGuid());
@@ -119,6 +107,18 @@ public class EventService {
         entity.setEventType(event);
         entity.setEventValue(value);
         topicEventRepository.save(entity);
+    }
+
+    public void createEvent(CommentEntity comment, CommentEventType event, String value, boolean isUpdated) {
+        CommentEventEntity entity = new CommentEventEntity();
+        entity.setProjectGuid(comment.getTopic().getProject().getGuid());
+        entity.setTopicGuid(comment.getTopic().getGuid());
+        entity.setCommentGuid(comment.getGuid());
+        entity.setAuthor(isUpdated? comment.getModifiedAuthor() : comment.getAuthor());
+        entity.setEventDate(isUpdated? comment.getModifiedDate() : comment.getDate());
+        entity.setEventType(event);
+        entity.setEventValue(value);
+        commentEventRepository.save(entity);
     }
 
     //-----------------  COMMENT EVENTS -----------------+

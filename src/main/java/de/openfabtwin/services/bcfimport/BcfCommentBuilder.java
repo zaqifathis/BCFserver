@@ -4,13 +4,18 @@ import de.openfabtwin.entities.CommentEntity;
 import de.openfabtwin.entities.TopicEntity;
 import de.openfabtwin.entities.ViewpointEntity;
 import de.openfabtwin.generated.markup.Comment;
+import de.openfabtwin.services.EventService;
 import de.openfabtwin.utils.DateUtils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class BcfCommentBuilder {
+
+    private final EventService eventService;
 
     public CommentEntity build(Comment c, TopicEntity topic, List<ViewpointEntity> viewpoints) {
         CommentEntity entity = new CommentEntity();
@@ -28,7 +33,7 @@ public class BcfCommentBuilder {
                     .findFirst()
                     .ifPresent(entity::setViewpoint);
         }
-
+        eventService.generateCommentEvent(entity);
         return entity;
     }
 }

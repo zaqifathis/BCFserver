@@ -3,6 +3,7 @@ package de.openfabtwin.services.bcfimport;
 import de.openfabtwin.entities.*;
 import de.openfabtwin.generated.markup.*;
 import de.openfabtwin.generated.visinfo.VisualizationInfo;
+import de.openfabtwin.services.EventService;
 import de.openfabtwin.services.ViewpointService.ImageType;
 import de.openfabtwin.utils.BcfZipReader.TopicFolder;
 import de.openfabtwin.utils.DateUtils;
@@ -10,8 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Component
 @RequiredArgsConstructor
@@ -19,6 +19,7 @@ public class BcfTopicBuilder {
 
     private final BcfCommentBuilder commentBuilder;
     private final BcfViewpointBuilder viewpointBuilder;
+    private final EventService eventService;
 
     public TopicEntity build(TopicFolder folder, ProjectEntity project) {
         Topic t = folder.markup().getTopic();
@@ -93,12 +94,22 @@ public class BcfTopicBuilder {
             for (Comment c : t.getComments().getComment())
                 entity.getComments().add(commentBuilder.build(c, entity, builtViewpoints));
         }
-
+        eventService.generateTopicEvent(entity);
         return entity;
     }
 
     public void merge(TopicFolder folder, TopicEntity topic, ProjectEntity project) {
         Topic t = folder.markup().getTopic();
+
+        // Capture before
+        String beforeStatus = topic.getTopicStatus();
+        String beforeType = topic.getTopicType();
+        String beforePriority = topic.getPriority();
+        String beforeAssignedTo = topic.getAssignedTo();
+        String beforeStage = topic.getStage();
+        Instant beforeDueDate = topic.getDueDate();
+        List<String> beforeLabels = topic.getLabels() == null ? List.of() : List.copyOf(topic.getLabels());
+
 
         // Scalar fields — always overwrite from BCF file
         topic.setTopicType(t.getTopicType());
@@ -161,6 +172,50 @@ public class BcfTopicBuilder {
                     topic.getComments().add(commentBuilder.build(c, topic, allViewpoints));
             }
         }
+
+        // Topic Event
+        if (!Objects.equals(beforeStatus, topic.getTopicStatus()))
+            eventService.createEvent(topic, TopicEventType.status_updated, topic.getTopicStatus(), true);
+
+        if (!Objects.equals(beforeType, topic.getTopicType()))
+            eventService.createEvent(topic, TopicEventType.type_updated, topic.getTopicType(), true);
+
+        if (!Objects.equals(beforePriority, topic.getPriority())) {
+            if (topic.getPriority() == null)
+                eventService.createEvent(topic, TopicEventType.priority_removed, null, true);
+            else
+                eventService.createEvent(topic, TopicEventType.priority_updated, topic.getPriority(), true);
+        }
+
+        if (!Objects.equals(beforeAssignedTo, topic.getAssignedTo())) {
+            if (topic.getAssignedTo() == null)
+                eventService.createEvent(topic, TopicEventType.assigned_to_removed, null, true);
+            else
+                eventService.createEvent(topic, TopicEventType.assigned_to_updated, topic.getAssignedTo(), true);
+        }
+
+        if (!Objects.equals(beforeStage, topic.getStage())) {
+            if (beforeStage == null)
+                eventService.createEvent(topic, TopicEventType.stage_added, topic.getStage(), true);
+            else if (topic.getStage() == null)
+                eventService.createEvent(topic, TopicEventType.stage_removed, null, true);
+            else
+                eventService.createEvent(topic, TopicEventType.stage_updated, topic.getStage(), true);
+        }
+
+        if (!Objects.equals(beforeDueDate, topic.getDueDate())) {
+            if (topic.getDueDate() == null)
+                eventService.createEvent(topic, TopicEventType.due_date_removed, null, true);
+            else
+                eventService.createEvent(topic, TopicEventType.due_date_updated, topic.getDueDate().toString(), true);
+        }
+
+        Set<String> beforeSet = new HashSet<>(beforeLabels);
+        Set<String> afterSet = new HashSet<>(topic.getLabels() == null ? List.of() : topic.getLabels());
+        afterSet.stream().filter(l -> !beforeSet.contains(l))
+                .forEach(l -> eventService.createEvent(topic, TopicEventType.label_added, l, true));
+        beforeSet.stream().filter(l -> !afterSet.contains(l))
+                .forEach(l -> eventService.createEvent(topic, TopicEventType.label_removed, l, true));
     }
 
     // -----------------

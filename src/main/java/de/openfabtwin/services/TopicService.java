@@ -47,9 +47,7 @@ public class TopicService {
         topic.setDescription(topicPOST.getDescription());
         topic.setDueDate(DateUtils.toInstant(topicPOST.getDueDate()));
         topic.setCreationAuthor(securityContextService.getCurrentUserEmail());
-
-        Instant createEventTime = Instant.now();
-        topic.setCreationDate(createEventTime);
+        topic.setCreationDate(Instant.now());
 
         ExtensionEntity ext = entityResolver.resolveProjectExtension(projectId);
         topic.setTopicType(validateValue(topicPOST.getTopicType(), ext.getTopicTypes()));
@@ -67,8 +65,10 @@ public class TopicService {
         entityManager.flush();
         topic.setServerAssignedId("TOPIC_" + topic.getId());
 
-        eventService.createTopicEvent(topic, TopicEventType.topic_created, null, createEventTime, topic.getCreationAuthor());
-        return topicRepository.save(topic);
+        eventService.generateTopicEvent(topic);
+        topicRepository.save(topic);
+
+        return topic;
     }
 
     public void delete(String topicId, String projectId) {
@@ -173,62 +173,62 @@ public class TopicService {
             }
         }
 
-        Instant updateEvent = Instant.now();
-        existingTopic.setModifiedDate(updateEvent);
+        existingTopic.setModifiedDate(Instant.now());
         existingTopic.setModifiedAuthor(securityContextService.getCurrentUserEmail());
+        topicRepository.save(existingTopic);
 
         // Update TopicEventEntity
         if(!Objects.equals(beforeTitle, existingTopic.getTitle())) {
-            eventService.createTopicEvent(existingTopic, TopicEventType.title_updated, existingTopic.getTitle(), updateEvent, existingTopic.getModifiedAuthor());
+            eventService.createEvent(existingTopic, TopicEventType.title_updated, existingTopic.getTitle(), true);
         }
 
         if (!Objects.equals(beforeDescription, existingTopic.getDescription())) {
             if (existingTopic.getDescription() == null || existingTopic.getDescription().isBlank()) {
-                eventService.createTopicEvent(existingTopic, TopicEventType.description_removed, null, updateEvent, existingTopic.getModifiedAuthor());
+                eventService.createEvent(existingTopic, TopicEventType.description_removed, null, true);
             } else {
-                eventService.createTopicEvent(existingTopic, TopicEventType.description_updated, existingTopic.getDescription(), updateEvent, existingTopic.getModifiedAuthor());
+                eventService.createEvent(existingTopic, TopicEventType.description_updated, existingTopic.getDescription(), true);
             }
         }
 
         if (!Objects.equals(beforeStatus, existingTopic.getTopicStatus())) {
-            eventService.createTopicEvent(existingTopic, TopicEventType.status_updated, existingTopic.getTopicStatus(), updateEvent, existingTopic.getModifiedAuthor());
+            eventService.createEvent(existingTopic, TopicEventType.status_updated, existingTopic.getTopicStatus(), true);
         }
 
         if (!Objects.equals(beforeType, existingTopic.getTopicType())) {
-            eventService.createTopicEvent(existingTopic, TopicEventType.type_updated, existingTopic.getTopicType(), updateEvent, existingTopic.getModifiedAuthor());
+            eventService.createEvent(existingTopic, TopicEventType.type_updated, existingTopic.getTopicType(), true);
         }
 
         if (!Objects.equals(beforePriority, existingTopic.getPriority())) {
             if (existingTopic.getPriority() == null || existingTopic.getPriority().isBlank()) {
-                eventService.createTopicEvent(existingTopic, TopicEventType.priority_removed, null, updateEvent, existingTopic.getModifiedAuthor());
+                eventService.createEvent(existingTopic, TopicEventType.priority_removed, null, true);
             } else {
-                eventService.createTopicEvent(existingTopic, TopicEventType.priority_updated, existingTopic.getPriority(), updateEvent, existingTopic.getModifiedAuthor());
+                eventService.createEvent(existingTopic, TopicEventType.priority_updated, existingTopic.getPriority(), true);
             }
         }
 
         if (!Objects.equals(beforeDueDate, existingTopic.getDueDate())) {
             if (existingTopic.getDueDate() == null) {
-                eventService.createTopicEvent(existingTopic, TopicEventType.due_date_removed, null, updateEvent, existingTopic.getModifiedAuthor());
+                eventService.createEvent(existingTopic, TopicEventType.due_date_removed, null, true);
             } else {
-                eventService.createTopicEvent(existingTopic, TopicEventType.due_date_updated, existingTopic.getDueDate().toString(), updateEvent, existingTopic.getModifiedAuthor());
+                eventService.createEvent(existingTopic, TopicEventType.due_date_updated, existingTopic.getDueDate().toString(), true);
             }
         }
 
         if (!Objects.equals(beforeAssignedTo, existingTopic.getAssignedTo())) {
             if (existingTopic.getAssignedTo() == null || existingTopic.getAssignedTo().isBlank()) {
-                eventService.createTopicEvent(existingTopic, TopicEventType.assigned_to_removed, null, updateEvent, existingTopic.getModifiedAuthor());
+                eventService.createEvent(existingTopic, TopicEventType.assigned_to_removed, null, true);
             } else {
-                eventService.createTopicEvent(existingTopic, TopicEventType.assigned_to_updated, existingTopic.getAssignedTo(), updateEvent, existingTopic.getModifiedAuthor());
+                eventService.createEvent(existingTopic, TopicEventType.assigned_to_updated, existingTopic.getAssignedTo(), true);
             }
         }
 
         if (!Objects.equals(beforeStage, existingTopic.getStage())) {
             if (beforeStage == null && existingTopic.getStage() != null) {
-                eventService.createTopicEvent(existingTopic, TopicEventType.stage_added, existingTopic.getStage(), updateEvent, existingTopic.getModifiedAuthor());
+                eventService.createEvent(existingTopic, TopicEventType.stage_added, existingTopic.getStage(), true);
             } else if (beforeStage != null && existingTopic.getStage() == null) {
-                eventService.createTopicEvent(existingTopic, TopicEventType.stage_removed, beforeStage, updateEvent, existingTopic.getModifiedAuthor());
+                eventService.createEvent(existingTopic, TopicEventType.stage_removed, beforeStage, true);
             } else {
-                eventService.createTopicEvent(existingTopic, TopicEventType.stage_updated, existingTopic.getStage(), updateEvent, existingTopic.getModifiedAuthor());
+                eventService.createEvent(existingTopic, TopicEventType.stage_updated, existingTopic.getStage(), true);
             }
         }
 
@@ -240,17 +240,17 @@ public class TopicService {
 
             for (String lbl : afterSet) {
                 if (!beforeSet.contains(lbl)) {
-                    eventService.createTopicEvent(existingTopic, TopicEventType.label_added, lbl, updateEvent, existingTopic.getModifiedAuthor());
+                    eventService.createEvent(existingTopic, TopicEventType.label_added, lbl, true);
                 }
             }
 
             for (String lbl : beforeSet) {
                 if (!afterSet.contains(lbl)) {
-                    eventService.createTopicEvent(existingTopic, TopicEventType.label_removed, lbl, updateEvent, existingTopic.getModifiedAuthor());
+                    eventService.createEvent(existingTopic, TopicEventType.label_removed, lbl, true);
                 }
             }
         }
-        return topicRepository.save(existingTopic);
+        return existingTopic;
     }
 
     //----------------- HELPER METHODS -----------------

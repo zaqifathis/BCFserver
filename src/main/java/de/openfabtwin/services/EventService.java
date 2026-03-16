@@ -75,7 +75,7 @@ public class EventService {
         return events.getContent();
     }
 
-    public void createTopicEvent(
+    public void generateTopicEvent(
             TopicEntity topic,
             TopicEventType type,
             String value,
@@ -91,6 +91,34 @@ public class EventService {
         event.setEventDate(eventTime);
 
         topicEventRepository.save(event);
+    }
+
+    public void generateTopicEvent(TopicEntity topic) {
+        createEvent(topic, TopicEventType.topic_created, null, false);
+        createEvent(topic, TopicEventType.title_updated, topic.getTitle(), false);
+        if(topic.getDescription() != null) createEvent(topic, TopicEventType.description_updated, topic.getDescription(), false);
+        if(topic.getTopicStatus() != null) createEvent(topic, TopicEventType.status_updated, topic.getTopicStatus(), false);
+        if(topic.getTopicType() != null) createEvent(topic, TopicEventType.type_updated, topic.getTopicType(), false);
+        if(topic.getStage() != null) createEvent(topic, TopicEventType.stage_added, topic.getStage(), false);
+        if(topic.getPriority() != null) createEvent(topic, TopicEventType.priority_updated, topic.getPriority(), false);
+        if(topic.getDueDate() != null) createEvent(topic,TopicEventType.due_date_updated, topic.getDueDate().toString(), false);
+        if(topic.getAssignedTo() != null) createEvent(topic, TopicEventType.assigned_to_updated,topic.getAssignedTo(), false);
+        if(topic.getLabels() != null) {
+            for(String label : topic.getLabels()) {
+                createEvent(topic, TopicEventType.label_added, label, false);
+            }
+        }
+    }
+
+    public void createEvent(TopicEntity topic, TopicEventType event, String value, boolean isUpdated) {
+        TopicEventEntity entity = new TopicEventEntity();
+        entity.setProjectGuid(topic.getProject().getGuid());
+        entity.setTopicGuid(topic.getGuid());
+        entity.setAuthor(isUpdated? topic.getModifiedAuthor(): topic.getCreationAuthor());
+        entity.setEventDate(isUpdated? topic.getModifiedDate() : topic.getCreationDate());
+        entity.setEventType(event);
+        entity.setEventValue(value);
+        topicEventRepository.save(entity);
     }
 
     //-----------------  COMMENT EVENTS -----------------+

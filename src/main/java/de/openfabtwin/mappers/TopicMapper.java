@@ -146,9 +146,21 @@ public class TopicMapper {
 
     private EventAction toAction(TopicEventEntity event) {
         EventAction action = new EventAction();
-        action.setType(event.getEventType().name());
-        action.setValue(event.getEventValue());
-
+        if(event.getEventType().name().equals("title_updated")) {
+            action.setType(event.getEventType().name());
+            action.setValue(limitText(event.getEventValue(), 128));
+        }
+        else if(event.getEventType().name().equals("description_updated") || event.getEventType().name().equals("description_updated")) {
+            action.setType(event.getEventType().name());
+            action.setValue(limitText(event.getEventValue(), 1024));
+        } else {
+            action.setType(event.getEventType().name());
+            action.setValue(event.getEventValue());
+        }
         return action;
+    }
+
+    private String limitText(String text, int limit) {
+        return text.substring(0, Math.min(text.length(), limit));
     }
 }

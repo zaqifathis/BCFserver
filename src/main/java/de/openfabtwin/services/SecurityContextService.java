@@ -29,6 +29,16 @@ public class SecurityContextService {
                 return UserRole.WRITE;
             }
         }
+
+        if (auth != null && auth.getPrincipal() instanceof OAuth2User oauth2User) {
+            Map<String, Object> realmAccess = oauth2User.getAttribute("realm_access");
+            if (realmAccess != null) {
+                List<String> roles = (List<String>) realmAccess.get("roles");
+                if (roles != null && roles.contains("WRITE")) {
+                    return UserRole.WRITE;
+                }
+            }
+        }
         return UserRole.READ;
     }
 
@@ -37,6 +47,9 @@ public class SecurityContextService {
         if (auth != null && auth.getPrincipal() instanceof Jwt jwt) {
             return identityProviderService.extractUsername(jwt);
         }
+        if (auth != null && auth.getPrincipal() instanceof OAuth2User oauth2User) {
+            return oauth2User.getAttribute("name");
+        }
         return "Anonymous User";
     }
 
@@ -44,6 +57,9 @@ public class SecurityContextService {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.getPrincipal() instanceof Jwt jwt) {
             return identityProviderService.extractEmail(jwt);
+        }
+        if (auth != null && auth.getPrincipal() instanceof OAuth2User oauth2User) {
+            return oauth2User.getAttribute("email");
         }
         return "anonymous";
     }

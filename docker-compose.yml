@@ -1,5 +1,21 @@
 
 services:
+  bcf-app:
+    image: zaqif/bcf-server:${BCF_IMAGE_VERSION}
+    container_name: bcf-server
+    ports:
+      - "8181:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - AUTH_PROVIDER=${AUTH_PROVIDER}
+      - AUTH_SERVER_URL=${AUTH_SERVER_URL}
+      - AUTH_REALM=${AUTH_REALM}
+      - AUTH_CLIENT_ID=${AUTH_CLIENT_ID}
+      - AUTH_CLIENT_SECRET=${AUTH_CLIENT_SECRET}
+    volumes:
+      - ./bcfdb:/application/data
+    restart: unless-stopped
+
   keycloak:
     image: quay.io/keycloak/keycloak:26.5
     container_name: bcf-keycloak

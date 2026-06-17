@@ -1,12 +1,9 @@
 package de.openfabtwin.services;
 
 import de.openfabtwin.auth.UserRole;
-import de.openfabtwin.entities.ExtensionEntity;
-import de.openfabtwin.entities.ProjectEntity;
 import de.openfabtwin.repositories.ProjectRepository;
 import de.openfabtwin.services.security.IdentityProviderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.jwt.Jwt;

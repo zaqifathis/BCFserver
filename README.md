@@ -1,4 +1,4 @@
-# Opensource BCFserver
+# Opensource BCF-API server
 
 An open-source server implementation of the BIM Collaboration Format (BCF)[REST API](https://github.com/buildingSMART/BCF-API), built with Java and Spring Boot.
 

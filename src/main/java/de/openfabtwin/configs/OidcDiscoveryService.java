@@ -9,8 +9,14 @@ import java.util.Map;
 @Service
 public class OidcDiscoveryService {
 
-    @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
-    private String issuerUri;
+    @Value("${AUTH_SERVER_URL}")
+    private String externalUrl;
+
+    @Value("${AUTH_SERVER_INTERNAL_URL:${AUTH_SERVER_URL}}")
+    private String internalUrl;
+
+    @Value("${AUTH_REALM}")
+    private String realm;
 
     private final RestTemplate restTemplate = new RestTemplate();
 
@@ -22,9 +28,16 @@ public class OidcDiscoveryService {
             return cachedConfig; // simple caching
         }
 
-        String discoveryUrl = issuerUri + "/.well-known/openid-configuration";
-        cachedConfig = restTemplate.getForObject(discoveryUrl, Map.class);
+        String discoveryUrl = internalUrl + "/realms/" + realm + "/.well-known/openid-configuration";
+        Map<String, Object> config = restTemplate.getForObject(discoveryUrl, Map.class);
 
+        // Endpoints are handed to external BCF clients, so they must never point at the Docker-internal host
+        config.replaceAll((key, value) ->
+                value instanceof String s && s.startsWith(internalUrl)
+                        ? externalUrl + s.substring(internalUrl.length())
+                        : value);
+
+        cachedConfig = config;
         return cachedConfig;
     }
 }

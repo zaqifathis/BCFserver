@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Profile;
 @Profile("!test")
 public class KeycloakConfig {
 
-    @Value("${AUTH_SERVER_URL}")
+    @Value("${AUTH_SERVER_INTERNAL_URL:${AUTH_SERVER_URL}}")
     private String serverUrl;
 
     @Value("${AUTH_REALM}")

@@ -1,12 +1,12 @@
 # Opensource BCF-API server
 
-An open-source server implementation of the BIM Collaboration Format (BCF)[REST API](https://github.com/buildingSMART/BCF-API), built with Java and Spring Boot.
+An open-source server implementation of the BIM Collaboration Format (BCF) [REST API](https://github.com/buildingSMART/BCF-API), built with Java and Spring Boot.
 
 ## Features
 
 - Full BCF REST API implementation (schema version 3.0, foundation version 1.1)
-- BCF XML file import
 - OAuth2/JWT security via Keycloak integration
+- BCF XML file import
 
 ## Technology Stack
 
@@ -30,45 +30,43 @@ An open-source server implementation of the BIM Collaboration Format (BCF)[REST 
 
 The application reads configuration from a `.env` file in the project root (imported automatically). Create a `.env` file with the following variables:
 ```properties
-AUTH_SERVER_URL=http://localhost:8180
-AUTH_REALM=your-realm
-AUTH_CLIENT_ID=your-client-id
-AUTH_CLIENT_SECRET=your-client-secret
-AUTH_ADMIN_USER=admin
-AUTH_ADMIN_PASSWORD=admin
+BCF_IMAGE_VERSION={bcf-image-version}
 AUTH_PROVIDER=keycloak
+AUTH_ADMIN_USER={admin}
+AUTH_ADMIN_PASSWORD={admin-password}
+AUTH_SERVER_URL=http://localhost:8180
+AUTH_REALM={your-realm}
+AUTH_CLIENT_ID={your-client-id}
+AUTH_CLIENT_SECRET=placeholder
 ```
 
 ## Getting Started
+Requires PowerShell (dev scripts are `.ps1`).
 
-### 1. Start Keycloak
-
-Use the provided Docker Compose file to spin up a local Keycloak instance on port 8180:
 ```bash
-docker-compose up -d
+make dev-up
 ```
 
-After startup, configure a realm and client in Keycloak, then populate your `.env` file accordingly.
+This starts Keycloak, waits for it to become healthy, runs `keycloak-init` to provision the realm/client, writes the generated `AUTH_CLIENT_SECRET` into `.env`, then starts `bcf-app`. No manual Keycloak setup needed — just create `.env` first (see Configuration above; `AUTH_CLIENT_SECRET` can be left as a placeholder).
 
-### 2. Run the application (development mode)
+The server will be available at `http://localhost:8181`.
 
-Development mode uses SQLite for persistence:
+To tear everything down (containers, Keycloak data, generated secret):
 ```bash
-./mvnw spring-boot:run -Pdev
+make dev-reset
 ```
 
-The server will start on `http://localhost:8080`.
-
-### 3. Build and run with Docker
-```bash
-docker build -t bcfserver .
-docker run -p 8080:8080 --env-file .env bcfserver
-```
+(`make dev-up` / `make dev-reset` wrap `dev-up.ps1` / `dev-reset.ps1`; you can also run those scripts directly with `powershell -File dev-up.ps1`.)
 
 ## API Overview
 
 The BCF REST API is documented at [BCF REST API](https://github.com/buildingSMART/BCF-API)
 
+### Additional Endpoint
+1. ``/import``  
+Import BCF file
+
+The official BCF-API spec has no endpoint to create a project from data — support for it was dropped after v1.0, since project creation is expected to happen in each server's own native system rather than via the generic API ([here](https://github.com/buildingSMART/BCF-API/issues/176#issuecomment-389455354)). `/import` is this server's own extension to fill that gap.
 
 ## Project Structure
 ```

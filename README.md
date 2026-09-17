@@ -8,6 +8,16 @@ An open-source server implementation of the BIM Collaboration Format (BCF) [REST
 - OAuth2/JWT security via Keycloak integration
 - BCF XML file import
 
+## API Overview
+
+The BCF REST API is documented at [BCF REST API](https://github.com/buildingSMART/BCF-API)
+### Additional Endpoint
+1. ``/import``  
+   Import BCF file
+
+The official BCF-API spec has no endpoint to create a project from data — support for it was dropped after v1.0, since project creation is expected to happen in each server's own native system rather than via the generic API ([here](https://github.com/buildingSMART/BCF-API/issues/176#issuecomment-389455354)). `/import` is this server's own extension to fill that gap.
+
+
 ## Technology Stack
 
 | Layer | Technology |
@@ -49,24 +59,21 @@ make dev-up
 
 This starts Keycloak, waits for it to become healthy, runs `keycloak-init` to provision the realm/client, writes the generated `AUTH_CLIENT_SECRET` into `.env`, then starts `bcf-app`. No manual Keycloak setup needed — just create `.env` first (see Configuration above; `AUTH_CLIENT_SECRET` can be left as a placeholder).
 
-The server will be available at `http://localhost:8181`.
+The server will be available at `http://localhost:8181` (maps to container port 8080). Keycloak will be available at `http://localhost:8180`.
 
 To tear everything down (containers, Keycloak data, generated secret):
 ```bash
 make dev-reset
 ```
 
-(`make dev-up` / `make dev-reset` wrap `dev-up.ps1` / `dev-reset.ps1`; you can also run those scripts directly with `powershell -File dev-up.ps1`.)
+### Running the scripts directly (optional)
 
-## API Overview
+`make dev-up` / `make dev-reset` just wrap `dev-up.ps1` / `dev-reset.ps1`. You can run either script directly instead:
 
-The BCF REST API is documented at [BCF REST API](https://github.com/buildingSMART/BCF-API)
-
-### Additional Endpoint
-1. ``/import``  
-Import BCF file
-
-The official BCF-API spec has no endpoint to create a project from data — support for it was dropped after v1.0, since project creation is expected to happen in each server's own native system rather than via the generic API ([here](https://github.com/buildingSMART/BCF-API/issues/176#issuecomment-389455354)). `/import` is this server's own extension to fill that gap.
+```powershell
+powershell -File dev-up.ps1
+powershell -File dev-reset.ps1
+```
 
 ## Project Structure
 ```

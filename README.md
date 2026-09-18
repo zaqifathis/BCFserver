@@ -5,7 +5,7 @@ An open-source server implementation of the BIM Collaboration Format (BCF) [REST
 ## Features
 
 - Full BCF REST API implementation (schema version 3.0, foundation version 1.1)
-- OAuth2/JWT security via Keycloak integration
+- Provider-agnostic OAuth2/JWT security (any standard OIDC provider, or disabled)
 - BCF XML file import
 
 ## API Overview
@@ -24,8 +24,8 @@ The official BCF-API spec has no endpoint to create a project from data — supp
 |---|---|
 | Language | Java 21 |
 | Framework | Spring Boot 3.5.7 |
-| Security | Spring Security, OAuth2 Resource Server, Keycloak |
-| Persistence | Spring Data JPA, SQLite (dev), H2 (test) |
+| Security | Spring Security, OAuth2 Resource Server (optional, provider-agnostic) |
+| Persistence | Spring Data JPA, PostgreSQL |
 | Build | Maven |
 | Container | Docker |
 
@@ -33,47 +33,101 @@ The official BCF-API spec has no endpoint to create a project from data — supp
 
 - Java 21+
 - Maven 3.9+
-- Docker & Docker Compose (for running with Keycloak)
-- A Keycloak instance (for production/dev mode with auth)
+- Docker & Docker Compose
 
 ## Configuration
 
 The application reads configuration from a `.env` file in the project root (imported automatically). Create a `.env` file with the following variables:
+
 ```properties
-BCF_IMAGE_VERSION={bcf-image-version}
-AUTH_PROVIDER=keycloak
-AUTH_ADMIN_USER={admin}
-AUTH_ADMIN_PASSWORD={admin-password}
-AUTH_SERVER_URL=http://localhost:8180
-AUTH_REALM={your-realm}
-AUTH_CLIENT_ID={your-client-id}
-AUTH_CLIENT_SECRET=placeholder
+# --- Required ---
+BCF_IMAGE_VERSION=latest
+DB_NAME=bcf
+DB_USER=bcf
+DB_PASSWORD=bcf
+
+# --- Auth (disabled by default) ---
+# When AUTH_ENABLED=false (default), all requests are accepted as anonymous with WRITE access.
+AUTH_ENABLED=false
+
+# Uncomment and fill in to enable OAuth2/OIDC (any standard provider: Keycloak, Auth0, etc.)
+# AUTH_SERVER_URL=http://localhost:8180
+# AUTH_REALM=your-realm
+# AUTH_ADMIN_USER=admin
+# AUTH_ADMIN_PASSWORD=admin
+# AUTH_CLIENT_ID=your-client-id
+# AUTH_CLIENT_SECRET=your-secret
+# AUTH_ROLES_CLAIM=realm_access.roles
+#
+# spring.security.oauth2.resourceserver.jwt.issuer-uri=${AUTH_SERVER_URL}/realms/${AUTH_REALM}
+# spring.security.oauth2.resourceserver.jwt.jwk-set-uri=${AUTH_SERVER_URL}/realms/${AUTH_REALM}/protocol/openid-connect/certs
+# spring.security.oauth2.client.registration.oidc.client-id=${AUTH_CLIENT_ID}
+# spring.security.oauth2.client.registration.oidc.client-secret=${AUTH_CLIENT_SECRET}
+# spring.security.oauth2.client.registration.oidc.scope=openid,profile,email
+# spring.security.oauth2.client.registration.oidc.authorization-grant-type=authorization_code
+# spring.security.oauth2.client.registration.oidc.redirect-uri={baseUrl}/login/oauth2/code/{registrationId}
+# spring.security.oauth2.client.provider.oidc.authorization-uri=${AUTH_SERVER_URL}/realms/${AUTH_REALM}/protocol/openid-connect/auth
+# spring.security.oauth2.client.provider.oidc.token-uri=${AUTH_SERVER_URL}/realms/${AUTH_REALM}/protocol/openid-connect/token
+# spring.security.oauth2.client.provider.oidc.user-info-uri=${AUTH_SERVER_URL}/realms/${AUTH_REALM}/protocol/openid-connect/userinfo
+# spring.security.oauth2.client.provider.oidc.jwk-set-uri=${AUTH_SERVER_URL}/realms/${AUTH_REALM}/protocol/openid-connect/certs
+# spring.security.oauth2.client.provider.oidc.user-name-attribute=sub
 ```
 
-## Getting Started
-Requires PowerShell (dev scripts are `.ps1`).
+AUTH_ADMIN_USER/AUTH_ADMIN_PASSWORD bootstrap Keycloak's admin account (used by the `keycloak` service in `docker-compose.yml`), not app auth itself.
+
+## Development
+
+Start PostgreSQL and the BCF server:
 
 ```bash
-make dev-up
+docker-compose up -d
 ```
 
-This starts Keycloak, waits for it to become healthy, runs `keycloak-init` to provision the realm/client, writes the generated `AUTH_CLIENT_SECRET` into `.env`, then starts `bcf-app`. No manual Keycloak setup needed — just create `.env` first (see Configuration above; `AUTH_CLIENT_SECRET` can be left as a placeholder).
+The server will be available at `http://localhost:8181` (maps to container port 8080). `docker-compose.yml` also has a commented-out Keycloak service — uncomment it to run OIDC locally (see [Running with an OIDC provider](#running-with-an-oidc-provider-optional) below).
 
-The server will be available at `http://localhost:8181` (maps to container port 8080). Keycloak will be available at `http://localhost:8180`.
-
-To tear everything down (containers, Keycloak data, generated secret):
+To rebuild after code changes:
 ```bash
-make dev-reset
+docker-compose up -d --build
 ```
 
-### Running the scripts directly (optional)
-
-`make dev-up` / `make dev-reset` just wrap `dev-up.ps1` / `dev-reset.ps1`. You can run either script directly instead:
-
-```powershell
-powershell -File dev-up.ps1
-powershell -File dev-reset.ps1
+To tear everything down including volumes:
+```bash
+docker-compose down -v
 ```
+
+### Running locally
+
+With Docker Compose running (for PostgreSQL), start the application directly:
+
+```bash
+./mvnw spring-boot:run
+```
+
+Or with explicit database parameters:
+
+```bash
+./mvnw spring-boot:run -Dspring-boot.run.arguments="--DB_HOST=localhost --DB_NAME=bcf --DB_USER=bcf --DB_PASSWORD=bcf"
+```
+
+### Running with an OIDC provider (optional)
+
+Any standard OIDC/OAuth2 provider works. [Keycloak](https://www.keycloak.org/) is a popular open-source option — `docker-compose.yml` includes a commented-out Keycloak service block usable as local identity provider. Steps below use Keycloak as example.
+
+- In `.env`, set `AUTH_ENABLED=true`, uncomment/fill the OAuth variables (`AUTH_SERVER_URL`, `AUTH_REALM`, `AUTH_ADMIN_USER`, `AUTH_ADMIN_PASSWORD`, `AUTH_CLIENT_ID`, `AUTH_CLIENT_SECRET`, `AUTH_ROLES_CLAIM`), and uncomment the `spring.security.oauth2.*` block below them
+- In `docker-compose.yml`, uncomment the `keycloak` service block, `keycloak_data` volume, and the `depends_on: keycloak` lines under `bcf-app`
+- Start Postgres and Keycloak first:
+  ```bash
+  docker-compose up -d postgres keycloak
+  ```
+- Set up Keycloak (via admin console at `http://localhost:8180`):
+  - Log in with `AUTH_ADMIN_USER` / `AUTH_ADMIN_PASSWORD` (set in `.env`)
+  - Create a realm matching `AUTH_REALM`
+  - Create a client in that realm matching `AUTH_CLIENT_ID`, enable client authentication, copy generated client secret into `AUTH_CLIENT_SECRET`
+  - Add roles/claim mapper matching `AUTH_ROLES_CLAIM` if using role-based access
+- Start the app:
+  ```bash
+  docker-compose up -d bcf-app
+  ```
 
 ## Project Structure
 ```
@@ -86,7 +140,9 @@ src/main/java/de/openfabtwin/
 ├── generated/         # Auto-generated API interfaces (from OpenAPI spec)
 ├── mappers/           # Entity ↔ DTO mappers
 ├── repositories/      # Spring Data JPA repositories
-├── services/          # Business logic
+├── services/
+│   ├── security/      # IdentityProviderService + provider implementations
+│   └── ...            # Business logic
 ├── utils/             # Utility classes
 ├── BcfServerApplication.java
 └── DataLoader.java    # Initial data seeding (only for test profile)

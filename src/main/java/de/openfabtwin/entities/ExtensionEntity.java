@@ -51,7 +51,7 @@ public class ExtensionEntity {
 
     @ElementCollection
     @CollectionTable(name = "extension_users", joinColumns = @JoinColumn(name = "extension_id"))
-    @Column(name = "user")
+    @Column(name = "username")
     private List<String> users = new ArrayList<>();
 
 }

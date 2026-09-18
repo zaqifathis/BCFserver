@@ -26,7 +26,7 @@ public class ViewpointEntity {
     @Column(columnDefinition = "TEXT")
     private String payload;
 
-    @Column(columnDefinition = "VARBINARY")
+    @Column(columnDefinition = "BYTEA")
     private byte[] snapshotData;
 
     @Enumerated(EnumType.STRING)

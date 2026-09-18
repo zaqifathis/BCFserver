@@ -18,7 +18,7 @@ public class BimSnippetEntity {
     @Column(nullable = false)
     private String snippetType;
 
-    @Column(columnDefinition = "VARBINARY")
+    @Column(columnDefinition = "BYTEA")
     private byte[] snippetData;
 
     private String filename;

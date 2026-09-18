@@ -21,7 +21,7 @@ public class DocumentEntity {
     @Column(nullable = false)
     private String filename;
 
-    @Column(columnDefinition = "VARBINARY")
+    @Column(columnDefinition = "BYTEA")
     private byte[] data;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -19,7 +19,7 @@ public class BitmapEntity {
     @Enumerated(EnumType.STRING)
     private ImageType bitmapType;
 
-    @Column(columnDefinition = "VARBINARY")
+    @Column(columnDefinition = "BYTEA")
     private byte[] bitmapData;
 
     @Lob

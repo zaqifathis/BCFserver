@@ -1,52 +1,44 @@
 
 services:
-  keycloak:
-    image: quay.io/keycloak/keycloak:26.5
-    container_name: bcf-keycloak
-    command: start-dev
-    environment:
-      KC_HTTP_PORT: 8180
-      KC_HOSTNAME: ${AUTH_SERVER_URL}
-      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
-      KC_HEALTH_ENABLED: "true"
-      KC_BOOTSTRAP_ADMIN_USERNAME: ${AUTH_ADMIN_USER}
-      KC_BOOTSTRAP_ADMIN_PASSWORD: ${AUTH_ADMIN_PASSWORD}
-    ports:
-      - "8180:8180"
-    volumes:
-      - ./keycloak_data:/opt/keycloak/data
-    healthcheck:
-      test: [ "CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/9000; printf 'GET /health/ready HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3; grep -q '\"UP\"' <&3" ]
-      interval: 10s
-      timeout: 5s
-      retries: 15
-      start_period: 20s
+# --- Uncomment the keycloak to run a local Keycloak stack ---
+#  keycloak:
+#    image: quay.io/keycloak/keycloak:26.5
+#    container_name: bcf-keycloak
+#    command: start-dev
+#    environment:
+#      KC_HTTP_PORT: 8180
+#      KC_HOSTNAME: ${AUTH_SERVER_URL:-http://localhost:8180}
+#      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
+#      KC_HEALTH_ENABLED: "true"
+#      KC_BOOTSTRAP_ADMIN_USERNAME: ${AUTH_ADMIN_USER}
+#      KC_BOOTSTRAP_ADMIN_PASSWORD: ${AUTH_ADMIN_PASSWORD}
+#    ports:
+#      - "8180:8180"
+#    volumes:
+#      - keycloak_data:/opt/keycloak/data
+#    healthcheck:
+#      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/9000; printf 'GET /health/ready HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3; grep -q '\"UP\"' <&3"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 15
+#      start_period: 20s
 
-  keycloak-init:
-    image: quay.io/keycloak/keycloak:26.5
-    container_name: bcf-keycloak-init
-    entrypoint: >
-      /bin/bash -c "
-      /opt/keycloak/bin/kcadm.sh config credentials --server http://keycloak:8180 --realm master --user $${AUTH_ADMIN_USER} --password $${AUTH_ADMIN_PASSWORD} &&
-      ( /opt/keycloak/bin/kcadm.sh get realms/$${AUTH_REALM} || /opt/keycloak/bin/kcadm.sh create realms -s realm=$${AUTH_REALM} -s enabled=true ) &&
-      CLIENT_UUID=$$(/opt/keycloak/bin/kcadm.sh get clients -r $${AUTH_REALM} -q clientId=$${AUTH_CLIENT_ID} --fields id --format csv --noquotes) &&
-      if [ -z \"$$CLIENT_UUID\" ]; then
-        /opt/keycloak/bin/kcadm.sh create clients -r $${AUTH_REALM} -s clientId=$${AUTH_CLIENT_ID} -s enabled=true -s publicClient=false -s serviceAccountsEnabled=true -s standardFlowEnabled=true &&
-        CLIENT_UUID=$$(/opt/keycloak/bin/kcadm.sh get clients -r $${AUTH_REALM} -q clientId=$${AUTH_CLIENT_ID} --fields id --format csv --noquotes);
-      fi &&
-      /opt/keycloak/bin/kcadm.sh get clients/$${CLIENT_UUID}/client-secret -r $${AUTH_REALM} --fields value --format csv --noquotes > /shared/client-secret.txt &&
-      echo 'DONE'
-      "
+  postgres:
+    image: postgres:17
+    container_name: bcf-postgres
     environment:
-      - AUTH_ADMIN_USER=${AUTH_ADMIN_USER}
-      - AUTH_ADMIN_PASSWORD=${AUTH_ADMIN_PASSWORD}
-      - AUTH_REALM=${AUTH_REALM}
-      - AUTH_CLIENT_ID=${AUTH_CLIENT_ID}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
     volumes:
-      - ./shared:/shared
-    depends_on:
-      keycloak:
-        condition: service_healthy
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
   bcf-app:
     image: zaqif/bcf-server:${BCF_IMAGE_VERSION}
@@ -56,17 +48,24 @@ services:
     ports:
       - "8181:8080"
     environment:
-      - SPRING_PROFILES_ACTIVE=dev
-      - AUTH_PROVIDER=${AUTH_PROVIDER}
-      - AUTH_SERVER_URL=${AUTH_SERVER_URL}
-      - AUTH_SERVER_INTERNAL_URL=http://keycloak:8180
-      - AUTH_REALM=${AUTH_REALM}
-      - AUTH_CLIENT_ID=${AUTH_CLIENT_ID}
-      - AUTH_CLIENT_SECRET=${AUTH_CLIENT_SECRET}
-    volumes:
-      - ./bcfdb:/application/data
+      DB_HOST: postgres
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      AUTH_ENABLED: ${AUTH_ENABLED}
+      AUTH_SERVER_URL: ${AUTH_SERVER_URL}
+      AUTH_REALM: ${AUTH_REALM}
+      AUTH_CLIENT_ID: ${AUTH_CLIENT_ID}
+      AUTH_CLIENT_SECRET: ${AUTH_CLIENT_SECRET}
+      AUTH_ROLES_CLAIM: ${AUTH_ROLES_CLAIM}
     depends_on:
-      keycloak:
+      postgres:
         condition: service_healthy
+#     Uncomment when running with Keycloak:
+#     keycloak:
+#       condition: service_healthy
     restart: unless-stopped
 
+volumes:
+  postgres_data:
+#  keycloak_data:

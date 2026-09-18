@@ -28,12 +28,9 @@ public class SecurityContextService {
         }
 
         if (auth != null && auth.getPrincipal() instanceof OAuth2User oauth2User) {
-            Map<String, Object> realmAccess = oauth2User.getAttribute("realm_access");
-            if (realmAccess != null) {
-                List<String> roles = (List<String>) realmAccess.get("roles");
-                if (roles != null && roles.contains("WRITE")) {
-                    return UserRole.WRITE;
-                }
+            List<String> roles = identityProviderService.extractRoles(oauth2User.getAttributes());
+            if (roles.contains("WRITE")) {
+                return UserRole.WRITE;
             }
         }
         return UserRole.READ;

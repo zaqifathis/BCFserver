@@ -10,9 +10,9 @@
 	</parent>
 	<groupId>de.openfabtwin</groupId>
 	<artifactId>bcfserver</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.2</version>
 	<name>BCFserver</name>
-	<description>opensource BCF server</description>
+	<description>Open source BCF server that </description>
 	<url/>
 	<licenses>
 		<license>
@@ -24,7 +24,7 @@
 	<developers>
 		<developer>
 			<name>Zaqi Fathis</name>
-			<email>zaqi.fathis@htw-dresden.de</email>
+			<email>zaqifathis@gmail.com</email>
 		</developer>
 	</developers>
 	<scm>
@@ -65,11 +65,6 @@
 			<artifactId>spring-boot-starter-oauth2-client</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>org.keycloak</groupId>
-			<artifactId>keycloak-admin-client</artifactId>
-			<version>26.0.8</version>
-		</dependency>
 
 		<!-- Generator -->
 		<dependency>
@@ -103,23 +98,11 @@
 			<version>4.0.6</version>
 		</dependency>
 
-		<!-- H2 in-memory DB for tests -->
+		<!-- PostgreSQL -->
 		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
-		</dependency>
-
-		<!-- SQLite in-memory DB for dev -->
-		<dependency>
-			<groupId>org.xerial</groupId>
-			<artifactId>sqlite-jdbc</artifactId>
-			<version>3.47.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate.orm</groupId>
-			<artifactId>hibernate-community-dialects</artifactId>
-			<version>6.6.42.Final</version>
 		</dependency>
 
 		<!-- Testing -->
@@ -147,23 +130,5 @@
 
 		</plugins>
 	</build>
-
-	<profiles>
-		<!-- DEV profile (SQLite) -->
-		<profile>
-			<id>dev</id>
-			<properties>
-				<spring.profiles.active>dev</spring.profiles.active>
-			</properties>
-		</profile>
-
-		<!-- TEST profile (H2 in-memory) -->
-		<profile>
-			<id>test</id>
-			<properties>
-				<spring.profiles.active>test</spring.profiles.active>
-			</properties>
-		</profile>
-	</profiles>
 
 </project>

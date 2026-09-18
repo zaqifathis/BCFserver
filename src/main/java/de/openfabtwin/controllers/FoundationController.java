@@ -70,7 +70,8 @@ public class FoundationController {
 
         auth.setOauth2AuthUrl((String) config.get("authorization_endpoint"));
         auth.setOauth2TokenUrl((String) config.get("token_endpoint"));
-        auth.setSupportedOauth2Flows(FoundationMapper.mapToOpenCdeGrants((List<String>) config.get("grant_types_supported")));
+        List<String> grants = (List<String>) config.get("grant_types_supported");
+        if (grants != null) auth.setSupportedOauth2Flows(FoundationMapper.mapToOpenCdeGrants(grants));
 
         auth.setHttpBasicSupported(false);
 

@@ -38,29 +38,27 @@ The official BCF-API spec has no endpoint to create a project from data — supp
 
 ## Configuration
 
-The application reads configuration from a `.env` file in the project root (imported automatically). Create a `.env` file with the following variables:
+The application reads configuration from a `.env` file in the project root. Docker Compose uses it for variable substitution and passes it into the `bcf-app` container (`env_file`). Create a `.env` file:
 
 ```properties
-# --- Required ---
 BCF_IMAGE_VERSION=bcf-image-version
 DB_NAME=bcf
 DB_USER=bcf
 DB_PASSWORD=bcf
 
-# --- Auth (disabled by default) ---
-# When AUTH_ENABLED=false (default), all requests are accepted as anonymous with WRITE access.
+# Auth is disabled by default: all requests are accepted as anonymous with WRITE access.
 AUTH_ENABLED=false
 ```
 
 ## Development
 
-Start PostgreSQL and the BCF server:
+Start PostgreSQL and the BCF server (no identity provider needed):
 
 ```bash
 docker-compose up -d
 ```
 
-The server will be available at `http://localhost:8181` (maps to container port 8080). `docker-compose.yml` also has a commented-out Keycloak service — uncomment it to run OIDC locally (see [Running with an OIDC provider](#running-with-an-oidc-provider-optional) below).
+The server will be available at `http://localhost:8181` (maps to container port 8080).
 
 To rebuild after code changes:
 ```bash
@@ -88,51 +86,52 @@ Or with explicit database parameters:
 
 ### Running with an OIDC provider (optional)
 
-Any standard OIDC/OAuth2 provider works. [Keycloak](https://www.keycloak.org/) is a popular open-source option — `docker-compose.yml` includes a commented-out Keycloak service block usable as local identity provider. Steps below use Keycloak as example.
+Any standard OIDC/OAuth2 provider works. [Keycloak](https://www.keycloak.org/) is a popular open-source option; `docker-compose.yml` contains a `keycloak` service behind the `keycloak` profile, so it only starts when requested. Steps below use Keycloak as example.
 
-
-- In `.env`, add additional properties below:
+1. In `.env`, set `AUTH_ENABLED=true` and add:
 
 ```properties
-AUTH_ENABLED=true
-
 AUTH_SERVER_URL=http://localhost:8180
 AUTH_REALM=your-realm
-AUTH_ADMIN_USER=admin
-AUTH_ADMIN_PASSWORD=admin
 AUTH_CLIENT_ID=your-client-id
 AUTH_CLIENT_SECRET=your-secret
 AUTH_ROLES_CLAIM=realm_access.roles
+AUTH_ADMIN_USER=admin
+AUTH_ADMIN_PASSWORD=admin
+
+# Server-to-server URLs use the compose service name (keycloak:8180), because
+# localhost inside the bcf-app container is the container itself.
+AUTH_DISCOVERY_URI=http://keycloak:8180/realms/${AUTH_REALM}/.well-known/openid-configuration
 
 spring.security.oauth2.resourceserver.jwt.issuer-uri=${AUTH_SERVER_URL}/realms/${AUTH_REALM}
-spring.security.oauth2.resourceserver.jwt.jwk-set-uri=${AUTH_SERVER_URL}/realms/${AUTH_REALM}/protocol/openid-connect/certs
+spring.security.oauth2.resourceserver.jwt.jwk-set-uri=http://keycloak:8180/realms/${AUTH_REALM}/protocol/openid-connect/certs
 spring.security.oauth2.client.registration.oidc.client-id=${AUTH_CLIENT_ID}
 spring.security.oauth2.client.registration.oidc.client-secret=${AUTH_CLIENT_SECRET}
 spring.security.oauth2.client.registration.oidc.scope=openid,profile,email
 spring.security.oauth2.client.registration.oidc.authorization-grant-type=authorization_code
 spring.security.oauth2.client.registration.oidc.redirect-uri={baseUrl}/login/oauth2/code/{registrationId}
 spring.security.oauth2.client.provider.oidc.authorization-uri=${AUTH_SERVER_URL}/realms/${AUTH_REALM}/protocol/openid-connect/auth
-spring.security.oauth2.client.provider.oidc.token-uri=${AUTH_SERVER_URL}/realms/${AUTH_REALM}/protocol/openid-connect/token
-spring.security.oauth2.client.provider.oidc.user-info-uri=${AUTH_SERVER_URL}/realms/${AUTH_REALM}/protocol/openid-connect/userinfo
-spring.security.oauth2.client.provider.oidc.jwk-set-uri=${AUTH_SERVER_URL}/realms/${AUTH_REALM}/protocol/openid-connect/certs
+spring.security.oauth2.client.provider.oidc.token-uri=http://keycloak:8180/realms/${AUTH_REALM}/protocol/openid-connect/token
+spring.security.oauth2.client.provider.oidc.user-info-uri=http://keycloak:8180/realms/${AUTH_REALM}/protocol/openid-connect/userinfo
+spring.security.oauth2.client.provider.oidc.jwk-set-uri=http://keycloak:8180/realms/${AUTH_REALM}/protocol/openid-connect/certs
 spring.security.oauth2.client.provider.oidc.user-name-attribute=sub
 ```
 
-- In `docker-compose.yml`, uncomment the `keycloak` service block, `keycloak_data` volume, and the `depends_on: keycloak` lines under `bcf-app`
-- Start Postgres and Keycloak first:
-  ```bash
-  docker-compose up -d postgres keycloak
-  ```
-- Set up Keycloak (via admin console at `http://localhost:8180`):
-  - Log in with `AUTH_ADMIN_USER` / `AUTH_ADMIN_PASSWORD` (set in `.env`)
-  - Create a realm matching `AUTH_REALM`
-  - Create a client in that realm matching `AUTH_CLIENT_ID`, enable client authentication, copy generated client secret into `AUTH_CLIENT_SECRET`
-  - Add roles/claim mapper matching `AUTH_ROLES_CLAIM` if using role-based access
+2. Start Postgres and Keycloak:
+   ```bash
+   docker-compose --profile keycloak up -d postgres keycloak
+   ```
+3. Set up Keycloak (admin console at `http://localhost:8180`):
+   - Log in with `AUTH_ADMIN_USER` / `AUTH_ADMIN_PASSWORD`
+   - Create a realm matching `AUTH_REALM`. It must exist: `GET /foundation/1.1/auth` reads the realm's OIDC discovery document
+   - Create a client matching `AUTH_CLIENT_ID`, enable client authentication, copy the generated client secret into `AUTH_CLIENT_SECRET`
+   - Add roles/claim mapper matching `AUTH_ROLES_CLAIM` if using role-based access
+4. Start the app:
+   ```bash
+   docker-compose up -d bcf-app
+   ```
 
-- Start the app:
-  ```bash
-  docker-compose up -d bcf-app
-  ```
+To go back to no authentication, set `AUTH_ENABLED=false` and stop Keycloak with `docker-compose --profile keycloak stop keycloak`.
 
 ## Project Structure
 ```

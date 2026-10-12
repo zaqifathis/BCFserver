@@ -1,28 +1,4 @@
-
 services:
-# --- Uncomment the keycloak to run a local Keycloak stack ---
-#  keycloak:
-#    image: quay.io/keycloak/keycloak:26.5
-#    container_name: bcf-keycloak
-#    command: start-dev
-#    environment:
-#      KC_HTTP_PORT: 8180
-#      KC_HOSTNAME: ${AUTH_SERVER_URL:-http://localhost:8180}
-#      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
-#      KC_HEALTH_ENABLED: "true"
-#      KC_BOOTSTRAP_ADMIN_USERNAME: ${AUTH_ADMIN_USER}
-#      KC_BOOTSTRAP_ADMIN_PASSWORD: ${AUTH_ADMIN_PASSWORD}
-#    ports:
-#      - "8180:8180"
-#    volumes:
-#      - keycloak_data:/opt/keycloak/data
-#    healthcheck:
-#      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/9000; printf 'GET /health/ready HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3; grep -q '\"UP\"' <&3"]
-#      interval: 10s
-#      timeout: 5s
-#      retries: 15
-#      start_period: 20s
-
   postgres:
     image: postgres:17
     container_name: bcf-postgres
@@ -47,25 +23,39 @@ services:
     container_name: bcf-server
     ports:
       - "8181:8080"
+    # All AUTH_* and spring.* settings come from .env
+    env_file:
+      - .env
     environment:
       DB_HOST: postgres
-      DB_NAME: ${DB_NAME}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      AUTH_ENABLED: ${AUTH_ENABLED}
-      AUTH_SERVER_URL: ${AUTH_SERVER_URL}
-      AUTH_REALM: ${AUTH_REALM}
-      AUTH_CLIENT_ID: ${AUTH_CLIENT_ID}
-      AUTH_CLIENT_SECRET: ${AUTH_CLIENT_SECRET}
-      AUTH_ROLES_CLAIM: ${AUTH_ROLES_CLAIM}
     depends_on:
       postgres:
         condition: service_healthy
-#     Uncomment when running with Keycloak:
-#     keycloak:
-#       condition: service_healthy
     restart: unless-stopped
+
+  # Optional local identity provider. Start with: docker-compose --profile keycloak up -d
+  keycloak:
+    profiles: ["keycloak"]
+    image: quay.io/keycloak/keycloak:26.5
+    container_name: bcf-keycloak
+    command: start-dev
+    environment:
+      KC_HTTP_PORT: 8180
+      KC_HOSTNAME: ${AUTH_SERVER_URL:-http://localhost:8180}
+      KC_HEALTH_ENABLED: "true"
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${AUTH_ADMIN_USER:-admin}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${AUTH_ADMIN_PASSWORD:-admin}
+    ports:
+      - "8180:8180"
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/9000; printf 'GET /health/ready HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3; grep -q '\"UP\"' <&3"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 20s
 
 volumes:
   postgres_data:
-#  keycloak_data:
+  keycloak_data:

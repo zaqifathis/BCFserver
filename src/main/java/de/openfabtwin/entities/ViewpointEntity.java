@@ -22,7 +22,6 @@ public class ViewpointEntity {
     @Column(name = "viewpoint_index")
     private Integer index;
 
-    @Lob
     @Column(columnDefinition = "TEXT")
     private String payload;
 

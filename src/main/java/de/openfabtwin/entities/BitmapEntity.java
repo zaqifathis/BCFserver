@@ -22,7 +22,6 @@ public class BitmapEntity {
     @Column(columnDefinition = "BYTEA")
     private byte[] bitmapData;
 
-    @Lob
     @Column(columnDefinition = "TEXT")
     private String bitmapMetadata;
 

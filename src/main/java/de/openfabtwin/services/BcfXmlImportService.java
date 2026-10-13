@@ -38,10 +38,14 @@ public class BcfXmlImportService {
         String projectGuid = result.root().projectId();
         ProjectEntity existing = projectRepository.findByGuid(projectGuid).orElse(null);
 
-        ProjectEntity project = existing != null
-                ? mergeProject(existing, result)
-                : buildProject(result);
-        projectRepository.save(project);
+        // Existing project is already managed: changes and new children are persisted on flush
+        // via cascade. Calling save() here would trigger em.merge(), which copies the new
+        // children and replaces non-merge-cascaded references (e.g. BimSnippet) with empty copies.
+        if (existing != null) {
+            mergeProject(existing, result);
+        } else {
+            projectRepository.save(buildProject(result));
+        }
     }
 
     // -----------------

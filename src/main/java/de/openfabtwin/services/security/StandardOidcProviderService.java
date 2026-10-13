@@ -28,6 +28,11 @@ public class StandardOidcProviderService implements IdentityProviderService {
         return extractRolesFromMap(userAttributes);
     }
 
+    @Override
+    public List<String> anonymousRoles() {
+        return List.of();
+    }
+
     private List<String> extractRolesFromMap(Map<String, Object> map) {
         String[] parts = rolesClaim.split("\\.");
         Object current = map;

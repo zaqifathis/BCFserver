@@ -11,6 +11,9 @@ public interface IdentityProviderService {
 
     List<String> extractRoles(Map<String, Object> userAttributes);
 
+    // Roles granted to requests without an authenticated principal
+    List<String> anonymousRoles();
+
     String extractUsername(Jwt jwt);
 
     String extractEmail(Jwt jwt);

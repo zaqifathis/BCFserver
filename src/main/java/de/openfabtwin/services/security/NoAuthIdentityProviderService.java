@@ -22,6 +22,11 @@ public class NoAuthIdentityProviderService implements IdentityProviderService {
     }
 
     @Override
+    public List<String> anonymousRoles() {
+        return List.of("WRITE");
+    }
+
+    @Override
     public String extractUsername(Jwt jwt) {
         return "anonymous";
     }

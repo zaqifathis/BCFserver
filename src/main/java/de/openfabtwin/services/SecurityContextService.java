@@ -4,6 +4,7 @@ import de.openfabtwin.auth.UserRole;
 import de.openfabtwin.repositories.ProjectRepository;
 import de.openfabtwin.services.security.IdentityProviderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -30,6 +31,12 @@ public class SecurityContextService {
         if (auth != null && auth.getPrincipal() instanceof OAuth2User oauth2User) {
             List<String> roles = identityProviderService.extractRoles(oauth2User.getAttributes());
             if (roles.contains("WRITE")) {
+                return UserRole.WRITE;
+            }
+        }
+
+        if (auth == null || auth instanceof AnonymousAuthenticationToken) {
+            if (identityProviderService.anonymousRoles().contains("WRITE")) {
                 return UserRole.WRITE;
             }
         }

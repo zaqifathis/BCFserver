@@ -12,8 +12,14 @@ An open-source server implementation of the BIM Collaboration Format (BCF) [REST
 
 The BCF REST API is documented at [BCF REST API](https://github.com/buildingSMART/BCF-API)
 ### Additional Endpoint
-1. ``/import``  
-   Import BCF file
+1. ``POST /import``  
+   Import BCF file. The request body must be `form-data` with one field:
+
+   | Key    | Type | Value                  |
+   |--------|------|------------------------|
+   | `file` | File | The `.bcf` file to import |
+
+   If the project in the file already exists (same `ProjectId` in `project.bcfp`), its topics are merged into it. Otherwise a new project is created. Returns `201 Created` on success.
 
 The official BCF-API spec has no endpoint to create a project from data — support for it was dropped after v1.0, since project creation is expected to happen in each server's own native system rather than via the generic API ([here](https://github.com/buildingSMART/BCF-API/issues/176#issuecomment-389455354)). `/import` is this server's own extension to fill that gap.
 

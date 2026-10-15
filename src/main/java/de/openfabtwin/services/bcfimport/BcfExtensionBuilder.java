@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
+import static de.openfabtwin.utils.CaseUtils.upper;
+
 @Component
 @RequiredArgsConstructor
 public class BcfExtensionBuilder {
@@ -21,19 +23,19 @@ public class BcfExtensionBuilder {
         entity.setProject(project);
 
         if (extensions.getTopicTypes() != null && extensions.getTopicTypes().getTopicType() != null)
-            entity.setTopicTypes(new ArrayList<>(extensions.getTopicTypes().getTopicType()));
+            entity.setTopicTypes(upper(extensions.getTopicTypes().getTopicType()));
 
         if (extensions.getTopicStatuses() != null && extensions.getTopicStatuses().getTopicStatus() != null)
-            entity.setTopicStatuses(new ArrayList<>(extensions.getTopicStatuses().getTopicStatus()));
+            entity.setTopicStatuses(upper(extensions.getTopicStatuses().getTopicStatus()));
 
         if (extensions.getPriorities() != null && extensions.getPriorities().getPriority() != null)
-            entity.setPriorities(new ArrayList<>(extensions.getPriorities().getPriority()));
+            entity.setPriorities(upper(extensions.getPriorities().getPriority()));
 
         if (extensions.getTopicLabels() != null && extensions.getTopicLabels().getTopicLabel() != null)
-            entity.setTopicLabels(new ArrayList<>(extensions.getTopicLabels().getTopicLabel()));
+            entity.setTopicLabels(upper(extensions.getTopicLabels().getTopicLabel()));
 
         if (extensions.getStages() != null && extensions.getStages().getStage() != null)
-            entity.setStages(new ArrayList<>(extensions.getStages().getStage()));
+            entity.setStages(upper(extensions.getStages().getStage()));
 
         if (extensions.getSnippetTypes() != null && extensions.getSnippetTypes().getSnippetType() != null)
             entity.setSnippetTypes(new ArrayList<>(extensions.getSnippetTypes().getSnippetType()));
@@ -54,15 +56,15 @@ public class BcfExtensionBuilder {
 
     public void update(ExtensionEntity ext, Extensions extensions) {
         ext.setTopicTypes(extensions.getTopicTypes() != null && extensions.getTopicTypes().getTopicType() != null
-                ? new ArrayList<>(extensions.getTopicTypes().getTopicType()) : new ArrayList<>());
+                ? upper(extensions.getTopicTypes().getTopicType()) : new ArrayList<>());
         ext.setTopicStatuses(extensions.getTopicStatuses() != null && extensions.getTopicStatuses().getTopicStatus() != null
-                ? new ArrayList<>(extensions.getTopicStatuses().getTopicStatus()) : new ArrayList<>());
+                ? upper(extensions.getTopicStatuses().getTopicStatus()) : new ArrayList<>());
         ext.setPriorities(extensions.getPriorities() != null && extensions.getPriorities().getPriority() != null
-                ? new ArrayList<>(extensions.getPriorities().getPriority()) : new ArrayList<>());
+                ? upper(extensions.getPriorities().getPriority()) : new ArrayList<>());
         ext.setTopicLabels(extensions.getTopicLabels() != null && extensions.getTopicLabels().getTopicLabel() != null
-                ? new ArrayList<>(extensions.getTopicLabels().getTopicLabel()) : new ArrayList<>());
+                ? upper(extensions.getTopicLabels().getTopicLabel()) : new ArrayList<>());
         ext.setStages(extensions.getStages() != null && extensions.getStages().getStage() != null
-                ? new ArrayList<>(extensions.getStages().getStage()) : new ArrayList<>());
+                ? upper(extensions.getStages().getStage()) : new ArrayList<>());
         ext.setSnippetTypes(extensions.getSnippetTypes() != null && extensions.getSnippetTypes().getSnippetType() != null
                 ? new ArrayList<>(extensions.getSnippetTypes().getSnippetType()) : new ArrayList<>());
 

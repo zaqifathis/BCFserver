@@ -21,6 +21,8 @@ import java.time.Instant;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 
+import static de.openfabtwin.utils.CaseUtils.upper;
+
 @Service
 @RequiredArgsConstructor
 public class TopicService {
@@ -50,12 +52,12 @@ public class TopicService {
         topic.setCreationDate(Instant.now());
 
         ExtensionEntity ext = entityResolver.resolveProjectExtension(projectId);
-        topic.setTopicType(validateValue(topicPOST.getTopicType(), ext.getTopicTypes()));
-        topic.setTopicStatus(validateValue(topicPOST.getTopicStatus(), ext.getTopicStatuses()));
-        topic.setPriority(validateValue(topicPOST.getPriority(), ext.getPriorities()));
-        topic.setLabels(validateList(topicPOST.getLabels(), ext.getTopicLabels()));
+        topic.setTopicType(validateValue(upper(topicPOST.getTopicType()), ext.getTopicTypes()));
+        topic.setTopicStatus(validateValue(upper(topicPOST.getTopicStatus()), ext.getTopicStatuses()));
+        topic.setPriority(validateValue(upper(topicPOST.getPriority()), ext.getPriorities()));
+        topic.setLabels(validateList(upper(topicPOST.getLabels()), ext.getTopicLabels()));
         topic.setAssignedTo(validateValue(topicPOST.getAssignedTo(), ext.getUsers()));
-        topic.setStage(validateValue(topicPOST.getStage(), ext.getStages()));
+        topic.setStage(validateValue(upper(topicPOST.getStage()), ext.getStages()));
 
         if(topicPOST.getBimSnippet() != null) {
             BimSnippetEntity snippetEntity = topicMapper.mapBimSnippetEntity(topicPOST.getBimSnippet(), topic);
@@ -121,31 +123,31 @@ public class TopicService {
 
         existingTopic.setTitle(topicPUT.getTitle());
         if(topicPUT.getTopicType() != null) {
-            existingTopic.setTopicType(validateValue(topicPUT.getTopicType(), ext.getTopicTypes()));
+            existingTopic.setTopicType(validateValue(upper(topicPUT.getTopicType()), ext.getTopicTypes()));
         }
         if(topicPUT.getTopicStatus() != null) {
-            existingTopic.setTopicStatus(validateValue(topicPUT.getTopicStatus(), ext.getTopicStatuses()));
+            existingTopic.setTopicStatus(validateValue(upper(topicPUT.getTopicStatus()), ext.getTopicStatuses()));
         }
         if(topicPUT.getReferenceLinks() != null) {
             existingTopic.getReferenceLinks().clear();
             existingTopic.getReferenceLinks().addAll(topicPUT.getReferenceLinks());
         }
         if (topicPUT.getPriority() != null) {
-            existingTopic.setPriority(validateValue(topicPUT.getPriority(), ext.getPriorities()));
+            existingTopic.setPriority(validateValue(upper(topicPUT.getPriority()), ext.getPriorities()));
         }
         if(topicPUT.getIndex() != null) {
             existingTopic.setIndex(topicPUT.getIndex());
         }
         if(topicPUT.getLabels() != null) {
-            validateList(topicPUT.getLabels(), ext.getTopicLabels());
+            List<String> labels = validateList(upper(topicPUT.getLabels()), ext.getTopicLabels());
             existingTopic.getLabels().clear();
-            existingTopic.getLabels().addAll(topicPUT.getLabels());
+            existingTopic.getLabels().addAll(labels);
         }
         if(topicPUT.getAssignedTo() != null) {
             existingTopic.setAssignedTo(validateValue(topicPUT.getAssignedTo(), ext.getUsers()));
         }
         if(topicPUT.getStage() != null) {
-            existingTopic.setStage(validateValue(topicPUT.getStage(), ext.getStages()));
+            existingTopic.setStage(validateValue(upper(topicPUT.getStage()), ext.getStages()));
         }
         if(topicPUT.getDescription() != null) {
             existingTopic.setDescription(topicPUT.getDescription());

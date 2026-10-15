@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 import java.time.Instant;
 import java.util.*;
 
+import static de.openfabtwin.utils.CaseUtils.upper;
+
 @Component
 @RequiredArgsConstructor
 public class BcfTopicBuilder {
@@ -28,13 +30,13 @@ public class BcfTopicBuilder {
         entity.setProject(project);
         entity.setGuid(folder.guid());
         entity.setTitle(t.getTitle());
-        entity.setTopicType(t.getTopicType());
-        entity.setTopicStatus(t.getTopicStatus());
-        entity.setPriority(t.getPriority());
+        entity.setTopicType(upper(t.getTopicType()));
+        entity.setTopicStatus(upper(t.getTopicStatus()));
+        entity.setPriority(upper(t.getPriority()));
         entity.setIndex(t.getIndex());
         entity.setDescription(t.getDescription());
         entity.setAssignedTo(t.getAssignedTo());
-        entity.setStage(t.getStage());
+        entity.setStage(upper(t.getStage()));
         entity.setServerAssignedId(t.getServerAssignedId());
         entity.setCreationDate(DateUtils.toInstant(t.getCreationDate()));
         entity.setCreationAuthor(t.getCreationAuthor());
@@ -43,7 +45,7 @@ public class BcfTopicBuilder {
         entity.setDueDate(DateUtils.toInstant(t.getDueDate()));
 
         if (t.getLabels() != null && t.getLabels().getLabel() != null)
-            entity.setLabels(new ArrayList<>(t.getLabels().getLabel()));
+            entity.setLabels(upper(t.getLabels().getLabel()));
 
         if (t.getReferenceLinks() != null && t.getReferenceLinks().getReferenceLink() != null)
             entity.setReferenceLinks(new ArrayList<>(t.getReferenceLinks().getReferenceLink()));
@@ -112,18 +114,18 @@ public class BcfTopicBuilder {
 
 
         // Scalar fields — always overwrite from BCF file
-        topic.setTopicType(t.getTopicType());
-        topic.setTopicStatus(t.getTopicStatus());
-        topic.setPriority(t.getPriority());
+        topic.setTopicType(upper(t.getTopicType()));
+        topic.setTopicStatus(upper(t.getTopicStatus()));
+        topic.setPriority(upper(t.getPriority()));
         topic.setAssignedTo(t.getAssignedTo());
-        topic.setStage(t.getStage());
+        topic.setStage(upper(t.getStage()));
         topic.setDueDate(DateUtils.toInstant(t.getDueDate()));
         topic.setModifiedDate(DateUtils.toInstant(t.getModifiedDate()));
         topic.setModifiedAuthor(t.getModifiedAuthor());
 
         // Collection fields — replace entirely
         topic.setLabels(t.getLabels() != null && t.getLabels().getLabel() != null
-                ? new ArrayList<>(t.getLabels().getLabel()) : new ArrayList<>());
+                ? upper(t.getLabels().getLabel()) : new ArrayList<>());
 
         topic.setRelatedTopics(t.getRelatedTopics() != null && t.getRelatedTopics().getRelatedTopic() != null
                 ? t.getRelatedTopics().getRelatedTopic().stream()

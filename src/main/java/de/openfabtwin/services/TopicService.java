@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.time.format.DateTimeParseException;
 import java.util.*;
 
 import static de.openfabtwin.utils.CaseUtils.upper;
@@ -121,38 +120,29 @@ public class TopicService {
 
         ExtensionEntity ext = entityResolver.resolveProjectExtension(projectId);
 
+        // PUT replaces the topic: absent/null fields clear the stored value
         existingTopic.setTitle(topicPUT.getTitle());
-        if(topicPUT.getTopicType() != null) {
-            existingTopic.setTopicType(validateValue(upper(topicPUT.getTopicType()), ext.getTopicTypes()));
-        }
-        if(topicPUT.getTopicStatus() != null) {
-            existingTopic.setTopicStatus(validateValue(upper(topicPUT.getTopicStatus()), ext.getTopicStatuses()));
-        }
+        existingTopic.setTopicType(validateValue(upper(topicPUT.getTopicType()), ext.getTopicTypes()));
+        existingTopic.setTopicStatus(validateValue(upper(topicPUT.getTopicStatus()), ext.getTopicStatuses()));
+        existingTopic.getReferenceLinks().clear();
         if(topicPUT.getReferenceLinks() != null) {
-            existingTopic.getReferenceLinks().clear();
             existingTopic.getReferenceLinks().addAll(topicPUT.getReferenceLinks());
         }
-        if (topicPUT.getPriority() != null) {
-            existingTopic.setPriority(validateValue(upper(topicPUT.getPriority()), ext.getPriorities()));
-        }
-        if(topicPUT.getIndex() != null) {
-            existingTopic.setIndex(topicPUT.getIndex());
-        }
-        if(topicPUT.getLabels() != null) {
-            List<String> labels = validateList(upper(topicPUT.getLabels()), ext.getTopicLabels());
-            existingTopic.getLabels().clear();
-            existingTopic.getLabels().addAll(labels);
-        }
-        if(topicPUT.getAssignedTo() != null) {
-            existingTopic.setAssignedTo(validateValue(topicPUT.getAssignedTo(), ext.getUsers()));
-        }
-        if(topicPUT.getStage() != null) {
-            existingTopic.setStage(validateValue(upper(topicPUT.getStage()), ext.getStages()));
-        }
-        if(topicPUT.getDescription() != null) {
-            existingTopic.setDescription(topicPUT.getDescription());
-        }
-        if(topicPUT.getBimSnippet() != null) {
+        existingTopic.setPriority(validateValue(upper(topicPUT.getPriority()), ext.getPriorities()));
+        existingTopic.setIndex(topicPUT.getIndex());
+        List<String> labels = validateList(upper(topicPUT.getLabels()), ext.getTopicLabels());
+        existingTopic.getLabels().clear();
+        existingTopic.getLabels().addAll(labels);
+        existingTopic.setAssignedTo(validateValue(topicPUT.getAssignedTo(), ext.getUsers()));
+        existingTopic.setStage(validateValue(upper(topicPUT.getStage()), ext.getStages()));
+        existingTopic.setDescription(topicPUT.getDescription());
+        if(topicPUT.getBimSnippet() == null) {
+            BimSnippetEntity snippet = existingTopic.getBimSnippet();
+            if (snippet != null) {
+                snippet.getTopics().remove(existingTopic);
+                existingTopic.setBimSnippet(null);
+            }
+        } else {
             BimSnippetEntity snippet = existingTopic.getBimSnippet();
 
             if (snippet == null) {
@@ -167,13 +157,7 @@ public class TopicService {
                 topicMapper.updateBimSnippetEntity(topicPUT.getBimSnippet(), snippet);
             }
         }
-        if(topicPUT.getDueDate() != null) {
-            try {
-                existingTopic.setDueDate(DateUtils.toInstant(topicPUT.getDueDate()));
-            } catch (DateTimeParseException e) {
-                throw new IllegalArgumentException("Invalid due_date format, expected ISO-8601");
-            }
-        }
+        existingTopic.setDueDate(DateUtils.toInstant(topicPUT.getDueDate()));
 
         existingTopic.setModifiedDate(Instant.now());
         existingTopic.setModifiedAuthor(securityContextService.getCurrentUserEmail());
@@ -234,22 +218,18 @@ public class TopicService {
             }
         }
 
-        if (topicPUT.getLabels() != null) {
-            List<String> afterLabels = existingTopic.getLabels() == null ? List.of() : existingTopic.getLabels();
+        Set<String> beforeSet = new HashSet<>(beforeLabels);
+        Set<String> afterSet = new HashSet<>(existingTopic.getLabels());
 
-            Set<String> beforeSet = new HashSet<>(beforeLabels);
-            Set<String> afterSet = new HashSet<>(afterLabels);
-
-            for (String lbl : afterSet) {
-                if (!beforeSet.contains(lbl)) {
-                    eventService.createEvent(existingTopic, TopicEventType.label_added, lbl, true);
-                }
+        for (String lbl : afterSet) {
+            if (!beforeSet.contains(lbl)) {
+                eventService.createEvent(existingTopic, TopicEventType.label_added, lbl, true);
             }
+        }
 
-            for (String lbl : beforeSet) {
-                if (!afterSet.contains(lbl)) {
-                    eventService.createEvent(existingTopic, TopicEventType.label_removed, lbl, true);
-                }
+        for (String lbl : beforeSet) {
+            if (!afterSet.contains(lbl)) {
+                eventService.createEvent(existingTopic, TopicEventType.label_removed, lbl, true);
             }
         }
         return existingTopic;

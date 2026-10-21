@@ -84,7 +84,7 @@ public class BcfTopicBuilder {
                 VisualizationInfo vi = folder.viewpoints().get(vp.getViewpoint());
                 if (vi == null) continue;
                 byte[] snapBytes = vp.getSnapshot() != null ? folder.snapshots().get(vp.getSnapshot()) : null;
-                ImageType snapType = BcfViewpointBuilder.resolveImageType(vp.getSnapshot());
+                ImageType snapType = ImageType.fromFilename(vp.getSnapshot());
                 int index = vp.getIndex() != null ? vp.getIndex() : builtViewpoints.size();
                 ViewpointEntity viewpointEntity = viewpointBuilder.build(vi, snapBytes, snapType, index, entity, folder);
                 entity.getViewpoints().add(viewpointEntity);
@@ -157,7 +157,7 @@ public class BcfTopicBuilder {
                 if (vi == null) continue;
 
                 byte[] snapBytes = vp.getSnapshot() != null ? folder.snapshots().get(vp.getSnapshot()) : null;
-                ImageType snapType = BcfViewpointBuilder.resolveImageType(vp.getSnapshot());
+                ImageType snapType = ImageType.fromFilename(vp.getSnapshot());
                 int index = vp.getIndex() != null ? vp.getIndex() : allViewpoints.size();
                 ViewpointEntity newVp = viewpointBuilder.build(vi, snapBytes, snapType, index, topic, folder);
                 topic.getViewpoints().add(newVp);

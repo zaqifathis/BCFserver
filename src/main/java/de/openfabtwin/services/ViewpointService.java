@@ -10,20 +10,28 @@ import de.openfabtwin.entities.TopicEntity;
 import de.openfabtwin.entities.ViewpointEntity;
 import de.openfabtwin.exceptions.ConflictException;
 import de.openfabtwin.generated.dto.*;
+import de.openfabtwin.generated.visinfo.VisualizationInfo;
 import de.openfabtwin.repositories.CommentRepository;
 import de.openfabtwin.repositories.ViewpointRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
 public class ViewpointService {
+
+    private static final Pattern GUID_PATTERN = Pattern.compile(
+            "([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12})");
 
     private final ViewpointRepository viewpointRepository;
     private final CommentRepository commentRepository;
@@ -96,6 +104,167 @@ public class ViewpointService {
             }
         }
         return viewpointRepository.save(viewpointEntity);
+    }
+
+    /**
+     * Builds a viewpoint entity from a parsed BCF {@code .bcfv} (visinfo.xsd) file.
+     * The entity is not saved: it is attached to the topic and persisted through cascade.
+     *
+     * @param bitmapFiles bitmap image bytes of the topic folder, keyed by file name
+     */
+    public ViewpointEntity createFromVisualizationInfo(VisualizationInfo vi, byte[] snapshotData, ImageType snapshotType,
+                                                       int index, TopicEntity topic, Map<String, byte[]> bitmapFiles) {
+        ViewpointEntity entity = new ViewpointEntity();
+        entity.setTopic(topic);
+        entity.setGuid(vi.getGuid());
+        entity.setIndex(index);
+        entity.setPayload(toPayload(vi));
+        entity.setSnapshotData(snapshotData);
+        entity.setSnapshotType(snapshotType);
+
+        if (vi.getBitmaps() != null && vi.getBitmaps().getBitmap() != null) {
+            for (de.openfabtwin.generated.visinfo.Bitmap bitmap : vi.getBitmaps().getBitmap()) {
+                entity.getBitmaps().add(toBitmapEntity(bitmap, bitmapFiles, entity));
+            }
+        }
+        return entity;
+    }
+
+    // Payload uses the DTO shape (snake_case) so that ViewpointMapper can read it back
+    private String toPayload(VisualizationInfo vi) {
+        ObjectNode payload = objectMapper.createObjectNode();
+        if (vi.getOrthogonalCamera() != null) {
+            var cam = vi.getOrthogonalCamera();
+            OrthogonalCamera dto = new OrthogonalCamera();
+            dto.setCameraViewPoint(toPoint(cam.getCameraViewPoint()));
+            dto.setCameraDirection(toDirection(cam.getCameraDirection()));
+            dto.setCameraUpVector(toDirection(cam.getCameraUpVector()));
+            dto.setViewToWorldScale(BigDecimal.valueOf(cam.getViewToWorldScale()));
+            dto.setAspectRatio(BigDecimal.valueOf(cam.getAspectRatio()));
+            payload.set("orthogonal_camera", objectMapper.valueToTree(dto));
+        }
+        if (vi.getPerspectiveCamera() != null) {
+            var cam = vi.getPerspectiveCamera();
+            PerspectiveCamera dto = new PerspectiveCamera();
+            dto.setCameraViewPoint(toPoint(cam.getCameraViewPoint()));
+            dto.setCameraDirection(toDirection(cam.getCameraDirection()));
+            dto.setCameraUpVector(toDirection(cam.getCameraUpVector()));
+            dto.setFieldOfView(BigDecimal.valueOf(cam.getFieldOfView()));
+            dto.setAspectRatio(BigDecimal.valueOf(cam.getAspectRatio()));
+            payload.set("perspective_camera", objectMapper.valueToTree(dto));
+        }
+        if (vi.getLines() != null) {
+            List<Line> lines = new ArrayList<>();
+            for (var l : vi.getLines().getLine()) {
+                Line dto = new Line();
+                dto.setStartPoint(toPoint(l.getStartPoint()));
+                dto.setEndPoint(toPoint(l.getEndPoint()));
+                lines.add(dto);
+            }
+            payload.set("lines", objectMapper.valueToTree(lines));
+        }
+        if (vi.getClippingPlanes() != null) {
+            List<ClippingPlane> planes = new ArrayList<>();
+            for (var p : vi.getClippingPlanes().getClippingPlane()) {
+                ClippingPlane dto = new ClippingPlane();
+                dto.setLocation(toLocation(p.getLocation()));
+                dto.setDirection(toDirection(p.getDirection()));
+                planes.add(dto);
+            }
+            payload.set("clipping_planes", objectMapper.valueToTree(planes));
+        }
+        if (vi.getComponents() != null) {
+            payload.set("components", objectMapper.valueToTree(toComponents(vi.getComponents())));
+        }
+        return payload.toString();
+    }
+
+    private Components toComponents(de.openfabtwin.generated.visinfo.Components c) {
+        Components dto = new Components();
+
+        if (c.getSelection() != null) {
+            dto.setSelection(toComponentList(c.getSelection().getComponent()));
+        }
+
+        if (c.getVisibility() != null) {
+            var vis = c.getVisibility();
+            Visibility visDto = new Visibility();
+            visDto.setDefaultVisibility(vis.isDefaultVisibility());
+            visDto.setExceptions(vis.getExceptions() != null
+                    ? toComponentList(vis.getExceptions().getComponent())
+                    : new ArrayList<>());
+            if (vis.getViewSetupHints() != null) {
+                var hints = vis.getViewSetupHints();
+                ViewSetupHints hintsDto = new ViewSetupHints();
+                hintsDto.setSpacesVisible(hints.isSpacesVisible());
+                hintsDto.setSpaceBoundariesVisible(hints.isSpaceBoundariesVisible());
+                hintsDto.setOpeningsVisible(hints.isOpeningsVisible());
+                visDto.setViewSetupHints(hintsDto);
+            }
+            dto.setVisibility(visDto);
+        }
+
+        if (c.getColoring() != null) {
+            List<Coloring> colorings = new ArrayList<>();
+            for (var color : c.getColoring().getColor()) {
+                Coloring colorDto = new Coloring();
+                colorDto.setColor(color.getColor());
+                colorDto.setComponents(color.getComponents() != null
+                        ? toComponentList(color.getComponents().getComponent())
+                        : new ArrayList<>());
+                colorings.add(colorDto);
+            }
+            dto.setColoring(colorings);
+        }
+        return dto;
+    }
+
+    private List<Component> toComponentList(List<de.openfabtwin.generated.visinfo.Component> components) {
+        List<Component> result = new ArrayList<>();
+        for (var c : components) {
+            Component dto = new Component();
+            dto.setIfcGuid(c.getIfcGuid());
+            dto.setOriginatingSystem(c.getOriginatingSystem());
+            dto.setAuthoringToolId(c.getAuthoringToolId());
+            result.add(dto);
+        }
+        return result;
+    }
+
+    private BitmapEntity toBitmapEntity(de.openfabtwin.generated.visinfo.Bitmap bitmap, Map<String, byte[]> bitmapFiles,
+                                        ViewpointEntity viewpoint) {
+        String ref = bitmap.getReference();
+        BitmapEntity entity = new BitmapEntity();
+        entity.setViewpoint(viewpoint);
+        entity.setGuid(extractGuidFromFilename(ref));
+        entity.setBitmapData(ref != null ? bitmapFiles.get(ref) : null);
+        entity.setBitmapType(ImageType.fromFilename(ref));
+
+        ObjectNode meta = objectMapper.createObjectNode();
+        meta.set("location", objectMapper.valueToTree(toLocation(bitmap.getLocation())));
+        meta.set("normal",   objectMapper.valueToTree(toDirection(bitmap.getNormal())));
+        meta.set("up",       objectMapper.valueToTree(toDirection(bitmap.getUp())));
+        meta.set("height",   objectMapper.valueToTree(BigDecimal.valueOf(bitmap.getHeight())));
+        entity.setBitmapMetadata(meta.toString());
+        return entity;
+    }
+
+    private Point toPoint(de.openfabtwin.generated.visinfo.Point p) {
+        return new Point().x(BigDecimal.valueOf(p.getX())).y(BigDecimal.valueOf(p.getY())).z(BigDecimal.valueOf(p.getZ()));
+    }
+
+    private Location toLocation(de.openfabtwin.generated.visinfo.Point p) {
+        return new Location().x(BigDecimal.valueOf(p.getX())).y(BigDecimal.valueOf(p.getY())).z(BigDecimal.valueOf(p.getZ()));
+    }
+
+    private Direction toDirection(de.openfabtwin.generated.visinfo.Direction d) {
+        return new Direction().x(BigDecimal.valueOf(d.getX())).y(BigDecimal.valueOf(d.getY())).z(BigDecimal.valueOf(d.getZ()));
+    }
+
+    private String extractGuidFromFilename(String filename) {
+        if (filename == null) return UUID.randomUUID().toString();
+        var matcher = GUID_PATTERN.matcher(filename);
+        return matcher.find() ? matcher.group(1) : UUID.randomUUID().toString();
     }
 
     private void validateViewpointPOST(ViewpointPOST viewpointPOST) {
@@ -198,6 +367,11 @@ public class ViewpointService {
 
         public static ImageType fromApiValue(String value) {
             return ImageType.valueOf(value.toUpperCase());
+        }
+
+        public static ImageType fromFilename(String filename) {
+            if (filename == null) return null;
+            return filename.toLowerCase().endsWith(".png") ? PNG : JPG;
         }
 
         public String toApiValue() {

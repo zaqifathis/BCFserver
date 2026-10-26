@@ -13,13 +13,25 @@ An open-source server implementation of the BIM Collaboration Format (BCF) [REST
 The BCF REST API is documented at [BCF REST API](https://github.com/buildingSMART/BCF-API)
 ### Additional Endpoint
 1. ``POST /import``  
-   Import BCF file. The request body must be `form-data` with one field:
+   Import one or more BCF files. The request body must be `form-data` with the field:
 
    | Key    | Type | Value                  |
    |--------|------|------------------------|
-   | `file` | File | The `.bcf` file to import |
+   | `file` | File | The `.bcf` file to import. Repeat the field to import several files in one request |
 
-   If the project in the file already exists (same `ProjectId` in `project.bcfp`), its topics are merged into it. Otherwise a new project is created. Returns `201 Created` on success.
+   If the project in the file already exists (same `ProjectId` in `project.bcfp`), its topics are merged into it. Otherwise a new project is created.
+
+   - **Single file:** returns `201 Created` on success, or `400`/`422` with the error message.
+   - **Multiple files:** files are imported in order, each in its own transaction, so a failing file does not affect the others. Returns `201 Created` if all succeeded, otherwise `207 Multi-Status`. The body lists the result per file:
+
+     ```json
+     [
+       { "filename": "a.bcf", "status": 201, "error": null },
+       { "filename": "b.txt", "status": 400, "error": "Invalid file type: 'b.txt'. Only .bcf file is supported." }
+     ]
+     ```
+
+   Upload limits default to 50MB per file and 500MB per request (override with `IMPORT_MAX_FILE_SIZE` / `IMPORT_MAX_REQUEST_SIZE`).
 
 The official BCF-API spec has no endpoint to create a project from data — support for it was dropped after v1.0, since project creation is expected to happen in each server's own native system rather than via the generic API ([here](https://github.com/buildingSMART/BCF-API/issues/176#issuecomment-389455354)). `/import` is this server's own extension to fill that gap.
 

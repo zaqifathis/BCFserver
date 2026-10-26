@@ -2,6 +2,7 @@ package de.openfabtwin;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -101,22 +102,36 @@ class BcfTestCasesImportTest {
             "User%20assignment/User%20assignment.bcf"
     })
     void importTestCase(String path) {
-        byte[] bcf = GITHUB.get()
-                .uri(URI.create(TEST_CASES_URL + path))
-                .retrieve()
-                .body(byte[].class);
-        assertNotNull(bcf, "Download failed: " + TEST_CASES_URL + path);
-
-        String filename = URLDecoder.decode(path.substring(path.lastIndexOf('/') + 1), StandardCharsets.UTF_8);
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("file", new ByteArrayResource(bcf) {
-            @Override
-            public String getFilename() {
-                return filename;
-            }
-        });
+        body.add("file", filePart(download(path), filenameOf(path)));
 
-        ResponseEntity<String> response = HTTP.post()
+        ResponseEntity<String> response = postImport(body, String.class);
+        assertEquals(201, response.getStatusCode().value(), "Import failed: " + response.getBody());
+    }
+
+    @Test
+    void importMultipleFiles() {
+        String labels = "Labels/Labels.bcf";
+        String milestone = "Milestone/Milestone.bcf";
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("file", filePart(download(labels), filenameOf(labels)));
+        body.add("file", filePart(download(milestone), filenameOf(milestone)));
+        body.add("file", filePart("not a bcf".getBytes(StandardCharsets.UTF_8), "bad.txt"));
+
+        // One invalid file must not roll back the others: 207 with a result per file
+        ResponseEntity<JsonNode> response = postImport(body, JsonNode.class);
+        assertEquals(207, response.getStatusCode().value(), "Unexpected response: " + response.getBody());
+
+        JsonNode results = response.getBody();
+        assertNotNull(results);
+        assertEquals(3, results.size());
+        assertEquals(201, results.get(0).get("status").asInt());
+        assertEquals(201, results.get(1).get("status").asInt());
+        assertEquals(400, results.get(2).get("status").asInt());
+    }
+
+    private static <T> ResponseEntity<T> postImport(MultiValueMap<String, Object> body, Class<T> type) {
+        return HTTP.post()
                 .uri(serverUrl + "/import")
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .headers(headers -> {
@@ -124,8 +139,29 @@ class BcfTestCasesImportTest {
                 })
                 .body(body)
                 .retrieve()
-                .toEntity(String.class);
-        assertEquals(201, response.getStatusCode().value(), "Import failed: " + response.getBody());
+                .toEntity(type);
+    }
+
+    private static byte[] download(String path) {
+        byte[] bcf = GITHUB.get()
+                .uri(URI.create(TEST_CASES_URL + path))
+                .retrieve()
+                .body(byte[].class);
+        assertNotNull(bcf, "Download failed: " + TEST_CASES_URL + path);
+        return bcf;
+    }
+
+    private static String filenameOf(String path) {
+        return URLDecoder.decode(path.substring(path.lastIndexOf('/') + 1), StandardCharsets.UTF_8);
+    }
+
+    private static ByteArrayResource filePart(byte[] bytes, String filename) {
+        return new ByteArrayResource(bytes) {
+            @Override
+            public String getFilename() {
+                return filename;
+            }
+        };
     }
 
     private static ProxySelector proxyFromEnv() {

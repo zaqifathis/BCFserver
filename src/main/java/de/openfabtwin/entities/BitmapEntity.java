@@ -2,11 +2,13 @@ package de.openfabtwin.entities;
 
 import de.openfabtwin.services.ViewpointService.*;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "viewpoint_bitmaps")
-@Data
+@Getter
+@Setter
 public class BitmapEntity {
 
     @Id

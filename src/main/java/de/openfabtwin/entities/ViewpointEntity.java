@@ -2,14 +2,16 @@ package de.openfabtwin.entities;
 
 import de.openfabtwin.services.ViewpointService.*;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "viewpoints")
-@Data
+@Getter
+@Setter
 public class ViewpointEntity {
 
     @Id

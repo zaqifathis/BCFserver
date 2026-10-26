@@ -1,14 +1,16 @@
 package de.openfabtwin.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "bim_snippets")
-@Data
+@Getter
+@Setter
 public class BimSnippetEntity {
 
     @Id

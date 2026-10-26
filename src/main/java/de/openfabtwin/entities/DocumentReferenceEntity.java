@@ -1,11 +1,13 @@
 package de.openfabtwin.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "document_references")
-@Data
+@Getter
+@Setter
 public class DocumentReferenceEntity {
 
     @Id

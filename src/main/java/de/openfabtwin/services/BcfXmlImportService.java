@@ -7,6 +7,7 @@ import de.openfabtwin.services.bcfimport.BcfTopicBuilder;
 import de.openfabtwin.utils.BcfZipReader;
 import de.openfabtwin.utils.BcfZipReader.BcfParseResult;
 import de.openfabtwin.utils.BcfZipReader.TopicFolder;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,7 @@ public class BcfXmlImportService {
     private final ProjectRepository projectRepository;
     private final BcfExtensionBuilder extensionBuilder;
     private final BcfTopicBuilder topicBuilder;
+    private final EntityManager entityManager;
 
     public void validateFileExtension(String filename) throws IOException {
         if (filename == null || filename.isBlank()) {
@@ -32,6 +34,10 @@ public class BcfXmlImportService {
 
     @Transactional
     public void importBcf(byte[] zipBytes) throws IOException {
+        // Open-in-view shares one persistence context across the request: drop entities left
+        // over from a previous import in the same request so each file starts clean
+        entityManager.clear();
+
         int projectCount = (int) projectRepository.count();
         BcfParseResult result = BcfZipReader.read(zipBytes, projectCount);
 

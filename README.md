@@ -174,8 +174,3 @@ src/main/java/de/openfabtwin/
 
 This project is licensed under the [MIT License](LICENCE).
 
-## Acknowledgement
-
-This work is funded by the German Federal Ministry for Economic Affairs and Climate Action
-(BMWK) through the central innovation programme for small and medium-sized enterprises
-(ZIM-program), with funding provided under grant number 16KN106902.
